@@ -1,32 +1,54 @@
 # Brogue 2
 
-## API
+## Usage
 
-屬性 | 中文名稱 | 英文名稱 | 參數取值 
-:- | :- | :- | :-
-韻 | 韻母 | rhyme | 東冬江支…；董…〈在這裏補充〉
-母 | 聲母 | initial | 端透定泥…莊初崇生俟…章昌船書常…以云…〈共 38 聲母〉
-開合 | 開合 | rounding | 開合
-等 | 等 | division | 1234
-韻賅上去 | 韻母（舉平以賅上去） | rhyme (舉平以賅上去) | 東冬江支…；祭泰夬廢；屋…〈在這裏補充〉
-韻賅上去入 | 韻母（舉平以賅上去入） | rhyme (舉平以賅上去入) | 東冬江支…；祭泰夬廢
-攝 | 攝 | class | 通江止遇蟹臻山效果假宕梗曾流深咸
-聲 | 聲調 | tone | 平上去入；仄〔表示上去入〕；舒〔表示平上去〕
+HTML:
 
-以上每種屬性各包含兩種運算符：`equal` 類與 `in` 類。
-
-例如，對於「聲母」，可以使用：
-
-```javascript
->>> let 小韻號 = 1919;  // 選擇第 1919 小韻（拯小韻）
->>> console.log(equal母(小韻號, '章'));
-true
->>> console.log(in母(小韻號, ['曉', '匣']));
-false
+```html
+<script src="https://sgalal.github.io/Brogue2/index.js"></script>
 ```
 
-## 內部信息
+JavaScript:
 
-`small_rhyme.js`
+```javascript
+let 小韻號 = 1919;  // 選擇第 1919 小韻（拯小韻）
+console.log(equal母(小韻號, '章'));  // true，拯小韻是章母
+console.log(in母(小韻號, ['曉', '匣']));  // false, 拯小韻不是曉匣母
+```
+
+## High-Level API
+
+* function `equal韻`
+* function `in韻`
+* function `equal母`
+* function `in母`
+* function `equal開合`
+* function `equal等`
+* function `in等`
+* function `equal韻賅上去`
+* function `in韻賅上去`
+* function `equal韻賅上去入`
+* function `in韻賅上去入`
+* function `equal攝`
+* function `in攝`
+* function `equal聲`
+* function `in聲`
+
+Property Name | Chinese Name | English Name | 參數取值 
+:- | :- | :- | :-
+韻 | 韻母 | rhyme | 東冬鍾江…；董湩腫講…；送宋用絳…；屋沃燭覺… 
+母（共 38 個） | 聲母 | initial | 端透定泥…；莊初崇生俟；章昌船書常；以云… 
+開合 | 開合 | rounding | 開合
+等 | 等 | division | <del>一二三四</del>；1234 
+韻賅上去 | 韻母（舉平以賅上去） | rhyme (舉平以賅上去) | 東冬鍾江…；祭泰夬廢；屋沃燭覺… 
+韻賅上去入 | 韻母（舉平以賅上去入） | rhyme (舉平以賅上去入) | 東冬鍾江…；祭泰夬廢 
+攝 | 攝 | class | 通江止遇蟹臻山效果假宕梗曾流深咸
+聲 | 聲調 | tone | 平上去入；<del>仄</del>；<del>舒 </del>
+
+<del>Not implemented</del>
+
+## Low-Level API
+
+dict `small_rhymes`
 
 二維數組。低維中的每一維：小韻, 韻母, 聲母, 開合, 等。

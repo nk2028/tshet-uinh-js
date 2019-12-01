@@ -1,0 +1,23 @@
+<html lang="zh-Hant-HK" xml:lang="zh-Hant-HK" dir="ltr">
+<head>
+  <meta charset="utf-8"/>
+  <title>Brogue 2</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"/>
+  <script src="brogue2.js"></script>
+  <script src="index.files/index.js"></script>
+  <link rel="stylesheet" href="index.files/index.css"/>
+</head>
+<body>
+  <p>
+    <textarea name="scriptInput" id="scriptInput"></textarea>
+    <input type="button" value="加載" onclick="handleLoad()"/>
+    <input type="button" value="實行" onclick="handleEval()"/>
+  </p>
+  <hr/>
+  <p>
+    <input type="text" name="charInput" id="charInput" minlength="1" maxlength="1" required />
+    <input type="button" value="查詢" onclick="handleQuery()"/>
+    <output name="resultOutput" id="resultOutput"></output>
+  </p>
+</body>
+</html>

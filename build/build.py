@@ -25,7 +25,7 @@ build_small_rhyme()
 def build_char_entity():
 	f = open('build/char_entity.js', 'w')
 	f.write('const char_entities=')
-	obj = {字: [int(i) for i in 小韻.split(',')] \
+	obj = {字: (lambda x: x[0] if len(x) == 1 else x)([int(i) for i in 小韻.split(',')]) \
 		for 字, 小韻 \
 		in cur.execute('''SELECT name, GROUP_CONCAT(of_small_rhyme)
 		FROM core_char_entities
@@ -45,7 +45,7 @@ def concat_files(l, s):
 		f.close()
 	fout.close()
 
-concat_files(('build/map.js', 'build/char_entity.js', 'build/small_rhyme.js', 'build/index.js'), 'docs/index.js')
+concat_files(('build/map.js', 'build/char_entity.js', 'build/small_rhyme.js', 'build/index.js'), 'docs/brogue2.js')
 
 cur.close()
 conn.close()

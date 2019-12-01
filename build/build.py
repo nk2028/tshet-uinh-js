@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+from collections import defaultdict
 import json
 import sqlite3
 
@@ -25,13 +26,14 @@ build_small_rhyme()
 def build_char_entity():
 	f = open('build/char_entity.js', 'w')
 	f.write('const char_entities=')
-	obj = {字: (lambda x: x[0] if len(x) == 1 else x)([int(i) for i in 小韻.split(',')]) \
-		for 字, 小韻 \
-		in cur.execute('''SELECT name, GROUP_CONCAT(of_small_rhyme)
-		FROM core_char_entities
-		GROUP BY name
-		HAVING LENGTH(name) = 1;''')}
-	json.dump(obj, f, ensure_ascii=False, separators=(',',':'))
+
+	d = defaultdict(list)
+	for 字, 小韻, 解釋 in cur.execute('''SELECT name, of_small_rhyme, explanation
+			FROM core_char_entities
+			WHERE LENGTH(name) = 1;'''):
+		d[字].append(小韻)
+		d[字].append(解釋)
+	json.dump(d, f, ensure_ascii=False, separators=(',',':'))
 	f.write(';')
 	f.close()
 

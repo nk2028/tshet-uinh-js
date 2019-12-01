@@ -241,10 +241,4 @@ function brogue2(小韻號) {
 	return 聲母 + 韻母 + 聲調;
 }
 
-const arr = [];
-
-for (var i = 1; i <= 3874; i++) {
-	arr.push(brogue2(i));
-}
-
-resultOutput.value = arr.join('\n');
+[...Array(3874).keys()].map(i => brogue2(i + 1)).join('\n');

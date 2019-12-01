@@ -5,19 +5,25 @@ async function handleLoad() {
 }
 
 function handleEval() {
-	eval(scriptInput.value);
+	resultOutput.value = eval(scriptInput.value);
+}
+
+function splitEvenOdd(arr) {
+	const a = [], b = [];
+	for (let i = 0; i < arr.length; i += 2) {
+		a.push(arr[i]);
+		b.push(arr[i + 1]);
+	}
+	return [a, b];
 }
 
 function handleQuery() {
 	const character = charInput.value;
-	const small_rhymes = char_entities[character];
-	if (Array.isArray(small_rhymes)) {
-		const res = eval(scriptInput.value + `\nsmall_rhymes.map(brogue2);`);
-		resultOutput.value = res;
-	} else if (!isNaN(small_rhymes)) {
-		const res = eval(scriptInput.value + `\nbrogue2(small_rhymes);`);
-		resultOutput.value = res;
+	const smallRhymes = char_entities[character];
+	if (!smallRhymes) {
+		resultOutput.value = 'No result';
 	} else {
-		resultOutput.value = brogue2;
+		[srs, expls] = splitEvenOdd(smallRhymes);
+		resultOutput.value = eval(scriptInput.value + `\nsrs.map(brogue2).join(', ');`)
 	}
 }

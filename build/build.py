@@ -45,7 +45,7 @@ def concat_files(l, s):
 		f.close()
 	fout.close()
 
-concat_files(('build/map.js', 'build/char_entity.js', 'build/small_rhyme.js', 'build/index.js'), 'docs/brogue2.js')
+concat_files(('build/map.js', 'build/char_entity.js', 'build/small_rhyme.js', 'build/brogue2.js'), 'docs/brogue2.js')
 
 cur.close()
 conn.close()

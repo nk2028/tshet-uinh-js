@@ -5,7 +5,7 @@ async function handleLoad() {
 }
 
 function handleEval() {
-	resultOutput.value = eval(scriptInput.value);
+	resultOutput.value = eval(scriptInput.value + '\n[...Array(3874).keys()].map(i => brogue2(i + 1)).join("\\n");');
 }
 
 function splitEvenOdd(arr) {
@@ -24,6 +24,6 @@ function handleQuery() {
 		resultOutput.value = 'No result';
 	} else {
 		[srs, expls] = splitEvenOdd(smallRhymes);
-		resultOutput.value = eval(scriptInput.value + `\nsrs.map(brogue2).join(', ');`)
+		resultOutput.value = eval(scriptInput.value + '\nsrs.map(brogue2).join(", ");')
 	}
 }

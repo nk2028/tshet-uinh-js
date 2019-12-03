@@ -1,4 +1,26 @@
+html {
+	scrollbar-color: #393b3e #1c1e1f;
+}
+
+body {
+	background-color: black;
+	color: white;
+	max-width: 68em;
+	margin: 2em auto;
+}
+
+h1 {
+	text-align: center;
+}
+
+input, textarea {
+	background-color: inherit;
+	border: 1px solid #ddd;
+	color: inherit;
+}
+
 textarea {
-	height: 300px;
-	width: 700px;
+	height: 200px;
+	width: 100%;
+	resize: none;
 }

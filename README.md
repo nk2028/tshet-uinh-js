@@ -77,3 +77,9 @@ Value: `Int` or `Array Int`. Corresponding small rhymes.
 $ wget -P build https://github.com/sgalal/Guangyun/releases/download/v2.1/data.sqlite3
 $ python build/build.py
 ```
+
+## License
+
+BSD 3-Clause License
+
+Codes from CodeMirror project (`docs/index.files/codemirror`) is distributed under MIT license.

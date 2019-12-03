@@ -4,17 +4,20 @@
   <title>Brogue 2</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"/>
   <script src="brogue2.js"></script>
+  <!-- For CodeMirror -->
+  <script src="index.files/codemirror/lib/codemirror.js"></script>
+  <link rel="stylesheet" href="index.files/codemirror/lib/codemirror.css"/>
+  <script src="index.files/codemirror/mode/javascript/javascript.js"></script>
+  <link rel="stylesheet" href="index.files/codemirror/theme/blackboard-modified.css"/>
   <script src="index.files/index.js"></script>
   <link rel="stylesheet" href="index.files/index.css"/>
 </head>
 <body>
+  <h1>Brogue 2</h1>
   <p>
-    <textarea name="scriptInput" id="scriptInput"></textarea>
+    <div id="scriptInput" name="scriptInput"></div>
     <input type="button" value="加載" onclick="handleLoad()"/>
     <input type="button" value="實行" onclick="handleEval()"/>
-  </p>
-  <hr/>
-  <p>
     <input type="text" name="charInput" id="charInput" minlength="1" maxlength="1" required />
     <input type="button" value="查詢" onclick="handleQuery()"/>
   </p>

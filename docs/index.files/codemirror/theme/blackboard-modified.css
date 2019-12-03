@@ -30,3 +30,4 @@
 
 .cm-s-blackboard-modified .CodeMirror-activeline-background { background: #3C3636; }
 .cm-s-blackboard-modified .CodeMirror-matchingbracket { outline:1px solid grey;color:white !important; }
+.cm-s-blackboard-modified .CodeMirror-scrollbar-filler, .cm-s-blackboard-modified .CodeMirror-gutter-filler { background-color: inherit; }

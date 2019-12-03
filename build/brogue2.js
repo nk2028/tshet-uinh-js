@@ -4,6 +4,9 @@ const in韻 = (i, a) => a.includes(small_rhymes[i - 1][1]);
 const equal母 = (i, s) => small_rhymes[i - 1][2] == s;
 const in母 = (i, a) => a.includes(small_rhymes[i - 1][2]);
 
+const equal組 = (i, s) => 組到母[s].some(x => equal母(i, x));
+const in組 = (i, a) => a.some(s => equal組(i, s));
+
 const equal開合 = (i, s) => small_rhymes[i - 1][3] == s;
 
 const __equal等 = (i, s) => small_rhymes[i - 1][4] == s;
@@ -34,3 +37,6 @@ const in攝 = (i, a) => a.some(s => equal攝(i, s));
 
 const equal聲 = (i, s) => 聲到韻[s].includes(small_rhymes[i - 1][1]);
 const in聲 = (i, a) => a.some(s => equal聲(i, s));
+
+const is重紐A類 = i => small_rhymes[i - 1][1].endsWith('A');
+const is重紐B類 = i => small_rhymes[i - 1][1].endsWith('B');

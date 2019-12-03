@@ -26,6 +26,8 @@ Not implemented
 * function `in韻`
 * function `equal母`
 * function `in母`
+* function `equal組`
+* function `in組`
 * function `equal開合`
 * function `equal等`
 * function `in等`
@@ -38,20 +40,24 @@ Not implemented
 * function `equal聲`
 * function `in聲`
 
-Property Name | Chinese Name | English Name | 參數取值
+Property Name | Chinese Name | English Name | Possible Values
 :- | :- | :- | :-
 韻 | 韻母 | rhyme | 東冬鍾江…；董湩腫講…；送宋用絳…；屋沃燭覺…
 韻賅上去 | 韻母（舉平以賅上去） | rhyme (舉平以賅上去) | 東冬鍾江…；祭泰夬廢；屋沃燭覺…
 韻賅上去入 | 韻母（舉平以賅上去入） | rhyme (舉平以賅上去入) | 東冬鍾江…；祭泰夬廢
 母 | 聲母 | initial | 幫滂並明端透定泥知徹澄孃精清從心邪莊初崇生俟章昌船書常見溪羣疑影曉匣云以來日
+組 | 組 | group | 幫端知精莊章見（未涵蓋「影曉匣云以來日」）
 開合 | 開合 | rounding | 開合
 等 | 等 | division | 一二三四；1234
 攝 | 攝 | class | 通江止遇蟹臻山效果假宕梗曾流深咸
 聲 | 聲調 | tone | 平上去入；<del>仄</del>；<del>舒</del>
 
+* function `is重紐A類`
+* function `is重紐B類`
+
 <del>Not implemented</del>
 
-對重紐的處理：「支」就包括了「支、支A、支B」三種情況。
+對重紐的處理：韻賅上去入的「支」就包括了「支、支A、支B」三種情況。
 
 重紐四等（A類）是三等韻。
 

@@ -16,7 +16,7 @@ async function handleLoad() {
 }
 
 function handleEval() {
-	resultOutput.value = eval(myCodeMirror.getValue() + '\n[...Array(3874).keys()].map(i => brogue2(i + 1)).join("\\n");');
+	resultOutput.value = eval(myCodeMirror.getValue() + '\n[...Array(3874).keys()].map(i => (i + 1) + " " + small_rhymes[i][0] + " " + brogue2(i + 1)).join("\\n");');
 }
 
 function splitEvenOdd(arr) {

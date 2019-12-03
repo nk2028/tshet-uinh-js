@@ -11,14 +11,14 @@ cur = conn.cursor()
 def build_small_rhyme():
 	f = open('build/small_rhyme.js', 'w')
 	f.write('const small_rhymes=')
-	obj = [(小韻, 韻母, 聲母, 開合, 等) \
+	obj = ['|'.join((小韻, 韻母, 聲母, 開合, str(等))) \
 		for 小韻, 韻母, 聲母, 開合, 等 \
 		in cur.execute('''SELECT small_rhyme, of_rhyme,
 		initial, rounding, division
 		FROM full_small_rhymes
 		ORDER BY id;''')]
 	json.dump(obj, f, ensure_ascii=False, separators=(',',':'))
-	f.write(';')
+	f.write('.map(x=>{const a=x.split(\'|\');a[4]=a[4]|0;return a;});')  # 用 | 分隔小韻、韻母、聲母、開合、等，且等為數字
 	f.close()
 
 build_small_rhyme()

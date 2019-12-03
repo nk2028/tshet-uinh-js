@@ -1,4 +1,4 @@
-function brogue2(小韻號){
+function brogue2(小韻號) {
 	function 聲母規則() {
 		if (equal母(小韻號, '幫')) return 'p';
 		if (equal母(小韻號, '滂')) return 'ph';
@@ -24,20 +24,20 @@ function brogue2(小韻號){
 		if (equal母(小韻號, '俟')) return 'zsr';
 		if (equal母(小韻號, '章')) return 'cj';
 		if (equal母(小韻號, '昌')) return 'chj';
-		if (equal母(小韻號, '常')) return 'zj';
-		if (equal母(小韻號, '日')) return 'nj';
-		if (equal母(小韻號, '書')) return 'sj';
 		if (equal母(小韻號, '船')) return 'zsj';
+		if (equal母(小韻號, '書')) return 'sj';
+		if (equal母(小韻號, '常')) return 'zj';
 		if (equal母(小韻號, '見')) return 'k';
 		if (equal母(小韻號, '溪')) return 'kh';
 		if (equal母(小韻號, '羣')) return 'g';
 		if (equal母(小韻號, '疑')) return 'ng';
 		if (equal母(小韻號, '影')) return 'q';
-		if (equal母(小韻號, '云')) return '';
-		if (equal母(小韻號, '以')) return 'j';
 		if (equal母(小韻號, '曉')) return 'h';
 		if (equal母(小韻號, '匣')) return 'gh';
+		if (equal母(小韻號, '云')) return '';
+		if (equal母(小韻號, '以')) return 'j';
 		if (equal母(小韻號, '來')) return 'l';
+		if (equal母(小韻號, '日')) return 'nj';
 		throw new Error('無聲母規則');
 	}
 

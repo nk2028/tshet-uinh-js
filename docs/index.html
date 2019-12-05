@@ -19,12 +19,12 @@
 
   <p>
     <label for="predefinedScripts">在上面輸入，或從預設程式碼中選取</label>
-    <select name="predefinedScripts" id="predefinedScripts" onchange="handlePredefinedScriptsChange()">
-      <option></option>
+    <select name="predefinedScripts" id="predefinedScripts">
       <option value="kuxyonh">古韻羅馬字</option>
       <option value="ayaka2019">三日月綾香朗讀音 2019 版（私用）</option>
       <option value="ayaka2019-2">三日月綾香朗讀音 2019 版（私用）2</option>
     </select>
+    <input type="button" value="加載" onclick="handlePredefinedScriptsChange()"/>
     <input type="button" value="適用" onclick="handleDefineScript()"/>
   </p>
 
@@ -32,12 +32,12 @@
 
   <p>
     <label for="predefinedOptions">您想要做什麼？</label>
-    <select name="predefinedOptions" id="predefinedOptions" onchange="handlePredefinedOptionsChange()">
-      <option></option>
+    <select name="predefinedOptions" id="predefinedOptions">
+      <option value="convertArticle">從輸入框中讀取文章，並注音</option>
       <option value="exportAllSmallRhymes">導出所有小韻</option>
       <option value="exportAllSyllables">導出所有音節</option>
-      <option value="convertArticle">從輸入框中讀取文章，並注音</option>
     </select>
+    <input type="button" value="適用" onclick="handlePredefinedOptionsChange()"/>
   </p>
 
   <div name="outputArea" id="outputArea"></div>

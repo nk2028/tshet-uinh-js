@@ -2,7 +2,7 @@ let myCodeMirror;
 
 document.addEventListener('DOMContentLoaded', () => {
 	myCodeMirror = CodeMirror(scriptInput, {
-		value: 'function brogue2(小韻號) {\n\t// Your script goes here\n}\n',
+		value: 'const is = s => check小韻(小韻號, s);\n\n// Your script goes here\n',
 		mode: 'javascript',
 		theme: 'blackboard-modified',
 		lineNumbers: true
@@ -23,11 +23,11 @@ async function handlePredefinedScriptsChange() {
 
 	let url;
 	if (v == 'kuxyonh')
-		url = 'examples/low_level/kuxyonh.js';
+		url = 'examples/low_level/kuxyonh.txt';
 	else if (v == 'ayaka2019')
-		url = 'examples/high_level/ayaka2019.js';
+		url = 'examples/high_level/ayaka2019.txt';
 	else if (v == 'ayaka2019-2')
-		url = 'examples/low_level/ayaka2019.js';
+		url = 'examples/low_level/ayaka2019.txt';
 	else
 		return;
 

@@ -16,7 +16,7 @@ async function handleLoad() {
 }
 
 function handleEval() {
-	resultOutput.value = eval(myCodeMirror.getValue() + '\n[...Array(3874).keys()].map(i => (i + 1) + " " + small_rhymes[i][0] + " " + brogue2(i + 1)).join("\\n");');
+	resultOutput.value = eval(myCodeMirror.getValue() + '\n' + exprInput.value);
 }
 
 function splitEvenOdd(arr) {
@@ -28,13 +28,14 @@ function splitEvenOdd(arr) {
 	return [a, b];
 }
 
-function handleQuery() {
-	const character = charInput.value;
-	const smallRhymes = char_entities[character];
-	if (!smallRhymes) {
-		resultOutput.value = 'No result';
-	} else {
-		[srs, expls] = splitEvenOdd(smallRhymes);
-		resultOutput.value = eval(myCodeMirror.getValue() + '\nsrs.map(brogue2).join(", ");')
-	}
+function handleArticle() {
+	resultOutput.value = articleInput.value.split('').map(c => {
+		const smallRhymes = char_entities[c];
+		if (!smallRhymes) {
+			return c;
+		} else {
+			[srs, expls] = splitEvenOdd(smallRhymes);
+			return c + '(' + srs.map(sr => eval(myCodeMirror.getValue() + '\nbrogue2(sr);')).join(', ') + ')';
+		}
+	}).join('');
 }

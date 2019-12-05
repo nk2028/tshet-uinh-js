@@ -35,7 +35,16 @@ const in韻賅上去入 = (i, a) => a.some(s => equal韻賅上去入(i, s));
 const equal攝 = (i, s) => 攝到韻[s].includes(small_rhymes[i - 1][1]);
 const in攝 = (i, a) => a.some(s => equal攝(i, s));
 
-const equal聲 = (i, s) => 聲到韻[s].includes(small_rhymes[i - 1][1]);
+const equal聲 = (i, s) => {
+	if (i <= 1156)
+		return s == '平';
+	if (i <= 2091)
+		return s == '上';
+	if (i <= 3182)
+		return s == '去';
+	if (i <= 3874)
+		return s == '入';
+}
 const in聲 = (i, a) => a.some(s => equal聲(i, s));
 
 const is重紐A類 = i => small_rhymes[i - 1][1].endsWith('A');

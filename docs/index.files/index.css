@@ -20,8 +20,8 @@ input, textarea {
 	color: inherit;
 }
 
-textarea {
-	height: 200px;
+textarea:not(#articleInput) {
+	height: 400px;
 	width: 100%;
 	resize: none;
 }

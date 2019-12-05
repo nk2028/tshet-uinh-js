@@ -1,4 +1,4 @@
-function brogue2(小韻號) {
+// function brogue2(小韻號) {
 	function 聲母規則() {
 		if (equal母(小韻號, '幫')) return 'p';
 		if (equal母(小韻號, '滂')) return 'ph';
@@ -263,4 +263,4 @@ function brogue2(小韻號) {
 		隔音符號 = '';
 
 	return 聲母 + 隔音符號 + 韻母 + 聲調;
-}
+//}

@@ -1,4 +1,4 @@
-function brogue2(小韻號) {
+// function brogue2(小韻號) {
 	const 類
 	= in等(小韻號, ['一', '四']) ? '甲'
 	: equal等(小韻號, '二') ? '乙'
@@ -193,6 +193,7 @@ function brogue2(小韻號) {
 	if (equal韻賅上去入(小韻號, '虞'))
 		介音 = 介音.slice(0, -1);
 
+	// 需特殊記憶的小韻
 	if (小韻號 == 574)  // 山從開2, dz -> dzc
 		聲母 = 'dzc';
 	if (小韻號 == 1444)  // 賄云合1, gh -> /
@@ -226,4 +227,4 @@ function brogue2(小韻號) {
 	const 聲調 = 聲調規則();
 
 	return 聲母 + 介音 + 韻母 + 聲調;
-}
+//}

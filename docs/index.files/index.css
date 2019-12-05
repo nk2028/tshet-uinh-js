@@ -1,14 +1,23 @@
+/* Global style */
+
 html {
 	scrollbar-color: #393b3e #1c1e1f;
 }
 
 body {
 	background-color: black;
-	font-family: sans-serif;
 	color: white;
+	font-family: sans-serif;
+	margin: 0;
 	max-width: 68em;
 	margin: 2em auto;
 }
+
+p {
+	line-height: 1.5;
+}
+
+/* YA */
 
 h1 {
 	text-align: center;
@@ -18,10 +27,74 @@ input, option, select, textarea {
 	background-color: inherit;
 	border: 1px solid #ddd;
 	color: inherit;
+	font-family: inherit;
 }
 
 textarea:not(#articleInput) {
 	height: 400px;
 	width: 100%;
 	resize: none;
+}
+
+/* Converter - Output area */
+
+#outputArea rt {
+	font-size: 80%;
+}
+
+.entry {
+	display: contents;
+}
+
+.entry-no {
+	color: pink;
+}
+
+.entry-multiple {
+	color: orange;
+}
+
+.entry-multiple.unresolved {
+	color: plum;
+}
+
+.entry rt {
+	margin: 0 2px;
+}
+
+.hidden {
+	display: none;
+}
+
+/* Converter - Tooltip style */
+
+.entry:not(:hover) .tooltip-container {
+	visibility: hidden;
+}
+
+.entry .tooltip-container {
+	background-color: rgba(64,64,64,0.75);
+	border: 1px solid white;
+	color: #eee;
+	width: 750px;
+	max-width: calc(100vw - 2.5em);
+	position: absolute;
+	z-index: 1;
+}
+
+/* Converter - Selection */
+.tooltip-item {
+	margin: 0.25em 0.5em;
+}
+
+.entry-single .tooltip-item, .entry-multiple .tooltip-item.selected {
+	color: DeepSkyBlue;
+}
+
+.entry-multiple .tooltip-item:hover {
+	color: pink;
+}
+
+.entry-multiple .tooltip-item.selected:hover {
+	color: cyan;
 }

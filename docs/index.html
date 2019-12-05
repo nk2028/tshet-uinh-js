@@ -20,24 +20,26 @@
   <p>
     <label for="predefinedScripts">在上面輸入，或從預設程式碼中選取</label>
     <select name="predefinedScripts" id="predefinedScripts" onchange="handlePredefinedScriptsChange()">
-      <option value=""></option>
+      <option></option>
       <option value="kuxyonh">古韻羅馬字</option>
-      <option value="ayaka2019">Ayaka 拼音 2019 (私用)</option>
+      <option value="ayaka2019">三日月綾香朗讀音 2019 版（私用）</option>
     </select>
   </p>
 
-  <p>輸入框 <textarea name="articleInput" id="articleInput">測試</textarea></p>
+  <p>輸入框 <textarea name="articleInput" id="articleInput">我能吞下玻璃而不傷身體。</textarea></p>
 
   <p>
-    <label for="predefinedOptions">預定義操作</label>
+    <label for="predefinedOptions">您想要做什麼？</label>
     <select name="predefinedOptions" id="predefinedOptions" onchange="handlePredefinedOptionsChange()">
-      <option value=""></option>
+      <option></option>
       <option value="exportAllSmallRhymes">導出所有小韻</option>
       <option value="exportAllSyllables">導出所有音節</option>
       <option value="convertArticle">從輸入框中讀取文章，並注音</option>
     </select>
   </p>
 
-  <p><textarea name="resultOutput" id="resultOutput" readonly></textarea></p>
+  <div name="outputArea" id="outputArea"></div>
+
+  <input type="button" value="以文本形式匯出至剪貼簿" onclick="handleCopy()"/>
 </body>
 </html>

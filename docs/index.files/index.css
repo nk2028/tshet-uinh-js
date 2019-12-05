@@ -14,7 +14,7 @@ h1 {
 	text-align: center;
 }
 
-input, textarea {
+input, option, select, textarea {
 	background-color: inherit;
 	border: 1px solid #ddd;
 	color: inherit;

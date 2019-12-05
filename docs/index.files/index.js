@@ -9,14 +9,8 @@ document.addEventListener('DOMContentLoaded', () => {
 	});
 });
 
-async function handleLoad() {
-	const response = await fetch('examples/low_level/kuxyonh.js');
-	const text = await response.text();
-	myCodeMirror.setValue(text);
-}
-
-function handleEval() {
-	resultOutput.value = eval(myCodeMirror.getValue() + '\n' + exprInput.value);
+function handleEvalWithValue(x) {
+	resultOutput.value = eval(myCodeMirror.getValue() + '\n' + x);
 }
 
 function splitEvenOdd(arr) {
@@ -38,4 +32,29 @@ function handleArticle() {
 			return c + '(' + srs.map(sr => eval(myCodeMirror.getValue() + '\nbrogue2(sr);')).join(', ') + ')';
 		}
 	}).join('');
+}
+
+async function handlePredefinedScriptsChange() {
+	const v = predefinedScripts.value;
+	if (v == 'kuxyonh') {
+		const response = await fetch('examples/low_level/kuxyonh.js');
+		const text = await response.text();
+		myCodeMirror.setValue(text);
+		return;
+	}
+	if (v == 'ayaka2019') {
+		const response = await fetch('examples/low_level/ayaka2019.js');
+		const text = await response.text();
+		myCodeMirror.setValue(text);
+		return;
+	}
+}
+
+function handlePredefinedOptionsChange() {
+	if (predefinedOptions.value == 'exportAllSmallRhymes')
+		handleEvalWithValue('[...Array(3874).keys()].map(i => (i + 1) + " " +small_rhymes[i][0] + " " +small_rhymes[i][1]+small_rhymes[i][2]+small_rhymes[i][3]+small_rhymes[i][4] + " " + brogue2(i + 1)).join("\\n")');
+	else if (predefinedOptions.value == 'exportAllSyllables')
+		handleEvalWithValue('[...Array(3874).keys()].map(i => (i + 1) + " " + small_rhymes[i][0] + " " + brogue2(i + 1)).join("\\n");');
+	else if (predefinedOptions.value == 'convertArticle')
+		handleArticle();
 }

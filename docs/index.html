@@ -14,16 +14,30 @@
 </head>
 <body>
   <h1 lang="en-HK" xml:lang="en-HK">Brogue 2 the Chinese Dialect Generator</h1>
+
+  <div id="scriptInput" name="scriptInput"></div>
+
   <p>
-    <div id="scriptInput" name="scriptInput"></div>
-    <input type="button" value="加載" onclick="handleLoad()"/>
-    <input type="text" name="exprInput" id="exprInput" value="[...Array(3874).keys()].map(i =&gt; (i + 1) + &quot; &quot; + small_rhymes[i][0] + &quot; &quot; + brogue2(i + 1)).join(&quot;\n&quot;);" required style="width: 350px;" />
-    <input type="button" value="實行" onclick="handleEval()"/>
+    <label for="predefinedScripts">在上面輸入，或從預設程式碼中選取</label>
+    <select name="predefinedScripts" id="predefinedScripts" onchange="handlePredefinedScriptsChange()">
+      <option value=""></option>
+      <option value="kuxyonh">古韻羅馬字</option>
+      <option value="ayaka2019">Ayaka 拼音 2019 (私用)</option>
+    </select>
   </p>
+
+  <p>輸入框 <textarea name="articleInput" id="articleInput">測試</textarea></p>
+
   <p>
-    <textarea name="articleInput" id="articleInput"></textarea>
-    <input type="button" value="查詢" onclick="handleArticle()"/>
+    <label for="predefinedOptions">預定義操作</label>
+    <select name="predefinedOptions" id="predefinedOptions" onchange="handlePredefinedOptionsChange()">
+      <option value=""></option>
+      <option value="exportAllSmallRhymes">導出所有小韻</option>
+      <option value="exportAllSyllables">導出所有音節</option>
+      <option value="convertArticle">從輸入框中讀取文章，並注音</option>
+    </select>
   </p>
+
   <p><textarea name="resultOutput" id="resultOutput" readonly></textarea></p>
 </body>
 </html>

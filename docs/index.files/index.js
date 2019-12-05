@@ -18,21 +18,28 @@ function splitEvenOdd(arr) {
 	return [a, b];
 }
 
-let brogue2;
-
 async function handlePredefinedScriptsChange() {
 	const v = predefinedScripts.value;
 
 	let url;
 	if (v == 'kuxyonh')
 		url = 'examples/low_level/kuxyonh.js';
-	if (v == 'ayaka2019')
+	else if (v == 'ayaka2019')
+		url = 'examples/high_level/ayaka2019.js';
+	else if (v == 'ayaka2019-2')
 		url = 'examples/low_level/ayaka2019.js';
+	else
+		return;
 
 	const response = await fetch(url);
 	const text = await response.text();
 	myCodeMirror.setValue(text);
-	brogue2 = new Function('小韻號', text);
+}
+
+let brogue2;
+
+function handleDefineScript() {
+	brogue2 = new Function('小韻號', myCodeMirror.getValue());
 }
 
 function handlePredefinedOptionsChange() {
@@ -48,6 +55,8 @@ function handlePredefinedOptionsChange() {
 		}).join('\n');
 	} else if (predefinedOptions.value == 'convertArticle')
 		handleArticle();
+	else
+		outputArea.innerHTML = '';
 }
 
 function retrievePronunciation(sr) {

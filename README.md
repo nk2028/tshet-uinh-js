@@ -8,19 +8,35 @@ HTML:
 <script src="https://sgalal.github.io/Brogue2/brogue2.js"></script>
 ```
 
-JavaScript:
+## High-Level API
+
+```javascript
+let 小韻號 = 1919;  // 選擇第 1919 小韻（拯小韻）
+const is = s => check小韻(小韻號, s);
+console.log(is('章母'));  // true, 拯小韻是章母
+console.log(is('曉匣母'));  // false, 拯小韻不是曉匣母
+console.log(is('重紐A類 或 以母 或 端精章組 或 日母'));  // true, 拯小韻是章組
+```
+
+function `check小韻`
+
+字符串格式：先以「或」字分隔，再以空格分隔，空格表示「且」。如：
+
+```raw
+見組 重紐A類 或 以母 四等 去聲
+```
+
+表示「(見組 且 重紐A類) 或 (以母 且 四等 且 去聲)」。
+
+字符串不支援括號。
+
+## Low-Level API
 
 ```javascript
 let 小韻號 = 1919;  // 選擇第 1919 小韻（拯小韻）
 console.log(equal母(小韻號, '章'));  // true, 拯小韻是章母
 console.log(in母(小韻號, ['曉', '匣']));  // false, 拯小韻不是曉匣母
 ```
-
-## High-Level API
-
-Not implemented
-
-## Low-Level API
 
 * function `equal韻`
 * function `in韻`

@@ -97,6 +97,15 @@ Value: `Int` or `Array Int`. Corresponding small rhymes.
 
 ## Build
 
+CodeMirror:
+
+```raw
+https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.48.4/codemirror.min.js
+https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.48.4/codemirror.min.css
+```
+
+Build:
+
 ```sh
 $ wget -P build https://github.com/sgalal/Guangyun/releases/download/v2.1/data.sqlite3
 $ python build/build.py

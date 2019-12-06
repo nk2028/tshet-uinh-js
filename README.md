@@ -10,14 +10,12 @@ HTML:
 
 ## High-Level API
 
-A、B 的實現有 Bug！
-
 ```javascript
 let 小韻號 = 1919;  // 選擇第 1919 小韻（拯小韻）
 const is = s => check小韻(小韻號, s);
-console.log(is('章母'));  // true, 拯小韻是章母
-console.log(is('曉匣母'));  // false, 拯小韻不是曉匣母
-console.log(is('重紐A類 或 以母 或 端精章組 或 日母'));  // true, 拯小韻是章組
+is('章母');  // true, 拯小韻是章母
+is('曉匣母');  // false, 拯小韻不是曉匣母
+is('重紐A類 或 以母 或 端精章組 或 日母');  // true, 拯小韻是章組
 ```
 
 function `check小韻`
@@ -36,12 +34,17 @@ function `check小韻`
 
 ```javascript
 let 小韻號 = 1919;  // 選擇第 1919 小韻（拯小韻）
-console.log(equal母(小韻號, '章'));  // true, 拯小韻是章母
-console.log(in母(小韻號, ['曉', '匣']));  // false, 拯小韻不是曉匣母
+equal母(小韻號, '章');  // true, 拯小韻是章母
+in母(小韻號, ['曉', '匣']);  // false, 拯小韻不是曉匣母
+is重紐A類(小韻號) || equal母(小韻號, '以') || in組(小韻號, ['端', '精', '章']) || equal母(小韻號, '日');  // true, 拯小韻是章組
 ```
 
 * function `equal韻`
 * function `in韻`
+* function `equal韻賅上去`
+* function `in韻賅上去`
+* function `equal韻賅上去入`
+* function `in韻賅上去入`
 * function `equal母`
 * function `in母`
 * function `equal組`
@@ -49,10 +52,6 @@ console.log(in母(小韻號, ['曉', '匣']));  // false, 拯小韻不是曉匣�
 * function `equal開合`
 * function `equal等`
 * function `in等`
-* function `equal韻賅上去`
-* function `in韻賅上去`
-* function `equal韻賅上去入`
-* function `in韻賅上去入`
 * function `equal攝`
 * function `in攝`
 * function `equal聲`
@@ -97,11 +96,18 @@ Value: `Int` or `Array Int`. Corresponding small rhymes.
 
 ## Build
 
+Prerequisite:
+
+```sh
+$ npm install -g minify
+```
+
 CodeMirror:
 
 ```raw
 https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.48.4/codemirror.min.js
 https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.48.4/codemirror.min.css
+https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.48.4/mode/javascript/javascript.min.js
 ```
 
 Build:

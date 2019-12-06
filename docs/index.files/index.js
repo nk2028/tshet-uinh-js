@@ -1,7 +1,11 @@
-let myCodeMirror;
+'use strict';
+
+/* CodeMirror - codeInputArea */
+
+let codeInputArea;
 
 document.addEventListener('DOMContentLoaded', () => {
-	myCodeMirror = CodeMirror(scriptInput, {
+	codeInputArea = CodeMirror(scriptInput, {
 		value: 'const is = s => check小韻(小韻號, s);\n\n// Your script goes here\n',
 		mode: 'javascript',
 		theme: 'blackboard-modified',
@@ -9,16 +13,9 @@ document.addEventListener('DOMContentLoaded', () => {
 	});
 });
 
-function splitEvenOdd(arr) {
-	const a = [], b = [];
-	for (let i = 0; i < arr.length; i += 2) {
-		a.push(arr[i]);
-		b.push(arr[i + 1]);
-	}
-	return [a, b];
-}
+/* Predefined Scripts */
 
-async function handlePredefinedScriptsChange() {
+async function selectPredefinedScripts() {
 	const v = predefinedScripts.value;
 
 	let url;
@@ -35,14 +32,19 @@ async function handlePredefinedScriptsChange() {
 
 	const response = await fetch(url);
 	const text = await response.text();
-	myCodeMirror.setValue(text);
+	codeInputArea.setValue(text);
+	handleDefineScript();
 }
+
+/* Brogue2 function */
 
 let brogue2;
 
 function handleDefineScript() {
-	brogue2 = new Function('小韻號', myCodeMirror.getValue());
+	brogue2 = new Function('小韻號', codeInputArea.getValue());
 }
+
+/* Predefined Options */
 
 function handlePredefinedOptionsChange() {
 	if (predefinedOptions.value == 'exportAllSmallRhymes') {
@@ -59,10 +61,6 @@ function handlePredefinedOptionsChange() {
 		handleArticle();
 	else
 		outputArea.innerHTML = '';
-}
-
-function retrievePronunciation(sr) {
-	return brogue2(sr);
 }
 
 /* Converter */
@@ -91,7 +89,7 @@ function makeNoEntry(ch) {
 
 function makeSingleEntry(ch, res) {
 	const [sr, expl] = res;
-	const pronunciation = retrievePronunciation(sr);
+	const pronunciation = brogue2(sr);
 
 	const outerContainer = document.createElement('div');
 	outerContainer.classList.add('entry');
@@ -140,7 +138,7 @@ function makeMultipleEntry(ch, ress) {
 	for (let i = 0, len = ress.length; i < len; i++) {
 		const res = ress[i];
 		const [sr, expl] = res;
-		const pronunciation = retrievePronunciation(sr);
+		const pronunciation = brogue2(sr);
 
 		const rt = document.createElement('rt');
 		rt.innerText = pronunciation;

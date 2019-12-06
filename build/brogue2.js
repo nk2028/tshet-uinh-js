@@ -52,15 +52,32 @@ const is重紐B類 = i => small_rhymes[i - 1][1].endsWith('B');
 
 /* High-Level API */
 
+const split韻 = s => {
+	const arr = [];
+	while (s != '') {
+		if (s.length == 1) {
+			arr.push(s);
+			s = '';
+		} else if (s[1] == 'A' || s[1] == 'B') {
+			arr.push(s.slice(0, 2));
+			s = s.substr(2);
+		} else {
+			arr.push(s.slice(0, 1));
+			s = s.substr(1);
+		}
+	}
+	return arr;
+}
+
 const check小韻 = (小韻號, s) => s.split(' 或 ').some(s => s.split(' ').every(s => {
-	if (s.endsWith('韻')) return in韻(小韻號, s.slice(0, -1).split(''));
+	if (s.endsWith('韻')) return in韻(小韻號, split韻(s.slice(0, -1)));
 	if (s.endsWith('母')) return in母(小韻號, s.slice(0, -1).split(''));
 	if (s.endsWith('組')) return in組(小韻號, s.slice(0, -1).split(''));
 	if (s == '開') return equal開合(小韻號, '開');
 	if (s == '合') return equal開合(小韻號, '合');
 	if (s.endsWith('等')) return in等(小韻號, s.slice(0, -1).split(''));
-	if (s.endsWith('韻賅上去')) return in韻賅上去(小韻號, s.slice(0, -4).split(''));
-	if (s.endsWith('韻賅上去入')) return in韻賅上去入(小韻號, s.slice(0, -5).split(''));
+	if (s.endsWith('韻賅上去')) return in韻賅上去(小韻號, split韻(s.slice(0, -4)));
+	if (s.endsWith('韻賅上去入')) return in韻賅上去入(小韻號, split韻(s.slice(0, -5)));
 	if (s.endsWith('攝')) return in攝(小韻號, s.slice(0, -1).split(''));
 	if (s.endsWith('聲')) return in聲(小韻號, s.slice(0, -1).split(''));
 	if (s == '重紐A類') return is重紐A類(小韻號);

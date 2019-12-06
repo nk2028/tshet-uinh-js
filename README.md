@@ -10,6 +10,8 @@ HTML:
 
 ## High-Level API
 
+A、B 的實現有 Bug！
+
 ```javascript
 let 小韻號 = 1919;  // 選擇第 1919 小韻（拯小韻）
 const is = s => check小韻(小韻號, s);

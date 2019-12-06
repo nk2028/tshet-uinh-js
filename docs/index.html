@@ -1,8 +1,9 @@
+<!DOCTYPE html>
 <html lang="zh-Hant-HK" xml:lang="zh-Hant-HK" dir="ltr">
 <head>
   <meta charset="utf-8"/>
   <title>Brogue 2 the Chinese Dialect Generator</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <script src="brogue2.js"></script>
   <!-- For CodeMirror -->
   <script src="index.files/codemirror/lib/codemirror.js"></script>
@@ -15,14 +16,21 @@
 <body>
   <h1 lang="en-HK" xml:lang="en-HK">Brogue 2 the Chinese Dialect Generator</h1>
 
-  <div id="scriptInput" name="scriptInput"></div>
+  <div id="scriptInput"></div>
 
   <p>
     <label for="predefinedScripts">在上面輸入，或從預設程式碼中選取</label>
     <select name="predefinedScripts" id="predefinedScripts">
-      <option value="kuxyonh">古韻羅馬字</option>
-      <option value="ayaka2019">三日月綾香朗讀音 2019 版（私用）</option>
-      <option value="ayaka2019-2">三日月綾香朗讀音 2019 版（私用）2</option>
+      <optgroup label="通用">
+        <option value="kuxyonh">古韻羅馬字</option>
+      </optgroup>
+      <optgroup label="私用">
+        <option value="ayaka2019">三日月綾香朗讀音 2019 版</option>
+      </optgroup>
+      <optgroup label="Low-Level API 示例">
+        <option value="kuxyonh-ll">古韻羅馬字</option>
+        <option value="ayaka2019-ll">三日月綾香朗讀音 2019 版</option>
+      </optgroup>
     </select>
     <input type="button" value="加載" onclick="handlePredefinedScriptsChange()"/>
     <input type="button" value="適用" onclick="handleDefineScript()"/>
@@ -40,7 +48,7 @@
     <input type="button" value="適用" onclick="handlePredefinedOptionsChange()"/>
   </p>
 
-  <div name="outputArea" id="outputArea"></div>
+  <div id="outputArea"></div>
 
   <p><input type="button" value="以文本形式匯出至剪貼簿" onclick="handleCopy()"/></p>
 </body>

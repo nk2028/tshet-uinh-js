@@ -23,11 +23,13 @@ async function handlePredefinedScriptsChange() {
 
 	let url;
 	if (v == 'kuxyonh')
-		url = 'examples/low_level/kuxyonh.txt';
+		url = 'examples/high_level/kuxyonh.js';
 	else if (v == 'ayaka2019')
-		url = 'examples/high_level/ayaka2019.txt';
-	else if (v == 'ayaka2019-2')
-		url = 'examples/low_level/ayaka2019.txt';
+		url = 'examples/high_level/ayaka2019.js';
+	else if (v == 'kuxyonh-ll')
+		url = 'examples/low_level/kuxyonh.js';
+	else if (v == 'ayaka2019-ll')
+		url = 'examples/low_level/ayaka2019.js';
 	else
 		return;
 
@@ -83,7 +85,8 @@ function makeNoEntry(ch) {
 	outerContainer.classList.add('entry-no');
 	outerContainer.innerText = ch;
 	outerContainer.handleExport = () => ch;
-	outputArea.appendChild(outerContainer);
+
+	return outerContainer;
 }
 
 function makeSingleEntry(ch, res) {
@@ -113,7 +116,8 @@ function makeSingleEntry(ch, res) {
 	outerContainer.appendChild(tooltipContainer);
 	const exportText = ch + '(' + pronunciation + ')';
 	outerContainer.handleExport = () => exportText;
-	outputArea.appendChild(outerContainer);
+
+	return outerContainer;
 }
 
 function makeMultipleEntry(ch, ress) {
@@ -169,26 +173,33 @@ function makeMultipleEntry(ch, ress) {
 	outerContainer.appendChild(ruby);
 	outerContainer.appendChild(tooltipContainer);
 	outerContainer.handleExport = () => ch + '(' + outerContainer.currentSelection + ')';
-	outputArea.appendChild(outerContainer);
+
+	return outerContainer;
 }
 
 function makeConversion(c) {
 	const res = char_entities[c];
 	if (!res)
-		makeNoEntry(c);
+		return makeNoEntry(c);
 	else if (res.length == 1)
-		makeSingleEntry(c, res[0]);
+		return makeSingleEntry(c, res[0]);
 	else
-		makeMultipleEntry(c, res);
+		return makeMultipleEntry(c, res);
 }
 
 function handleArticle() {
 	outputArea.innerHTML = '';
+
 	const convertText = articleInput.value;
 	if (convertText.length == 0) {
 		;
 	} else {
-		convertText.split('').map(makeConversion);
+		const newOutputArea = document.createElement('div');
+		convertText.split('').map(n => newOutputArea.appendChild(makeConversion(n)));
+		const oldOutputArea = outputArea;
+		outputArea.id = '';
+		newOutputArea.id = 'outputArea';
+		oldOutputArea.replaceWith(newOutputArea);
 	}
 }
 

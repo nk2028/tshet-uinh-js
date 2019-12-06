@@ -103,7 +103,7 @@ function split韻(s) {
 }
 
 function check小韻(小韻號, s) {
-	if (i <= 0 || i > 3874)
+	if (小韻號 <= 0 || 小韻號 > 3874)
 		throw new Error('無此小韻');
 	return s.split(' 或 ').some(s => s.split(' ').every(s => {
 		if (s.endsWith('韻'))

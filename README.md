@@ -37,9 +37,7 @@ Phonological Attribute | Chinese Name | English Name | Possible Values
 母 | 聲母 | initial | 幫滂並明<br/>端透定泥<br/>知徹澄孃<br/>精清從心邪<br/>莊初崇生俟<br/>章昌船書常<br/>見溪羣疑<br/>影曉匣云以來日
 組 | 組 | group | 幫端知精莊章見<br/>（未涵蓋「影曉匣云以來日」）
 等 | 等 | division | 一二三四<br/>1234
-聲 | 聲調 | tone | 平上去入<br/><del>仄</del><br/><del>舒</del>
-
-<del>Not implemented</del>
+聲 | 聲調 | tone | 平上去入<br/>仄<br/>舒
 
 亦支援「開」、「合」、「重紐A類」、「重紐B類」。
 

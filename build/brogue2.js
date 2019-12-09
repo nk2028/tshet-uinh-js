@@ -53,14 +53,18 @@ function equal等(i, s) {
 }
 
 function equal聲(i, s) {
-	if (i <= 1156)
-		return s == '平';
-	else if (i <= 2091)
-		return s == '上';
-	else if (i <= 3182)
-		return s == '去';
-	else
-		return s == '入';
+	if (s == '平')
+		return i <= 1156;
+	else if (s == '上')
+		return i > 1156 && i <= 2091;
+	else if (s == '去')
+		return i > 2091 && i <= 3182;
+	else if (s == '入')
+		return i > 3182;
+	else if (s == '仄')
+		return i > 1156;
+	else if (s == '舒')
+		return i <= 3182;
 }
 
 /* Low-Level API - in-prefixed */

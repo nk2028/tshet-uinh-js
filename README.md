@@ -1,5 +1,7 @@
 # Brogue 2
 
+**NOTE: This project has been merged into [`sgalal/Guangyun`](https://github.com/sgalal/Guangyun)!**
+
 ## Usage
 
 ```html

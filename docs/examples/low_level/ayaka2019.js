@@ -60,7 +60,7 @@ function 聲母規則() {
 }
 
 function 介音規則() {
-	if (equal開合(小韻號, '開')) {
+	if (is開(小韻號)) {
 		if (類 == '甲')
 			return '';
 		if (類 == '乙')
@@ -70,7 +70,7 @@ function 介音規則() {
 		if (類 == '丁')
 			return 'j';
 	}
-	if (equal開合(小韻號, '合')) {
+	if (is合(小韻號)) {
 		if (類 == '甲')
 			return 'w';
 		if (類 == '乙')

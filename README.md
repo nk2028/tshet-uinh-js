@@ -30,6 +30,29 @@ function `check小韻`
 
 字符串不支援括號。
 
+Phonological Attribute | Chinese Name | English Name | Possible Values
+:- | :- | :- | :-
+韻 | 韻母 | rhyme | 東冬鍾江…<br/>董湩腫講…<br/>送宋用絳…<br/>屋沃燭覺…
+韻賅上去 | 韻母（舉平以賅上去） | rhyme (舉平以賅上去) | 東冬鍾江…<br/>祭泰夬廢<br/>屋沃燭覺…
+韻賅上去入 | 韻母（舉平以賅上去入） | rhyme (舉平以賅上去入) | 東冬鍾江…<br/>祭泰夬廢
+攝 | 攝 | class | 通江止遇蟹臻山效果假宕梗曾流深咸
+母 | 聲母 | initial | 幫滂並明<br/>端透定泥<br/>知徹澄孃<br/>精清從心邪<br/>莊初崇生俟<br/>章昌船書常<br/>見溪羣疑<br/>影曉匣云以來日
+組 | 組 | group | 幫端知精莊章見（未涵蓋「影曉匣云以來日」）
+等 | 等 | division | 一二三四；1234
+聲 | 聲調 | tone | 平上去入；<del>仄</del>；<del>舒</del>
+
+<del>Not implemented</del>
+
+亦支援「開」、「合」、「重紐A類」、「重紐B類」。
+
+説明：
+
+對重紐的處理：韻賅上去入的「支」就包括了「支、支A、支B」三種情況。
+
+重紐四等（A類）是三等韻。
+
+元韻放在臻攝而不是山攝。
+
 ## Low-Level API
 
 ```javascript
@@ -39,60 +62,17 @@ in母(小韻號, ['曉', '匣']);  // false, 拯小韻不是曉匣母
 is重紐A類(小韻號) || equal母(小韻號, '以') || in組(小韻號, ['端', '精', '章']) || equal母(小韻號, '日');  // true, 拯小韻是章組
 ```
 
-* function `equal韻`
-* function `in韻`
-* function `equal韻賅上去`
-* function `in韻賅上去`
-* function `equal韻賅上去入`
-* function `in韻賅上去入`
-* function `equal母`
-* function `in母`
-* function `equal組`
-* function `in組`
-* function `equal開合`
-* function `equal等`
-* function `in等`
-* function `equal攝`
-* function `in攝`
-* function `equal聲`
-* function `in聲`
+* function `equal韻` `in韻`
+* function `equal韻賅上去` `in韻賅上去`
+* function `equal韻賅上去入` `in韻賅上去入`
+* function `equal攝` `in攝`
+* function `equal母` `in母`
+* function `equal組` `in組`
+* function `equal等` `in等`
+* function `equal聲` `in聲`
 
-Property Name | Chinese Name | English Name | Possible Values
-:- | :- | :- | :-
-韻 | 韻母 | rhyme | 東冬鍾江…；董湩腫講…；送宋用絳…；屋沃燭覺…
-韻賅上去 | 韻母（舉平以賅上去） | rhyme (舉平以賅上去) | 東冬鍾江…；祭泰夬廢；屋沃燭覺…
-韻賅上去入 | 韻母（舉平以賅上去入） | rhyme (舉平以賅上去入) | 東冬鍾江…；祭泰夬廢
-攝 | 攝 | class | 通江止遇蟹臻山效果假宕梗曾流深咸
-母 | 聲母 | initial | 幫滂並明端透定泥知徹澄孃精清從心邪莊初崇生俟章昌船書常見溪羣疑影曉匣云以來日
-組 | 組 | group | 幫端知精莊章見（未涵蓋「影曉匣云以來日」）
-開合 | 開合 | rounding | 開合
-等 | 等 | division | 一二三四；1234
-聲 | 聲調 | tone | 平上去入；<del>仄</del>；<del>舒</del>
-
-* function `is重紐A類`
-* function `is重紐B類`
-
-<del>Not implemented</del>
-
-對重紐的處理：韻賅上去入的「支」就包括了「支、支A、支B」三種情況。
-
-重紐四等（A類）是三等韻。
-
-元韻放在臻攝而不是山攝。
-
-## Internal APIs
-
-`small_rhymes`
-
-二維數組。低維中的每一維：小韻, 韻母, 聲母, 開合, 等。
-
-`char_entities`
-
-Dict
-
-Key: Chinese Character
-
-Value: `Int` or `Array Int`. Corresponding small rhymes.
+* function `is開` `is合`
+* function `is重紐A類` `is重紐B類`
 
 ## Build
 
@@ -121,4 +101,4 @@ $ python build/build.py
 
 BSD 3-Clause License
 
-Codes from CodeMirror project (`docs/index.files/codemirror`) is distributed under MIT license.
+Codes from CodeMirror project (`docs/codemirror`) is distributed under MIT license.

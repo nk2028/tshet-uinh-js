@@ -33,10 +33,6 @@ function equal組(i, s) {
 	return 組到母[s].some(x => equal母(i, x));
 }
 
-function equal開合(i, s) {
-	return small_rhymes[i - 1][3] == s;
-}
-
 function equal等(i, s) {
 	// inner function does not consider 等 in Chinese characters
 	function equal等_inner(i, s) {
@@ -80,6 +76,8 @@ let in聲 = (i, a) => a.some(s => equal聲(i, s));
 
 /* Low-Level API - is-prefixed */
 
+let is開 = i => small_rhymes[i - 1][3] == '開';
+let is合 = i => small_rhymes[i - 1][3] == '合';
 let is重紐A類 = i => small_rhymes[i - 1][1].endsWith('A');
 let is重紐B類 = i => small_rhymes[i - 1][1].endsWith('B');
 
@@ -113,9 +111,9 @@ function check小韻(小韻號, s) {
 		else if (s.endsWith('組'))
 			return in組(小韻號, s.slice(0, -1).split(''));
 		else if (s == '開')
-			return equal開合(小韻號, '開');
+			return is開(小韻號);
 		else if (s == '合')
-			return equal開合(小韻號, '合');
+			return is合(小韻號);
 		else if (s.endsWith('等'))
 			return in等(小韻號, s.slice(0, -1).split(''));
 		else if (s.endsWith('韻賅上去'))

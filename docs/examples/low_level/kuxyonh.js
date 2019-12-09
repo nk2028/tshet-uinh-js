@@ -42,20 +42,20 @@ function 聲母規則() {
 
 function 韻母規則() {
 	if (equal攝(小韻號, '果'))
-		if (equal開合(小韻號, '開')) {
+		if (is開(小韻號)) {
 			if (equal等(小韻號, '一') && equal韻賅上去入(小韻號, '歌')) return 'a';
 			if (equal等(小韻號, '三') && equal韻賅上去入(小韻號, '戈')) return 'ia';
 		}
-		if (equal開合(小韻號, '合')) {
+		if (is合(小韻號)) {
 			if (equal等(小韻號, '一') && equal韻賅上去入(小韻號, '戈')) return 'ua';
 			if (equal等(小韻號, '三') && equal韻賅上去入(小韻號, '戈')) return 'ya';
 		}
 	if (equal攝(小韻號, '假'))
-		if (equal開合(小韻號, '開')) {
+		if (is開(小韻號)) {
 			if (equal等(小韻號, '二') && equal韻賅上去入(小韻號, '麻')) return 'ra';
 			if (equal等(小韻號, '三') && equal韻賅上去入(小韻號, '麻')) return 'ia';
 		}
-		if (equal開合(小韻號, '合'))
+		if (is合(小韻號))
 			if (equal等(小韻號, '二') && equal韻賅上去入(小韻號, '麻')) return 'rua';
 	if (equal攝(小韻號, '遇')) {
 		if (equal等(小韻號, '一') && equal韻賅上去入(小韻號, '模')) return 'o';
@@ -63,7 +63,7 @@ function 韻母規則() {
 		if (equal等(小韻號, '三') && equal韻賅上去入(小韻號, '虞')) return 'yo';
 	}
 	if (equal攝(小韻號, '蟹'))
-		if (equal開合(小韻號, '開')) {
+		if (is開(小韻號)) {
 			if (equal等(小韻號, '一') && equal韻賅上去入(小韻號, '咍')) return 'ai';
 			if (equal等(小韻號, '二') && equal韻賅上去入(小韻號, '佳')) return 're';
 			if (equal等(小韻號, '二') && equal韻賅上去入(小韻號, '皆')) return 'rai';
@@ -74,7 +74,7 @@ function 韻母規則() {
 			if (equal等(小韻號, '三') && equal韻賅上去入(小韻號, '祭')) return 'ied';
 			if (equal等(小韻號, '三') && equal韻賅上去入(小韻號, '廢')) return 'iad';
 		}
-		if (equal開合(小韻號, '合')) {
+		if (is合(小韻號)) {
 			if (equal等(小韻號, '一') && equal韻賅上去入(小韻號, '灰')) return 'uai';
 			if (equal等(小韻號, '二') && equal韻賅上去入(小韻號, '佳')) return 'rue';
 			if (equal等(小韻號, '二') && equal韻賅上去入(小韻號, '皆')) return 'ruai';
@@ -85,7 +85,7 @@ function 韻母規則() {
 			if (equal等(小韻號, '三') && equal韻賅上去入(小韻號, '廢')) return 'yad';
 		}
 	if (equal攝(小韻號, '止'))
-		if (equal開合(小韻號, '開') && equal等(小韻號, '三')) {
+		if (is開(小韻號) && equal等(小韻號, '三')) {
 			if (equal韻賅上去入(小韻號, '支A')) return 'je';
 			if (equal韻賅上去入(小韻號, '支')) return 'ie';
 			if (equal韻賅上去入(小韻號, '脂A')) return 'jii';
@@ -93,7 +93,7 @@ function 韻母規則() {
 			if (equal韻賅上去入(小韻號, '之')) return 'i';
 			if (equal韻賅上去入(小韻號, '微')) return 'ioi';
 		}
-		if (equal開合(小韻號, '合') && equal等(小韻號, '三')) {
+		if (is合(小韻號) && equal等(小韻號, '三')) {
 			if (equal韻賅上去入(小韻號, '支A')) return 'jye';
 			if (equal韻賅上去入(小韻號, '支')) return 'ye';
 			if (equal韻賅上去入(小韻號, '脂A')) return 'jyi';
@@ -113,7 +113,7 @@ function 韻母規則() {
 		if (equal等(小韻號, '三') && equal韻賅上去入(小韻號, '幽')) return 'y';
 	}
 	if (equal攝(小韻號, '咸'))
-		if (equal開合(小韻號, '開')) {
+		if (is開(小韻號)) {
 			if (equal等(小韻號, '一') && equal韻賅上去入(小韻號, '談')) return 'am';
 			if (equal等(小韻號, '二') && equal韻賅上去入(小韻號, '銜')) return 'ram';
 			if (equal等(小韻號, '二') && equal韻賅上去入(小韻號, '咸')) return 'rem';
@@ -123,14 +123,14 @@ function 韻母規則() {
 			if (equal等(小韻號, '四') && equal韻賅上去入(小韻號, '添')) return 'em';
 			if (equal等(小韻號, '一') && equal韻賅上去入(小韻號, '覃')) return 'om';
 		}
-		if (equal開合(小韻號, '合'))
+		if (is合(小韻號))
 			if (equal等(小韻號, '三') && equal韻賅上去入(小韻號, '凡')) return 'yam';
 	if (equal攝(小韻號, '深')) {
 		if (equal等(小韻號, '三') && equal韻賅上去入(小韻號, '侵A')) return 'jim';
 		if (equal等(小韻號, '三') && equal韻賅上去入(小韻號, '侵')) return 'im';
 	}
 	if (equal攝(小韻號, '山'))
-		if (equal開合(小韻號, '開')) {
+		if (is開(小韻號)) {
 			if (equal等(小韻號, '一') && equal韻賅上去入(小韻號, '寒')) return 'an';
 			if (equal等(小韻號, '二') && equal韻賅上去入(小韻號, '刪')) return 'ran';
 			if (equal等(小韻號, '二') && equal韻賅上去入(小韻號, '山')) return 'ren';
@@ -138,7 +138,7 @@ function 韻母規則() {
 			if (equal等(小韻號, '三') && equal韻賅上去入(小韻號, '仙')) return 'ien';
 			if (equal等(小韻號, '四') && equal韻賅上去入(小韻號, '先')) return 'en';
 		}
-		if (equal開合(小韻號, '合')) {
+		if (is合(小韻號)) {
 			if (equal等(小韻號, '一') && equal韻賅上去入(小韻號, '桓')) return 'uan';
 			if (equal等(小韻號, '二') && equal韻賅上去入(小韻號, '刪')) return 'ruan';
 			if (equal等(小韻號, '二') && equal韻賅上去入(小韻號, '山')) return 'ruen';
@@ -147,7 +147,7 @@ function 韻母規則() {
 			if (equal等(小韻號, '四') && equal韻賅上去入(小韻號, '先')) return 'uen';
 		}
 	if (equal攝(小韻號, '臻'))
-		if (equal開合(小韻號, '開')) {
+		if (is開(小韻號)) {
 			if (equal等(小韻號, '一') && equal韻賅上去入(小韻號, '痕')) return 'on';
 			if (equal等(小韻號, '三') && equal韻賅上去入(小韻號, '眞A')) return 'jin';
 			if (equal等(小韻號, '三') && equal韻賅上去入(小韻號, '眞')) return 'in';
@@ -155,7 +155,7 @@ function 韻母規則() {
 			if (equal等(小韻號, '三') && equal韻賅上去入(小韻號, '欣')) return 'ion';
 			if (equal等(小韻號, '三') && equal韻賅上去入(小韻號, '元')) return 'ian';
 		}
-		if (equal開合(小韻號, '合')) {
+		if (is合(小韻號)) {
 			if (equal等(小韻號, '一') && equal韻賅上去入(小韻號, '魂')) return 'uon';
 			if (equal等(小韻號, '三') && equal韻賅上去入(小韻號, '眞')) return 'yn';
 			if (equal等(小韻號, '三') && equal韻賅上去入(小韻號, '諄A')) return 'jyn';
@@ -164,16 +164,16 @@ function 韻母規則() {
 			if (equal等(小韻號, '三') && equal韻賅上去入(小韻號, '元')) return 'yan';
 		}
 	if (equal攝(小韻號, '宕'))
-		if (equal開合(小韻號, '開')) {
+		if (is開(小韻號)) {
 			if (equal等(小韻號, '一') && equal韻賅上去入(小韻號, '唐')) return 'ang';
 			if (equal等(小韻號, '三') && equal韻賅上去入(小韻號, '陽')) return 'iang';
 		}
-		if (equal開合(小韻號, '合')) {
+		if (is合(小韻號)) {
 			if (equal等(小韻號, '一') && equal韻賅上去入(小韻號, '唐')) return 'uang';
 			if (equal等(小韻號, '三') && equal韻賅上去入(小韻號, '陽')) return 'yang';
 		}
 	if (equal攝(小韻號, '梗'))
-		if (equal開合(小韻號, '開')) {
+		if (is開(小韻號)) {
 			if (equal等(小韻號, '二') && equal韻賅上去入(小韻號, '庚')) return 'rang';
 			if (equal等(小韻號, '二') && equal韻賅上去入(小韻號, '耕')) return 'reng';
 			if (equal等(小韻號, '三') && equal韻賅上去入(小韻號, '庚')) return 'ieng';
@@ -181,7 +181,7 @@ function 韻母規則() {
 			if (equal等(小韻號, '三') && equal韻賅上去入(小韻號, '清')) return 'ieng';
 			if (equal等(小韻號, '四') && equal韻賅上去入(小韻號, '青')) return 'eng';
 		}
-		if (equal開合(小韻號, '合')) {
+		if (is合(小韻號)) {
 			if (equal等(小韻號, '二') && equal韻賅上去入(小韻號, '庚')) return 'ruang';
 			if (equal等(小韻號, '二') && equal韻賅上去入(小韻號, '耕')) return 'rueng';
 			if (equal等(小韻號, '三') && equal韻賅上去入(小韻號, '庚')) return 'yeng';
@@ -190,11 +190,11 @@ function 韻母規則() {
 			if (equal等(小韻號, '四') && equal韻賅上去入(小韻號, '青')) return 'ueng';
 		}
 	if (equal攝(小韻號, '曾'))
-		if (equal開合(小韻號, '開')) {
+		if (is開(小韻號)) {
 			if (equal等(小韻號, '一') && equal韻賅上去入(小韻號, '登')) return 'ong';
 			if (equal等(小韻號, '三') && equal韻賅上去入(小韻號, '蒸')) return 'ing';
 		}
-		if (equal開合(小韻號, '合')) {
+		if (is合(小韻號)) {
 			if (equal等(小韻號, '一') && equal韻賅上去入(小韻號, '登')) return 'uong';
 			if (equal等(小韻號, '三') && equal韻賅上去入(小韻號, '蒸')) return 'yng';
 		}

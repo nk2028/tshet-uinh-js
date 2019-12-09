@@ -2,8 +2,6 @@
 
 ## Usage
 
-HTML:
-
 ```html
 <script src="https://sgalal.github.io/Brogue2/brogue2.js"></script>
 ```
@@ -18,28 +16,28 @@ is('曉匣母');  // false, 拯小韻不是曉匣母
 is('重紐A類 或 以母 或 端精章組 或 日母');  // true, 拯小韻是章組
 ```
 
-function `check小韻`
+function `check小韻`：
 
-字符串格式：先以「或」字分隔，再以空格分隔，空格表示「且」。如：
+參數 1：小韻號 (1 ≤ i ≤ 3874)
 
-```raw
-見組 重紐A類 或 以母 四等 去聲
-```
+參數 2：字符串
 
-表示「(見組 且 重紐A類) 或 (以母 且 四等 且 去聲)」。
+字符串格式：如 `見組 重紐A類 或 以母 四等 去聲` 表示 `(見組 且 重紐A類) 或 (以母 且 四等 且 去聲)`。
 
 字符串不支援括號。
 
+支援的音韻屬性如下：
+
 Phonological Attribute | Chinese Name | English Name | Possible Values
 :- | :- | :- | :-
-韻 | 韻母 | rhyme | 東冬鍾江…<br/>董湩腫講…<br/>送宋用絳…<br/>屋沃燭覺…
-韻賅上去 | 韻母（舉平以賅上去） | rhyme (舉平以賅上去) | 東冬鍾江…<br/>祭泰夬廢<br/>屋沃燭覺…
-韻賅上去入 | 韻母（舉平以賅上去入） | rhyme (舉平以賅上去入) | 東冬鍾江…<br/>祭泰夬廢
+韻 | 韻母 | rhyme | 東冬鍾江支支A支B…<br/>董湩腫講紙紙A紙B…<br/>送宋用絳寘寘A寘B…<br/>屋沃燭覺…
+韻賅上去 | 韻母（舉平以賅上去） | rhyme (舉平以賅上去) | 東冬鍾江支支A支B…<br/>祭泰夬廢<br/>屋沃燭覺…
+韻賅上去入 | 韻母（舉平以賅上去入） | rhyme (舉平以賅上去入) | 東冬鍾江支支A支B…<br/>祭泰夬廢
 攝 | 攝 | class | 通江止遇蟹臻山效果假宕梗曾流深咸
 母 | 聲母 | initial | 幫滂並明<br/>端透定泥<br/>知徹澄孃<br/>精清從心邪<br/>莊初崇生俟<br/>章昌船書常<br/>見溪羣疑<br/>影曉匣云以來日
-組 | 組 | group | 幫端知精莊章見（未涵蓋「影曉匣云以來日」）
-等 | 等 | division | 一二三四；1234
-聲 | 聲調 | tone | 平上去入；<del>仄</del>；<del>舒</del>
+組 | 組 | group | 幫端知精莊章見<br/>（未涵蓋「影曉匣云以來日」）
+等 | 等 | division | 一二三四<br/>1234
+聲 | 聲調 | tone | 平上去入<br/><del>仄</del><br/><del>舒</del>
 
 <del>Not implemented</del>
 
@@ -62,6 +60,8 @@ in母(小韻號, ['曉', '匣']);  // false, 拯小韻不是曉匣母
 is重紐A類(小韻號) || equal母(小韻號, '以') || in組(小韻號, ['端', '精', '章']) || equal母(小韻號, '日');  // true, 拯小韻是章組
 ```
 
+### `equal`, `in` 類
+
 * function `equal韻` `in韻`
 * function `equal韻賅上去` `in韻賅上去`
 * function `equal韻賅上去入` `in韻賅上去入`
@@ -71,8 +71,16 @@ is重紐A類(小韻號) || equal母(小韻號, '以') || in組(小韻號, ['端'
 * function `equal等` `in等`
 * function `equal聲` `in聲`
 
+參數 1：小韻號 (1 ≤ i ≤ 3874)
+
+參數 2：相應音韻屬性的可能取值
+
+### `is` 類
+
 * function `is開` `is合`
 * function `is重紐A類` `is重紐B類`
+
+參數：小韻號 (1 ≤ i ≤ 3874)
 
 ## Build
 

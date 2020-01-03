@@ -3,7 +3,7 @@
 ## Usage
 
 ```html
-<script src="https://sgalal.github.io/Guangyun/brogue2.js"></script>
+<script src="https://sgalal.github.io/qieyun-js/brogue2.js"></script>
 ```
 
 The size of the library is less than 0.8 MB, which is satisfactory for most of the web applications. The actual transferred size (compressed) is less than 0.5 MB.

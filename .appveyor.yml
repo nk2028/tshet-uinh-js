@@ -9,6 +9,7 @@ environment:
     secure: 1Ep5ZXTk0f1AbqY1xVTGnHWDEEBnSm2RnlExqhH0AsAPS1cRYl9aJRHDonSioUOD
 
 before_build:
+- sudo npm i minify -g
 - pip3 install pandas --user
 
 build_script:

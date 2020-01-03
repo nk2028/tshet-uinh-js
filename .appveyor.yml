@@ -10,7 +10,7 @@ environment:
 
 before_build:
 - sudo npm i minify -g
-- sudo pip3 install pandas
+- sudo -H pip3 install pandas
 
 build_script:
 - ./build.py

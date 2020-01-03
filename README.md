@@ -1,48 +1,74 @@
 # qieyun-js
 
-## Usage
+## 用法
 
 ```html
 <script src="https://sgalal.github.io/qieyun-js/brogue2.js"></script>
 ```
 
-The size of the library is less than 0.8 MB, which is satisfactory for most of the web applications. The actual transferred size (compressed) is less than 0.5 MB.
-
-## Examples
-
-```javascript
-char_entities['拯'];  // [["1919", "救也助也無韻切音蒸上聲五"]]
-
-/* High-Level API */
-let 小韻號 = 1919;  // 選擇第 1919 小韻（拯小韻）
-const is = s => check小韻(小韻號, s);
-is('章母');  // true, 拯小韻是章母
-is('曉匣母');  // false, 拯小韻不是曉匣母
-is('重紐A類 或 以母 或 端精章組 或 日母');  // true, 拯小韻是章組
-
-/* Low-Level API */
-let 小韻號 = 1919;  // 選擇第 1919 小韻（拯小韻）
-get母(小韻號);  // '章', 拯小韻是章母
-in母(小韻號, ['曉', '匣']);  // false, 拯小韻不是曉匣母
-is重紐A類(小韻號) || get母(小韻號) == '以' || in組(小韻號, ['端', '精', '章']) || get母(小韻號) == '日';  // true, 拯小韻是章組
-```
+文件大小小於 0.8 MB，壓縮後大小小於 0.5 MB。
 
 ## API
 
-### High-Level API (Function `check小韻`)
+**1. 由漢字查出對應的小韻號和解釋**
 
-* Argument 1: 小韻號 (1 ≤ i ≤ 3874)
-* Argument 2: String of phonological attributes
+```javascript
+>>> char_entities['過'];
+[ [739, "經也又過所也釋名曰過所至關津以示之也或曰傳過也移所在識以爲信也亦姓風俗通云過國夏諸侯後因爲氏漢有兖州刺史過栩"]
+, [2837, "誤也越也責也度也古臥切七"]
+]
+```
 
-String format: 先以「或」字分隔，再以空格分隔
+結果為二維數組。對於數組中的每一項，第一個元素為對應的小韻號，第二個元素為解釋。
 
-如 `見組 重紐A類 或 以母 四等 去聲` 表示「(見組 且 重紐A類) 或 (以母 且 四等 且 去聲)」。
+**2. 查出小韻號對應的音韻地位**
 
-字符串不支援括號。
+```javascript
+>>> get音韻地位(739);
+"見合一戈平"
+>>> get母(739);
+"見"
+>>> get韻賅上去入(2837);
+"戈"
+```
 
-Supported phonological attributes:
+此類函數包括：`get母`, `get開合`, `get等`, `get等漢字`, `get韻`, `get韻賅上去`, `get韻賅上去入`, `get攝`, `get重紐`, `get聲`, `get音韻地位`。
 
-| Phonological Attribute | Chinese Name | English Name | Possible Values |
+其中，參數為小韻號 (1 ≤ i ≤ 3874)。
+
+**3. 判斷某個小韻是否屬於給定的音韻地位**
+
+```javascript
+>>> equal組(739, '精');
+false
+>>> equal等(739, 1);
+true
+>>> equal等(739, '一');
+true
+```
+
+此類函數包括：`equal組`, `equal等`, `equal聲`。
+
+其中，第一個參數為小韻號 (1 ≤ i ≤ 3874)，第二個參數要測試的取值。
+
+```javascript
+>>> let 小韻號 = 1919;  // 拯小韻
+>>> const is = s => equal音韻地位(小韻號, s);
+>>> is('章母');
+true
+>>> is('清韻賅上去入');
+false
+>>> is('重紐A類 或 以母 或 端精章組 或 日母');
+true
+```
+
+`equal音韻地位` 函數：接受一個表示音韻地位的字符串。字符串先以「或」字分隔，再以空格分隔。不支援括號。
+
+如「(見組 且 重紐A類) 或 (以母 且 四等 且 去聲)」可以表示為 `見組 重紐A類 或 以母 四等 去聲`。
+
+## 説明
+
+| 音韻屬性 | 中文名稱 | 英文名稱 | 可能取值 |
 | :- | :- | :- | :- |
 | 母 | 聲母 | initial | 幫滂並明<br/>端透定泥<br/>知徹澄孃<br/>精清從心邪<br/>莊初崇生俟<br/>章昌船書常<br/>見溪羣疑<br/>影曉匣云以來日 |
 | 組 | 組 | group | 幫端知精莊章見<br/>（未涵蓋「影曉匣云以來日」） |
@@ -53,13 +79,14 @@ Supported phonological attributes:
 | 攝 | 攝 | class | 通江止遇蟹臻山效果假宕梗曾流深咸 |
 | 聲 | 聲調 | tone | 平上去入<br/>仄<br/>舒 |
 
-亦支援「開」、「合」、「重紐A類」、「重紐B類」。
+亦支援「開」、「合」、「重紐A類」、「重紐B類」四項。
 
 説明：
 
-元韻放在臻攝而不是山攝。
+* 「等」既可以使用「1、2、3、4」表示，亦可以使用「一、二、三、四」表示
+* 元韻置於臻攝而非山攝
 
-異體字：
+不支援異體字，請手動轉換：
 
 * 聲母 娘 -> 孃
 * 聲母 谿 -> 溪
@@ -67,17 +94,8 @@ Supported phonological attributes:
 * 韻母 餚 -> 肴
 * 韻母 眞 -> 真
 
-### Low-Level API
+## License
 
-* function `get韻` `in韻`
-* function `get韻賅上去` `in韻賅上去`
-* function `get韻賅上去入` `in韻賅上去入`
-* function `get攝` `in攝`
-* function `get母` `in母`
-* function `equal組` `in組`
-* function `equal等` `in等`
-* function `equal聲` `in聲`
+Dictionary data is in the public domain.
 
-參數 1：小韻號 (1 ≤ i ≤ 3874)
-
-參數 2：相應音韻屬性的可能取值
+Source code is distributed under MIT license.

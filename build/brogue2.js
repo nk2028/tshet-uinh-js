@@ -1,4 +1,4 @@
-/* Determine 音韻地位 from 小韻號 */
+/* Determine 音韻地位 by 小韻號 */
 
 function get母(小韻號) {
 	return small_rhymes[小韻號 - 1][0];
@@ -74,71 +74,39 @@ function equal聲(小韻號, s) {
 	return s == 聲;
 }
 
-/* Low-Level API - in-prefixed */
-
-function in韻(小韻號, a) {
-	return a.some(s => get韻(小韻號) == s);
-}
-
-function in韻賅上去(小韻號, a) {
-	return a.some(s => get韻賅上去(小韻號) == s);
-}
-
-function in韻賅上去入(小韻號, a) {
-	return a.some(s => get韻賅上去入(小韻號) == s);
-}
-
-function in攝(小韻號, a) {
-	return a.some(s => get攝(小韻號) == s);
-}
-
-function in母(小韻號, a) {
-	return a.some(s => get母(小韻號) == s);
-}
-
-function in組(小韻號, a) {
-	return a.some(s => equal組(小韻號, s));
-}
-
-function in等(小韻號, a) {
-	return a.some(s => equal等(小韻號, s));
-}
-
-function in聲(小韻號, a) {
-	return a.some(s => equal聲(小韻號, s));
-}
-
 /* High-Level API */
 
-function check小韻(小韻號, s) {
+function equal音韻地位(小韻號, s) {
 	if (小韻號 <= 0 || 小韻號 > 3874)
 		throw new Error('無此小韻');
 	return s.split(' 或 ').some(s => s.split(' ').every(s => {
-		if (s.endsWith('韻'))
-			return in韻(小韻號, s.slice(0, -1).split(''));
-		else if (s.endsWith('母'))
-			return in母(小韻號, s.slice(0, -1).split(''));
+		if (s.endsWith('母'))
+			return s.slice(0, -1).split('').some(s => get母(小韻號) == s);
+		else if (s.endsWith('韻'))
+			return s.slice(0, -1).split('').some(s => get韻(小韻號) == s);
+		else if (s.endsWith('韻賅上去'))
+			return s.slice(0, -4).split('').some(s => get韻賅上去(小韻號) == s);
+		else if (s.endsWith('韻賅上去入'))
+			return s.slice(0, -5).split('').some(s => get韻賅上去入(小韻號) == s);
+		else if (s.endsWith('攝'))
+			return s.slice(0, -1).split('').some(s => get攝(小韻號) == s);
+
 		else if (s.endsWith('組'))
-			return in組(小韻號, s.slice(0, -1).split(''));
+			return s.slice(0, -1).split('').some(s => equal組(小韻號, s));
+		else if (s.endsWith('等'))
+			return s.slice(0, -1).split('').some(s => equal等(小韻號, s));
+		else if (s.endsWith('聲'))
+			return s.slice(0, -1).split('').some(s => equal聲(小韻號, s));
+
 		else if (s == '開')
 			return get開合(小韻號) == '開';
 		else if (s == '合')
 			return get開合(小韻號) == '合';
-		else if (s.endsWith('等'))
-			return in等(小韻號, s.slice(0, -1).split(''));
-		else if (s.endsWith('韻賅上去'))
-			return in韻賅上去(小韻號, s.slice(0, -4).split(''));
-		else if (s.endsWith('韻賅上去入'))
-			return in韻賅上去入(小韻號, s.slice(0, -5).split(''));
-		else if (s.endsWith('攝'))
-			return in攝(小韻號, s.slice(0, -1).split(''));
-		else if (s.endsWith('聲'))
-			return in聲(小韻號, s.slice(0, -1).split(''));
 		else if (s == '重紐A類')
 			return get重紐(小韻號) == 'A';
 		else if (s == '重紐B類')
 			return get重紐(小韻號) == 'B';
-		else
-			throw new Error('無此運算符');
+
+		throw new Error('無此運算符');
 	}));
 }

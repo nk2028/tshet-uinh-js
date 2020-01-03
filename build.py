@@ -12,6 +12,7 @@ import urllib
 
 def download_file_if_not_exist(url, name):
 	local_name = 'build/' + name
+	sys.stdout.write('Retrieving ' + url + '...\n')
 	try:
 		if not os.path.exists(local_name):
 			urllib.request.urlretrieve(url, local_name)
@@ -78,8 +79,8 @@ cur.close()
 conn.close()
 
 def minify_brogue2():
-	with open('build/brogue2.min.js', 'w') as fout:
-		subprocess.call(['minify', 'build/brogue2.js'], stdout=fout, shell=True)
+	with open('build/brogue2.js') as fin, open('build/brogue2.min.js', 'w') as fout:
+		subprocess.call(['minify', '--js'], stdin=fin, stdout=fout)
 
 minify_brogue2()
 

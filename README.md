@@ -1,12 +1,16 @@
 # qieyun-js
 
+《切韻》音系 JavaScript 函式庫
+
 ## 用法
 
 ```html
 <script src="https://sgalal.github.io/qieyun-js/brogue2.js"></script>
 ```
 
-文件大小小於 0.8 MB，壓縮後大小小於 0.5 MB。
+文件大小小於 0.8 MB，壓縮後大小小於 0.5 MB，適合在網頁中使用。
+
+姊妹項目：《切韻》音系 SQLite 資料庫 \([sgalal/qieyun-sqlite](https://github.com/sgalal/qieyun-sqlite)\)。
 
 ## API
 

@@ -116,6 +116,10 @@ function get聲(小韻號) {
 	throw new Error('Invalid 小韻號');
 }
 
+function get音韻(小韻號) {
+	return get母(小韻號) + get開合(小韻號) + get等漢字(小韻號) + (get重紐(小韻號) || '') + get韻賅上去入(小韻號) + get聲(小韻號);
+}
+
 function get上字(小韻號) {
 	// return small_rhymes[小韻號 - 1][3];
 	var res = [...small_rhymes[小韻號 - 1]][3];
@@ -132,10 +136,6 @@ function get下字(小韻號) {
 		return null;
 	else
 		return res;
-}
-
-function get音韻(小韻號) {
-	return get母(小韻號) + get開合(小韻號) + get等漢字(小韻號) + (get重紐(小韻號) || '') + get韻賅上去入(小韻號) + get聲(小韻號);
 }
 
 /* 3. 判斷某個小韻是否屬於給定的音韻地位 */
@@ -159,7 +159,7 @@ function equal聲(小韻號, s) {
 	throw new Error('Invalid 聲');
 }
 
-/* High-Level API */
+/* 4. 判斷某個小韻是否屬於給定的音韻地位（以字符串描述） */
 
 function equal音韻地位(小韻號, s) {
 	if (小韻號 <= 0 || 小韻號 > 3874)

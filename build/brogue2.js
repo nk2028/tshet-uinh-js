@@ -116,7 +116,7 @@ function get聲(小韻號) {
 	throw new Error('Invalid 小韻號');
 }
 
-function get音韻(小韻號) {
+function get音韻描述(小韻號) {
 	return get母(小韻號) + get開合(小韻號) + get等漢字(小韻號) + (get重紐(小韻號) || '') + get韻賅上去入(小韻號) + get聲(小韻號);
 }
 
@@ -136,6 +136,14 @@ function get下字(小韻號) {
 		return null;
 	else
 		return res;
+}
+
+function get反切(小韻號) {
+	var 上字 = get上字(小韻號);
+	if (!上字)
+		return null;
+	else
+		return 上字 + get下字(小韻號) + '切';
 }
 
 /* 3. 判斷某個小韻是否屬於給定的音韻地位 */

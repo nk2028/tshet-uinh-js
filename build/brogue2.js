@@ -27,6 +27,9 @@ function __process_char_entities(str) {
 	return d;
 }
 
+var small_rhymes = __process_small_rhyme(__proto_small_rhymes);
+var char_entities = __process_char_entities(__proto_char_entities);
+
 /* 1. 由漢字查出對應的小韻號和解釋 */
 
 function query切韻音系(漢字) {

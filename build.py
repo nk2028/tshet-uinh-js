@@ -84,22 +84,22 @@ def make開合等重紐(開合, 等, 重紐):
 
 def build_small_rhyme():
 	f = open('build/small_rhyme.js', 'w')
-	f.write('const small_rhymes=__process_small_rhyme("')
+	f.write('const __proto_small_rhymes="')
 	f.write(''.join(''.join((母到母ID_OBJ[母], make開合等重紐(開合, 等, 重紐), 韻, 'xx' if not 反切 else 反切 or '')) \
 		for 母, 開合, 等, 韻, 重紐, 反切 \
 		in cur.execute('SELECT 母, 開合, 等, 韻, 重紐, 上字 || 下字 FROM 廣韻小韻全 ORDER BY 小韻號;')))
-	f.write('");\n')  # 母, 開合, 等, 韻, 重紐，且等為數字
+	f.write('";\n')  # 母, 開合, 等, 韻, 重紐，且等為數字
 	f.close()
 
 build_small_rhyme()
 
 def build_char_entity():
 	f = open('build/char_entity.js', 'w')
-	f.write('const char_entities=__process_char_entities("')
+	f.write('const __proto_char_entities="')
 	f.write(''.join(''.join((str(小韻號), 字頭, 解釋)) \
 		for 小韻號, 字頭, 解釋
 		in cur.execute('SELECT 小韻號, 字頭, 解釋 FROM 廣韻字頭 WHERE length(字頭) = 1;')))
-	f.write('");\n')
+	f.write('";\n')
 	f.close()
 
 build_char_entity()

@@ -1,23 +1,23 @@
-# qieyun-js
+# qieyun-js [![JSDelivr badge](https://data.jsdelivr.com/v1/package/npm/qieyun/badge)](https://www.jsdelivr.com/package/npm/qieyun)
 
 《切韻》音系 JavaScript 函式庫
+
+姊妹項目：《切韻》音系 SQLite 資料庫 \([sgalal/qieyun-sqlite](https://github.com/sgalal/qieyun-sqlite)\)。
 
 ## 用法
 
 ```html
-<script src="https://sgalal.github.io/qieyun-js/qieyun.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/qieyun/qieyun.min.js"></script>
 ```
 
 文件大小小於 0.8 MB，壓縮後大小小於 0.5 MB，適合在網頁中使用。
-
-姊妹項目：《切韻》音系 SQLite 資料庫 \([sgalal/qieyun-sqlite](https://github.com/sgalal/qieyun-sqlite)\)。
 
 ## API
 
 **1. 由漢字查出對應的小韻號和解釋**
 
 ```javascript
->>> query切韻音系('過');
+>>> Qieyun.query切韻音系('過');
 [ { "小韻號": 739, "解釋": "經也又過所也釋名曰過所至關津以示之也或曰傳過也移所在識以爲信也亦姓風俗通云過國夏諸侯後因爲氏漢有兖州刺史過栩" }
 , { "小韻號": 2837, "解釋": "誤也越也責也度也古臥切七" }
 ]
@@ -30,24 +30,24 @@
 注意：此函數不具備異體字轉換功能，如：
 
 ```javascript
->>> query切韻音系('笑');
+>>> Qieyun.query切韻音系('笑');
 []
->>> query切韻音系('𥬇');
+>>> Qieyun.query切韻音系('𥬇');
 [{ "小韻號": 2768, "解釋": "欣也喜也亦作笑私妙切五" }]
 ```
 
 **2. 查詢小韻號對應的音韻地位**
 
 ```javascript
->>> get音韻描述(739);
+>>> Qieyun.get音韻描述(739);
 "見合一戈平"
->>> get母(739);
+>>> Qieyun.get母(739);
 "見"
->>> get韻賅上去入(2837);
+>>> Qieyun.get韻賅上去入(2837);
 "戈"
->>> get上字(1);
+>>> Qieyun.get上字(1);
 "德"
->>> get下字(1919);  // 拯小韻無反切
+>>> Qieyun.get下字(1919);  // 拯小韻無反切
 null
 ```
 
@@ -66,11 +66,11 @@ null
 **3. 判斷某個小韻是否屬於給定的音韻地位**
 
 ```javascript
->>> equal組(739, '精');
+>>> Qieyun.equal組(739, '精');
 false
->>> equal等(739, 1);
+>>> Qieyun.equal等(739, 1);
 true
->>> equal等(739, '一');
+>>> Qieyun.equal等(739, '一');
 true
 ```
 
@@ -83,11 +83,11 @@ true
 **4. 判斷某個小韻是否屬於給定的音韻地位（以字符串描述）**
 
 ```javascript
->>> equal音韻地位(1919, '章母');  // 拯小韻
+>>> Qieyun.equal音韻地位(1919, '章母');  // 拯小韻
 true
->>> equal音韻地位(1919, '清韻賅上去入');
+>>> Qieyun.equal音韻地位(1919, '清韻賅上去入');
 false
->>> equal音韻地位(1919, '重紐A類 或 以母 或 端精章組 或 日母');
+>>> Qieyun.equal音韻地位(1919, '重紐A類 或 以母 或 端精章組 或 日母');
 true
 ```
 
@@ -126,6 +126,15 @@ true
 * 聲母 群 -> 羣
 * 韻母 餚 -> 肴
 * 韻母 眞 -> 真
+
+## Build
+
+Prerequisites: Python, Minify
+
+```sh
+$ ./build.py
+$ minify --js < qieyun.js > qieyun.min.js
+```
 
 ## License
 

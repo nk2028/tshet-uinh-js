@@ -1,0 +1,29 @@
+{
+  "name": "qieyun",
+  "version": "0.2.0",
+  "description": "JavaScript library for the Qieyun phonological system | 《切韻》音系 JavaScript 函式庫",
+  "main": "qieyun.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sgalal/qieyun-js.git"
+  },
+  "keywords": [
+    "guangyun",
+    "linguistics",
+    "historical-linguistics",
+    "chinese-nlp"
+  ],
+  "author": "sgalal",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/sgalal/qieyun-js/issues"
+  },
+  "homepage": "https://github.com/sgalal/qieyun-js#readme",
+  "files": [
+    "qieyun.js",
+    "qieyun.min.js"
+  ]
+}

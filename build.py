@@ -84,7 +84,7 @@ def make開合等重紐(開合, 等, 重紐):
 
 def build_small_rhyme():
 	f = open('build/small_rhyme.js', 'w')
-	f.write('const __proto_small_rhymes="')
+	f.write('const 小韻資料="')
 	f.write(''.join(''.join((母到母ID_OBJ[母], make開合等重紐(開合, 等, 重紐), 韻, 'xx' if not 反切 else 反切 or '')) \
 		for 母, 開合, 等, 韻, 重紐, 反切 \
 		in cur.execute('SELECT 母, 開合, 等, 韻, 重紐, 上字 || 下字 FROM 廣韻小韻全 ORDER BY 小韻號;')))
@@ -95,7 +95,7 @@ build_small_rhyme()
 
 def build_char_entity():
 	f = open('build/char_entity.js', 'w')
-	f.write('const __proto_char_entities="')
+	f.write('const 字頭資料="')
 	f.write(''.join(''.join((str(小韻號), 字頭, 解釋)) \
 		for 小韻號, 字頭, 解釋
 		in cur.execute('SELECT 小韻號, 字頭, 解釋 FROM 廣韻字頭 WHERE length(字頭) = 1;')))
@@ -107,19 +107,41 @@ build_char_entity()
 cur.close()
 conn.close()
 
-def minify_brogue2():
-	with open('build/brogue2.js') as fin, open('build/brogue2.min.js', 'w') as fout:
-		subprocess.call(['minify', '--js'], stdin=fin, stdout=fout)
+with open('qieyun.js', 'w') as fout:
+	fout.write('''var Qieyun = (function () {\n''')
 
-minify_brogue2()
+	def concat_files(l):
+		for i in l:
+			f = open(i)
+			fout.write(f.read())
+			f.close()
+			fout.write('\n')
 
-def concat_files(l, s):
-	fout = open(s, 'w')
-	for i in l:
-		f = open(i)
-		fout.write(f.read())
-		f.close()
-		fout.write('\n')
-	fout.close()
+	concat_files(('build/map1.js', 'build/char_entity.js', 'build/small_rhyme.js', 'build/brogue2.js'))
 
-concat_files(('build/map1.js', 'build/char_entity.js', 'build/small_rhyme.js', 'build/brogue2.min.js'), 'qieyun.js')
+	fout.write('''
+	return {
+		字頭資料: 字頭資料,
+		小韻資料: 小韻資料,
+		query切韻音系: query切韻音系,
+		get母: get母,
+		get開合: get開合,
+		get等: get等,
+		get等漢字: get等漢字,
+		get重紐: get重紐,
+		get韻: get韻,
+		get韻賅上去: get韻賅上去,
+		get韻賅上去入: get韻賅上去入,
+		get攝: get攝,
+		get聲: get聲,
+		get音韻描述: get音韻描述,
+		get上字: get上字,
+		get下字: get下字,
+		get反切: get反切,
+		equal組: equal組,
+		equal等: equal等,
+		equal聲: equal聲,
+		equal音韻地位: equal音韻地位
+	}
+})()
+''')

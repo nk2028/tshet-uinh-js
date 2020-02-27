@@ -129,11 +129,10 @@ true
 
 ## Build
 
-Prerequisites: Python, Minify
+Prerequisites: Python
 
 ```sh
 $ ./build.py
-$ minify --js < qieyun.js > qieyun.min.js
 ```
 
 ## License

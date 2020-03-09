@@ -179,11 +179,7 @@ function equal音韻地位(小韻號, s) {
 		if (s.endsWith('母'))
 			return s.slice(0, -1).split('').some(s => get母(小韻號) == s);
 		else if (s.endsWith('韻'))
-			return s.slice(0, -1).split('').some(s => get韻(小韻號) == s);
-		else if (s.endsWith('韻賅上去'))
-			return s.slice(0, -4).split('').some(s => get韻賅上去(小韻號) == s);
-		else if (s.endsWith('韻賅上去入'))
-			return s.slice(0, -5).split('').some(s => get韻賅上去入(小韻號) == s);
+			return s.slice(0, -1).split('').some(s => get韻賅上去入(小韻號) == s);
 		else if (s.endsWith('攝'))
 			return s.slice(0, -1).split('').some(s => get攝(小韻號) == s);
 
@@ -194,9 +190,9 @@ function equal音韻地位(小韻號, s) {
 		else if (s.endsWith('聲'))
 			return s.slice(0, -1).split('').some(s => equal聲(小韻號, s));
 
-		else if (s == '開')
+		else if (s == '開口')
 			return get開合(小韻號) == '開';
-		else if (s == '合')
+		else if (s == '合口')
 			return get開合(小韻號) == '合';
 		else if (s == '重紐A類')
 			return get重紐(小韻號) == 'A';

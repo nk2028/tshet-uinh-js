@@ -5,17 +5,25 @@ from collections import defaultdict
 import json
 import os
 import pandas
+from pathlib import Path
 import sqlite3
-import subprocess
 import sys
 import urllib
 
+here = os.path.abspath(os.path.dirname(__file__))
+
+Path(os.path.join(here, '../cache')).mkdir(exist_ok=True)
+Path(os.path.join(here, '../output')).mkdir(exist_ok=True)
+
+# Prepare files
+# Download files to `cache` folder
+
 def download_file_if_not_exist(url, name):
-	local_name = 'build/' + name
+	local_path = os.path.join(here, '../cache', name)
 	try:
-		if not os.path.exists(local_name):
-			sys.stdout.write('Retrieving ' + url + '...\n')
-			urllib.request.urlretrieve(url, local_name)
+		if not os.path.exists(local_path):
+			sys.stderr.write('Retrieving ' + url + '...\n')
+			urllib.request.urlretrieve(url, local_path)
 	except urllib.error.HTTPError as e:
 		print(name, e)
 		sys.exit(0)
@@ -25,32 +33,35 @@ download_file_if_not_exist('https://raw.githubusercontent.com/BYVoid/ytenx/maste
 download_file_if_not_exist('https://raw.githubusercontent.com/BYVoid/ytenx/master/ytenx/sync/kyonh/YonhGheh.txt', 'YonhGheh.txt')
 download_file_if_not_exist('https://raw.githubusercontent.com/sgalal/qieyun-sqlite/master/build/subgroup.csv', 'subgroup.csv')
 
-conn = sqlite3.connect('build/data.sqlite3')
+# Make data files
+# Writes to `output` folder
+
+conn = sqlite3.connect(os.path.join(here, '../cache/data.sqlite3'))
 cur = conn.cursor()
 
 def build_map_1():
-	f = open('build/map1.js', 'w')
+	f = open(os.path.join(here, '../output/map1.js'), 'w')
 
 	f.write('var __韻到韻賅上去=')
-	韻到韻賅上去 = pandas.read_csv('build/subgroup.csv', na_filter=False)
+	韻到韻賅上去 = pandas.read_csv(os.path.join(here, '../cache/subgroup.csv'), na_filter=False)
 	韻到韻賅上去_obj = {x: y for x, y in zip(韻到韻賅上去['Rhyme'], 韻到韻賅上去['Subgroup']) if len(x) == 1}
 	json.dump(韻到韻賅上去_obj, f, ensure_ascii=False, separators=(',',':'))
 	f.write(';\n')
 
 	f.write('var __韻到韻賅上去入=')
-	韻到韻賅上去入 = pandas.read_csv('build/YonhMiuk.txt', sep=' ', na_filter=False, usecols=['#韻目', '韻系'])
+	韻到韻賅上去入 = pandas.read_csv(os.path.join(here, '../cache/YonhMiuk.txt'), sep=' ', na_filter=False, usecols=['#韻目', '韻系'])
 	韻到韻賅上去入_obj = {x: y for x, y in zip(韻到韻賅上去入['#韻目'], 韻到韻賅上去入['韻系']) if len(x) == 1}
 	json.dump(韻到韻賅上去入_obj, f, ensure_ascii=False, separators=(',',':'))
 	f.write(';\n')
 
 	f.write('var __韻賅上去入到攝=')
-	韻賅上去入到攝 = pandas.read_csv('build/YonhGheh.txt', sep=' ', na_filter=False)
+	韻賅上去入到攝 = pandas.read_csv(os.path.join(here, '../cache/YonhGheh.txt'), sep=' ', na_filter=False)
 	韻賅上去入到攝_obj = {x: y for x, y in zip(韻賅上去入到攝['#韻系'], 韻賅上去入到攝['攝']) if len(x) == 1}
 	json.dump(韻賅上去入到攝_obj, f, ensure_ascii=False, separators=(',',':'))
 	f.write(';\n')
 
 	f.write('var __母id到母=')
-	母id到母 = pandas.read_csv('build/initial_map.csv', dtype=str, na_filter=False)
+	母id到母 = pandas.read_csv(os.path.join(here, 'initial_map.csv'), dtype=str, na_filter=False)
 	母id到母_obj = {x: y for x, y in zip(母id到母['InitialID'], 母id到母['Initial'])}
 	json.dump(母id到母_obj, f, ensure_ascii=False, separators=(',',':'))
 	f.write(';\n')
@@ -60,7 +71,7 @@ def build_map_1():
 build_map_1()
 
 def build_母到母id():
-	母到母id = pandas.read_csv('build/initial_map.csv', dtype=str, na_filter=False)
+	母到母id = pandas.read_csv(os.path.join(here, 'initial_map.csv'), dtype=str, na_filter=False)
 	母到母id_obj = {x: y for x, y in zip(母到母id['Initial'], 母到母id['InitialID'])}
 	return 母到母id_obj
 
@@ -82,24 +93,28 @@ def make開合等重紐(開合, 等, 重紐):
 		if 等 == 3: return 'a'
 		if 等 == 4: return 'b'
 
+# output/small_rhyme.js
+
 def build_small_rhyme():
-	f = open('build/small_rhyme.js', 'w')
-	f.write('const 小韻資料="')
-	f.write(''.join(''.join((母到母ID_OBJ[母], make開合等重紐(開合, 等, 重紐), 韻, 'xx' if not 反切 else 反切 or '')) \
+	f = open(os.path.join(here, '../output/small_rhyme.js'), 'w')
+	f.write('const 小韻資料=\n`')
+	f.write('\\\n'.join(''.join((母到母ID_OBJ[母], make開合等重紐(開合, 等, 重紐), 韻, 'xx' if not 反切 else 反切 or '')) \
 		for 母, 開合, 等, 韻, 重紐, 反切 \
 		in cur.execute('SELECT 母, 開合, 等, 韻, 重紐, 上字 || 下字 FROM 廣韻小韻全 ORDER BY 小韻號;')))
-	f.write('";\n')  # 母, 開合, 等, 韻, 重紐，且等為數字
+	f.write('`;\n')  # 母, 開合, 等, 韻, 重紐，且等為數字
 	f.close()
 
 build_small_rhyme()
 
+# output/char_entity.js
+
 def build_char_entity():
-	f = open('build/char_entity.js', 'w')
-	f.write('const 字頭資料="')
-	f.write(''.join(''.join((str(小韻號), 字頭, 解釋)) \
+	f = open(os.path.join(here, '../output/char_entity.js'), 'w')
+	f.write('const 字頭資料=\n`')
+	f.write('\\\n'.join(''.join((str(小韻號), 字頭, 解釋)) \
 		for 小韻號, 字頭, 解釋
 		in cur.execute('SELECT 小韻號, 字頭, 解釋 FROM 廣韻字頭 WHERE length(字頭) = 1;')))
-	f.write('";\n')
+	f.write('`;\n')
 	f.close()
 
 build_char_entity()
@@ -107,41 +122,45 @@ build_char_entity()
 cur.close()
 conn.close()
 
-with open('qieyun.js', 'w') as fout:
+# Concatenate all output files
+
+with open(os.path.join(here, '../qieyun.js'), 'w') as fout:
 	fout.write('''var Qieyun = (function () {\n''')
 
 	def concat_files(l):
 		for i in l:
-			f = open(i)
-			fout.write(f.read())
-			f.close()
-			fout.write('\n')
+			with open(i) as f:
+				fout.write(f.read())
+				fout.write('\n')
 
-	concat_files(('build/map1.js', 'build/char_entity.js', 'build/small_rhyme.js', 'build/brogue2.js'))
+	concat_files((os.path.join(here, '../output/map1.js') \
+		, os.path.join(here, '../output/char_entity.js') \
+		, os.path.join(here, '../output/small_rhyme.js') \
+		, os.path.join(here, 'brogue2.js')))
 
-	fout.write('''
-	return {
-		字頭資料: 字頭資料,
-		小韻資料: 小韻資料,
-		query切韻音系: query切韻音系,
-		get母: get母,
-		get開合: get開合,
-		get等: get等,
-		get等漢字: get等漢字,
-		get重紐: get重紐,
-		get韻: get韻,
-		get韻賅上去: get韻賅上去,
-		get韻賅上去入: get韻賅上去入,
-		get攝: get攝,
-		get聲: get聲,
-		get音韻描述: get音韻描述,
-		get上字: get上字,
-		get下字: get下字,
-		get反切: get反切,
-		equal組: equal組,
-		equal等: equal等,
-		equal聲: equal聲,
-		equal音韻地位: equal音韻地位
-	}
-})()
+	fout.write('''return { 字頭資料: 字頭資料
+, 小韻資料: 小韻資料
+, query切韻音系: query切韻音系
+, get母: get母
+, get開合: get開合
+, get等: get等
+, get等漢字: get等漢字
+, get重紐: get重紐
+, get韻: get韻
+, get韻賅上去: get韻賅上去
+, get韻賅上去入: get韻賅上去入
+, get攝: get攝
+, get聲: get聲
+, get音韻描述: get音韻描述
+, get上字: get上字
+, get下字: get下字
+, get反切: get反切
+, equal組: equal組
+, equal等: equal等
+, equal聲: equal聲
+, equal音韻地位: equal音韻地位
+};
+})();
+
+try { module.exports = exports = Qieyun; } catch (e) {}
 ''')

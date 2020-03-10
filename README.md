@@ -4,10 +4,18 @@
 
 姊妹項目：《切韻》音系 SQLite 資料庫 \([sgalal/qieyun-sqlite](https://github.com/sgalal/qieyun-sqlite)\)。
 
-## 用法
+## Usage
+
+Browser:
 
 ```html
 <script src="https://cdn.jsdelivr.net/npm/qieyun@0.3.0/qieyun.min.js"></script>
+```
+
+Node.js:
+
+```javascript
+const Qieyun = require('../qieyun.js');
 ```
 
 文件大小小於 0.8 MB，壓縮後大小小於 0.5 MB，適合在網頁中使用。
@@ -129,10 +137,18 @@ true
 
 ## Build
 
-Prerequisites: Python
+Build:
 
 ```sh
-$ ./build.py
+$ pip install -r requirements.txt
+$ python build/main.py
+```
+
+Test:
+
+```
+$ npm install
+$ npm test
 ```
 
 ## License

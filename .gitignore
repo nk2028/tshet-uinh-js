@@ -1,4 +1,5 @@
 .mypy_cache
-
+node_modules
+cache
+output
 /qieyun.js
-/qieyun.min.js

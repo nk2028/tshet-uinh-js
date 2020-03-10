@@ -9,16 +9,18 @@
 Browser:
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/qieyun@0.3.0/qieyun.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/qieyun@0.3.2"></script>
 ```
 
 Node.js:
 
-```javascript
-const Qieyun = require('../qieyun.js');
+```sh
+$ npm install qieyun
 ```
 
-文件大小小於 0.8 MB，壓縮後大小小於 0.5 MB，適合在網頁中使用。
+```javascript
+const Qieyun = require('qieyun');
+```
 
 ## API
 
@@ -72,23 +74,6 @@ null
 其中，參數為小韻號 (1 ≤ i ≤ 3874)。
 
 **3. 判斷某個小韻是否屬於給定的音韻地位**
-
-```javascript
->>> Qieyun.equal組(739, '精');
-false
->>> Qieyun.equal等(739, 1);
-true
->>> Qieyun.equal等(739, '一');
-true
-```
-
-此類函數包括：`equal組`, `equal等`, `equal聲`。
-
-其中，第一個參數為小韻號 (1 ≤ i ≤ 3874)，第二個參數為要測試的取值。
-
-與 `get等` 相比，`equal等` 同時支援數字和漢字；與 `get聲` 相比，`equal聲` 額外支援「仄、舒」兩種取值。
-
-**4. 判斷某個小韻是否屬於給定的音韻地位（以字符串描述）**
 
 ```javascript
 >>> Qieyun.equal音韻地位(1919, '章母');  // 拯小韻

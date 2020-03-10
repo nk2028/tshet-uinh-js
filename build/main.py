@@ -8,7 +8,7 @@ import pandas
 from pathlib import Path
 import sqlite3
 import sys
-import urllib
+import urllib.request
 
 here = os.path.abspath(os.path.dirname(__file__))
 
@@ -24,7 +24,7 @@ def download_file_if_not_exist(url, name):
 		if not os.path.exists(local_path):
 			sys.stderr.write('Retrieving ' + url + '...\n')
 			urllib.request.urlretrieve(url, local_path)
-	except urllib.error.HTTPError as e:
+	except Exception as e:
 		print(name, e)
 		sys.exit(0)
 
@@ -97,7 +97,7 @@ def make開合等重紐(開合, 等, 重紐):
 
 def build_small_rhyme():
 	f = open(os.path.join(here, '../output/small_rhyme.js'), 'w')
-	f.write('const 小韻資料=\n`')
+	f.write('var 小韻資料=\n`')
 	f.write('\\\n'.join(''.join((母到母ID_OBJ[母], make開合等重紐(開合, 等, 重紐), 韻, 'xx' if not 反切 else 反切 or '')) \
 		for 母, 開合, 等, 韻, 重紐, 反切 \
 		in cur.execute('SELECT 母, 開合, 等, 韻, 重紐, 上字 || 下字 FROM 廣韻小韻全 ORDER BY 小韻號;')))
@@ -110,7 +110,7 @@ build_small_rhyme()
 
 def build_char_entity():
 	f = open(os.path.join(here, '../output/char_entity.js'), 'w')
-	f.write('const 字頭資料=\n`')
+	f.write('var 字頭資料=\n`')
 	f.write('\\\n'.join(''.join((str(小韻號), 字頭, 解釋)) \
 		for 小韻號, 字頭, 解釋
 		in cur.execute('SELECT 小韻號, 字頭, 解釋 FROM 廣韻字頭 WHERE length(字頭) = 1;')))
@@ -124,7 +124,7 @@ conn.close()
 
 # Concatenate all output files
 
-with open(os.path.join(here, '../qieyun.js'), 'w') as fout:
+with open(os.path.join(here, '../index.js'), 'w') as fout:
 	fout.write('''var Qieyun = (function () {\n''')
 
 	def concat_files(l):
@@ -138,9 +138,7 @@ with open(os.path.join(here, '../qieyun.js'), 'w') as fout:
 		, os.path.join(here, '../output/small_rhyme.js') \
 		, os.path.join(here, 'brogue2.js')))
 
-	fout.write('''return { 字頭資料: 字頭資料
-, 小韻資料: 小韻資料
-, query切韻音系: query切韻音系
+	fout.write('''return { query切韻音系: query切韻音系
 , get母: get母
 , get開合: get開合
 , get等: get等
@@ -155,9 +153,6 @@ with open(os.path.join(here, '../qieyun.js'), 'w') as fout:
 , get上字: get上字
 , get下字: get下字
 , get反切: get反切
-, equal組: equal組
-, equal等: equal等
-, equal聲: equal聲
 , equal音韻地位: equal音韻地位
 };
 })();

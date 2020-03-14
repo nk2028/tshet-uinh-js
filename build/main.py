@@ -138,7 +138,8 @@ with open(os.path.join(here, '../index.js'), 'w') as fout:
 		, os.path.join(here, '../output/small_rhyme.js') \
 		, os.path.join(here, 'brogue2.js')))
 
-	fout.write('''return { query切韻音系: query切韻音系
+	fout.write('''return { query字頭: query字頭
+, query小韻號: query小韻號
 , get母: get母
 , get開合: get開合
 , get等: get等

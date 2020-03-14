@@ -21,7 +21,7 @@ const stmt = db.prepare('SELECT * FROM 廣韻字頭');
 for (const expected of stmt.iterate()) {
 	const 字頭 = expected.字頭;
 	if ([...字頭].length == 1)
-		if (!Qieyun.query切韻音系(字頭).some(got => got.小韻號 === expected.小韻號 && got.解釋 === expected.解釋))
+		if (!Qieyun.query字頭(字頭).some(got => got.小韻號 === expected.小韻號 && got.解釋 === expected.解釋))
 			throw new Error('Test failed!');
 }
 

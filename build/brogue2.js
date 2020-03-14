@@ -17,22 +17,34 @@ function __process_small_rhyme(str) {
 
 function __process_char_entities(str) {
 	var r = /(\d+)([^\d])([^\d]+)/gu, d = {}, match;
-	while ((match = r.exec(str)) !== null) {
-		var small_rhyme_num = match[1], ch = match[2], expl = match[3];
-		if (!d[ch])
-			d[ch] = [[small_rhyme_num | 0, expl]];
-		else
-			d[ch].push([small_rhyme_num | 0, expl]);
+
+	var 小韻數組 = new Array(3874);
+	for (var i = 0; i < 3874; i++) {
+		小韻數組[i] = new Array();
 	}
-	return d;
+
+	while ((match = r.exec(str)) !== null) {
+		var 小韻號 = match[1] | 0, 字頭 = match[2], 解釋 = match[3];
+
+		if (!d[字頭])
+			d[字頭] = [[小韻號, 解釋]];
+		else
+			d[字頭].push([小韻號, 解釋]);
+
+		小韻數組[小韻號 - 1].push([字頭, 解釋]);
+	}
+
+	return [d, 小韻數組];
 }
 
 var small_rhymes = __process_small_rhyme(小韻資料);
-var char_entities = __process_char_entities(字頭資料);
+var char_entities_and_小韻數組 = __process_char_entities(字頭資料)
+	, char_entities = char_entities_and_小韻數組[0]
+	, 小韻數組 = char_entities_and_小韻數組[1];
 
-/* 1. 由漢字查出對應的小韻號和解釋 */
+/* 1. 由字頭查出對應的小韻號和解釋 */
 
-function query切韻音系(漢字) {
+function query字頭(漢字) {
 	var res = char_entities[漢字];
 	if (!res)
 		return [];
@@ -43,7 +55,13 @@ function query切韻音系(漢字) {
 		});
 }
 
-/* 2. 查詢小韻號對應的音韻地位 */
+/* 2. 由小韻號查出對應的字頭和解釋 */
+
+function query小韻號(小韻號) {
+	return 小韻數組[小韻號 - 1];
+}
+
+/* 3. 查詢小韻號對應的音韻地位 */
 
 function get母(小韻號) {
 	return __母id到母[small_rhymes[小韻號 - 1][0]];
@@ -149,7 +167,7 @@ function get反切(小韻號) {
 		return 上字 + get下字(小韻號) + '切';
 }
 
-/* 3. 判斷某個小韻是否屬於給定的音韻地位 */
+/* 4. 判斷某個小韻是否屬於給定的音韻地位 */
 
 function equal組(小韻號, s) {
 	return __組到母[s].some(x => get母(小韻號) == x);
@@ -169,8 +187,6 @@ function equal聲(小韻號, s) {
 		return 聲 == '平' || 聲 == '上' || 聲 == '去';
 	throw new Error('Invalid 聲');
 }
-
-/* 4. 判斷某個小韻是否屬於給定的音韻地位（以字符串描述） */
 
 function equal音韻地位(小韻號, s) {
 	if (小韻號 <= 0 || 小韻號 > 3874)

@@ -1,1 +1,1 @@
-dot -Tsvg qieyun-js.dot > qieyun-js.svg
+dot -Tpng qieyun-js.dot > qieyun-js.png

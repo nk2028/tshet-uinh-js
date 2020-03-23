@@ -1,14 +1,19 @@
 digraph {
+    graph [fontname="Noto Sans CJK HK"]
+    node [fontname="Noto Sans CJK HK"]
+    edge [fontname="Noto Sans CJK HK"]
     node [shape=plaintext]
     rankdir=LR
-    漢字 -> 在《廣韻》中的小韻號 [label="1..n"]
+    漢字 -> 《廣韻》小韻號 [label="1..n"]
     漢字 -> 解釋 [label="1..n"]
-    在《廣韻》中的小韻號 -> 漢字 [label="1..n"]
-    在《廣韻》中的小韻號 -> 解釋 [label="1..n"]
-    在《廣韻》中的小韻號 -> 在《切韻》音系中的音韻地位
+    《廣韻》小韻號 -> 漢字 [label="1..n"]
+    《廣韻》小韻號 -> 解釋 [label="1..n"]
+    《廣韻》小韻號 -> "(母, 開合, 等, 重紐, 韻, 聲)"
+    "(母, 開合, 等, 重紐, 韻, 聲)" -> 音韻地位 [style=dashed, label="暫未實現"]
+    《廣韻》小韻號 -> 音韻地位
     subgraph subs {
         rank=same
-        在《廣韻》中的小韻號
+        《廣韻》小韻號
         解釋
     }
 }

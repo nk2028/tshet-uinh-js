@@ -31,7 +31,6 @@ def download_file_if_not_exist(url, name):
 download_file_if_not_exist('https://cdn.jsdelivr.net/npm/qieyun-sqlite@0.1.28/data.sqlite3', 'data.sqlite3')
 download_file_if_not_exist('https://raw.githubusercontent.com/BYVoid/ytenx/master/ytenx/sync/kyonh/YonhMiuk.txt', 'YonhMiuk.txt')
 download_file_if_not_exist('https://raw.githubusercontent.com/BYVoid/ytenx/master/ytenx/sync/kyonh/YonhGheh.txt', 'YonhGheh.txt')
-download_file_if_not_exist('https://raw.githubusercontent.com/sgalal/qieyun-sqlite/master/build/subgroup.csv', 'subgroup.csv')
 
 # Make data files
 # Writes to `output` folder
@@ -41,12 +40,6 @@ cur = conn.cursor()
 
 def build_map_1():
 	f = open(os.path.join(here, '../output/map1.js'), 'w')
-
-	f.write('var __韻到韻賅上去=')
-	韻到韻賅上去 = pandas.read_csv(os.path.join(here, '../cache/subgroup.csv'), na_filter=False)
-	韻到韻賅上去_obj = {x: y for x, y in zip(韻到韻賅上去['Rhyme'], 韻到韻賅上去['Subgroup']) if len(x) == 1}
-	json.dump(韻到韻賅上去_obj, f, ensure_ascii=False, separators=(',',':'))
-	f.write(';\n')
 
 	f.write('var __韻到韻賅上去入=')
 	韻到韻賅上去入 = pandas.read_csv(os.path.join(here, '../cache/YonhMiuk.txt'), sep=' ', na_filter=False, usecols=['#韻目', '韻系'])
@@ -138,15 +131,13 @@ with open(os.path.join(here, '../index.js'), 'w') as fout:
 		, os.path.join(here, '../output/small_rhyme.js') \
 		, os.path.join(here, 'brogue2.js')))
 
-	fout.write('''return { query字頭: query字頭
+	fout.write('''return { query漢字: query漢字
 , query小韻號: query小韻號
 , get母: get母
 , get開合: get開合
 , get等: get等
-, get等漢字: get等漢字
 , get重紐: get重紐
 , get韻: get韻
-, get韻賅上去: get韻賅上去
 , get韻賅上去入: get韻賅上去入
 , get攝: get攝
 , get聲: get聲

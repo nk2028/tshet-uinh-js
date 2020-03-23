@@ -44,7 +44,7 @@ var char_entities_and_小韻數組 = __process_char_entities(字頭資料)
 
 /* 1. 由字頭查出對應的小韻號和解釋 */
 
-function query字頭(漢字) {
+function query漢字(漢字) {
 	var res = char_entities[漢字];
 	if (!res)
 		return [];
@@ -90,14 +90,9 @@ function get開合(小韻號) {
 
 function get等(小韻號) {
 	var res = small_rhymes[小韻號 - 1][1];
-	return ['0','6'].some(x => res == x) ? 1
-		: ['1','7'].some(x => res == x) ? 2
-		: ['2','3','4','8','9','a'].some(x => res == x) ? 3 : 4;
-}
-
-function get等漢字(小韻號) {
-	var 等 = get等(小韻號);
-	return 等 == 1 ? '一' : 等 == 2 ? '二' : 等 == 3 ? '三' : '四';
+	return ['0','6'].some(x => res == x) ? '一'
+		: ['1','7'].some(x => res == x) ? '二'
+		: ['2','3','4','8','9','a'].some(x => res == x) ? '三' : '四';
 }
 
 function get重紐(小韻號) {
@@ -109,10 +104,6 @@ function get重紐(小韻號) {
 function get韻(小韻號) {
 	// return small_rhymes[小韻號 - 1][2];  // JS: '莊O3𧤛'[3] = "\ud85e"
 	return [...small_rhymes[小韻號 - 1]][2];
-}
-
-function get韻賅上去(小韻號) {
-	return __韻到韻賅上去[get韻(小韻號)];
 }
 
 function get韻賅上去入(小韻號) {
@@ -138,7 +129,7 @@ function get聲(小韻號) {
 }
 
 function get音韻描述(小韻號) {
-	return get母(小韻號) + get開合(小韻號) + get等漢字(小韻號) + (get重紐(小韻號) || '') + get韻賅上去入(小韻號) + get聲(小韻號);
+	return get母(小韻號) + get開合(小韻號) + get等(小韻號) + (get重紐(小韻號) || '') + get韻賅上去入(小韻號) + get聲(小韻號);
 }
 
 function get上字(小韻號) {
@@ -173,10 +164,6 @@ function equal組(小韻號, s) {
 	return __組到母[s].some(x => get母(小韻號) == x);
 }
 
-function equal等(小韻號, s) {
-	return get等(小韻號) == s || get等漢字(小韻號) == s;
-}
-
 function equal聲(小韻號, s) {
 	var 聲 = get聲(小韻號);
 	if (['平', '上', '去', '入'].some(x => s == x))
@@ -202,7 +189,7 @@ function equal音韻地位(小韻號, s) {
 		else if (s.endsWith('組'))
 			return s.slice(0, -1).split('').some(s => equal組(小韻號, s));
 		else if (s.endsWith('等'))
-			return s.slice(0, -1).split('').some(s => equal等(小韻號, s));
+			return s.slice(0, -1).split('').some(s => get等(小韻號) == s);
 		else if (s.endsWith('聲'))
 			return s.slice(0, -1).split('').some(s => equal聲(小韻號, s));
 

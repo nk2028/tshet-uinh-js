@@ -9,7 +9,7 @@
 Browser:
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/qieyun@0.3.2"></script>
+<script src="https://cdn.jsdelivr.net/npm/qieyun@0.4.1"></script>
 ```
 
 Node.js:

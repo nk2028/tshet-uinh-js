@@ -24,6 +24,8 @@ const Qieyun = require('qieyun');
 
 ## API
 
+![如圖為《切韻》音系 JavaScript 函式庫的工作流](demo/qieyun-js.svg)
+
 **1. 由字頭查出對應的小韻號和解釋**
 
 ```javascript

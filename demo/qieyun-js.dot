@@ -1,0 +1,14 @@
+digraph {
+    node [shape=plaintext]
+    rankdir=LR
+    漢字 -> 在《廣韻》中的小韻號 [label="1..n"]
+    漢字 -> 解釋 [label="1..n"]
+    在《廣韻》中的小韻號 -> 漢字 [label="1..n"]
+    在《廣韻》中的小韻號 -> 解釋 [label="1..n"]
+    在《廣韻》中的小韻號 -> 在《切韻》音系中的音韻地位
+    subgraph subs {
+        rank=same
+        在《廣韻》中的小韻號
+        解釋
+    }
+}

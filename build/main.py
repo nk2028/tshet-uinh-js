@@ -53,6 +53,11 @@ def build_map_1():
 	json.dump(韻賅上去入到攝_obj, f, ensure_ascii=False, separators=(',',':'))
 	f.write(';\n')
 
+	f.write('var __韻賅上去入and聲到韻=')
+	obj = {韻賅上去入and聲: 韻 for 韻賅上去入and聲, 韻 in cur.execute('SELECT DISTINCT 韻賅上去入 || 聲, 韻 FROM 廣韻小韻全;')}
+	json.dump(obj, f, ensure_ascii=False, separators=(',',':'))
+	f.write(';\n')
+
 	f.write('var __母id到母=')
 	母id到母 = pandas.read_csv(os.path.join(here, 'initial_map.csv'), dtype=str, na_filter=False)
 	母id到母_obj = {x: y for x, y in zip(母id到母['InitialID'], 母id到母['Initial'])}
@@ -124,7 +129,6 @@ with open(os.path.join(here, '../index.js'), 'w') as fout:
 		for i in l:
 			with open(i) as f:
 				fout.write(f.read())
-				fout.write('\n')
 
 	concat_files((os.path.join(here, '../output/map1.js') \
 		, os.path.join(here, '../output/char_entity.js') \
@@ -133,19 +137,11 @@ with open(os.path.join(here, '../index.js'), 'w') as fout:
 
 	fout.write('''return { query漢字: query漢字
 , query小韻號: query小韻號
-, get母: get母
-, get開合: get開合
-, get等: get等
-, get重紐: get重紐
-, get韻: get韻
-, get韻賅上去入: get韻賅上去入
-, get攝: get攝
-, get聲: get聲
-, get音韻描述: get音韻描述
 , get上字: get上字
 , get下字: get下字
 , get反切: get反切
-, equal音韻地位: equal音韻地位
+, get音韻地位: get音韻地位
+, 音韻地位: 音韻地位
 };
 })();
 

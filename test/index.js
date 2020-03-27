@@ -34,8 +34,8 @@ for (const expected of stmt.iterate()) {
 const stmt = db.prepare('SELECT 小韻號, 音韻地位 FROM 廣韻小韻全');
 
 for (const expected of stmt.iterate())
-	if (Qieyun.get音韻描述(expected.小韻號) !== expected.音韻地位)
-		throw new Error('Test failed!');
+	if (Qieyun.get音韻地位(expected.小韻號).get音韻描述() !== expected.音韻地位)
+		throw new Error('Test failed!' + expected.小韻號);
 
 })();
 
@@ -43,18 +43,18 @@ for (const expected of stmt.iterate())
 
 (function test3() {
 
-assertEqual(Qieyun.equal音韻地位(12, '云母'), true);
-assertEqual(Qieyun.equal音韻地位(526, '透母'), true);
+assertEqual(Qieyun.get音韻地位(12).屬於('云母'), true);
+assertEqual(Qieyun.get音韻地位(526).屬於('透母'), true);
 
-assertEqual(Qieyun.equal音韻地位(1852, '開口'), true);
+assertEqual(Qieyun.get音韻地位(1852).屬於('開口'), true);
 
-assertEqual(Qieyun.equal音韻地位(13, '三等'), true);
+assertEqual(Qieyun.get音韻地位(13).屬於('三等'), true);
 
-assertEqual(Qieyun.equal音韻地位(1113, '重紐B類'), true);
+assertEqual(Qieyun.get音韻地位(1113).屬於('重紐B類'), true);
 
-assertEqual(Qieyun.equal音韻地位(3822, '鹽韻'), true);
+assertEqual(Qieyun.get音韻地位(3822).屬於('鹽韻'), true);
 
-assertEqual(Qieyun.equal音韻地位(2245, '開口'), false);
-assertEqual(Qieyun.equal音韻地位(2245, '開口 或 三等'), true);
+assertEqual(Qieyun.get音韻地位(2245).屬於('開口'), false);
+assertEqual(Qieyun.get音韻地位(2245).屬於('開口 或 三等'), true);
 
 })();

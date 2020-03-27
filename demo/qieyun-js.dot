@@ -4,13 +4,13 @@ digraph {
     edge [fontname="Noto Sans CJK HK"]
     node [shape=plaintext]
     rankdir=LR
-    漢字 -> 《廣韻》小韻號 [label="1..n"]
-    漢字 -> 解釋 [label="1..n"]
-    《廣韻》小韻號 -> 漢字 [label="1..n"]
-    《廣韻》小韻號 -> 解釋 [label="1..n"]
-    《廣韻》小韻號 -> "(母, 開合, 等, 重紐, 韻, 聲)"
-    "(母, 開合, 等, 重紐, 韻, 聲)" -> 音韻地位 [style=dashed, label="暫未實現"]
-    《廣韻》小韻號 -> 音韻地位
+    漢字 -> 《廣韻》小韻號 [label="query漢字"]
+    漢字 -> 解釋 [label="query漢字"]
+    《廣韻》小韻號 -> 漢字 [label="query小韻號"]
+    《廣韻》小韻號 -> 解釋 [label="query小韻號"]
+    《廣韻》小韻號 -> 反切 [label="get上字, get下字, get反切"]
+    《廣韻》小韻號 -> 《切韻》音系音韻地位 [label="get音韻地位"]
+    《切韻》音系音韻地位 -> 各項音韻屬性 [label="get母, get開合, get等, …; 屬於"]
     subgraph subs {
         rank=same
         《廣韻》小韻號

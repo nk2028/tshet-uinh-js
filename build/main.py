@@ -130,7 +130,8 @@ with open(os.path.join(here, '../index.js'), 'w') as fout:
 			with open(i) as f:
 				fout.write(f.read())
 
-	concat_files((os.path.join(here, '../output/map1.js') \
+	concat_files(( os.path.join(here, 'header.js')
+		, os.path.join(here, '../output/map1.js') \
 		, os.path.join(here, '../output/char_entity.js') \
 		, os.path.join(here, '../output/small_rhyme.js') \
 		, os.path.join(here, 'brogue2.js')))

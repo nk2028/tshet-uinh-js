@@ -29,6 +29,16 @@
               
                 
                 <li><a
+                  href='#qieyun'
+                  class="">
+                  Qieyun
+                  
+                </a>
+                
+                </li>
+              
+                
+                <li><a
                   href='#query漢字'
                   class="">
                   query漢字
@@ -177,6 +187,117 @@
         </div>
       </div>
       <div id='split-right' class='relative overflow-auto height-viewport-100'>
+        
+          
+          <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
+    <h3 class='fl m0' id='qieyun'>
+      Qieyun
+    </h3>
+    
+    
+  </div>
+  
+
+  <h1>《切韻》音系 JavaScript 函式庫</h1>
+<p><img src="/qieyun-js/demo/qieyun-js.png" alt="如圖為《切韻》音系 JavaScript 函式庫的工作流"></p>
+<style> th, td { border: 1px solid; } h3#qieyun, div#split-right > section:first-child > div.pre.p1.fill-light.mt0 { display: none; } </style>
+<p>各參數的取值如下：</p>
+<table>
+<thead>
+<tr>
+<th align="left">音韻屬性</th>
+<th align="left">中文名稱</th>
+<th align="left">英文名稱</th>
+<th align="left">可能取值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">母<br/>組</td>
+<td align="left">聲母<br/>組</td>
+<td align="left">initial<br/>group</td>
+<td align="left"><strong>幫</strong>滂並明<br/><strong>端</strong>透定泥<br/>來<br/><strong>知</strong>徹澄孃<br/><strong>精</strong>清從心邪<br/><strong>莊</strong>初崇生俟<br/><strong>章</strong>昌常書船<br/>日<br/><strong>見</strong>溪羣疑<br/><strong>影</strong>曉匣云<br/>以<br/>（粗體字為組，未涵蓋「來日以」）</td>
+</tr>
+<tr>
+<td align="left">等</td>
+<td align="left">等</td>
+<td align="left">division</td>
+<td align="left">一二三四</td>
+</tr>
+<tr>
+<td align="left">開合</td>
+<td align="left">開合</td>
+<td align="left">rounding</td>
+<td align="left">開口<br/>合口</td>
+</tr>
+<tr>
+<td align="left">重紐</td>
+<td align="left">重紐</td>
+<td align="left">repeated initials</td>
+<td align="left">重紐A類<br/>重紐B類</td>
+</tr>
+<tr>
+<td align="left">韻<br/>攝</td>
+<td align="left">韻母<br/>攝</td>
+<td align="left">rhyme<br/>class</td>
+<td align="left">通：東冬鍾<br/>江：江<br/>止：支脂之微<br/>遇：魚虞模<br/>蟹：齊祭泰佳皆夬灰咍廢<br/>臻：眞諄臻文欣元魂痕<br/>山：寒桓刪山先仙<br/>效：蕭宵肴豪<br/>果：歌戈<br/>假：麻<br/>宕：陽唐<br/>梗：庚耕清青<br/>曾：蒸登<br/>流：尤侯幽<br/>深：侵<br/>咸：覃談鹽添咸銜嚴凡<br/>（冒號前為攝，後為對應的韻）</td>
+</tr>
+<tr>
+<td align="left">聲</td>
+<td align="left">聲調</td>
+<td align="left">tone</td>
+<td align="left">平上去入<br/>仄<br/>舒</td>
+</tr>
+</tbody>
+</table>
+<p><strong>注意</strong>：元韻置於臻攝而非山攝。</p>
+<p>不支援異體字，請手動轉換：</p>
+<ul>
+<li>母 娘 -> 孃</li>
+<li>母 荘 -> 莊</li>
+<li>母 谿 -> 溪</li>
+<li>母 群 -> 羣</li>
+<li>韻 餚 -> 肴</li>
+<li>韻 眞 -> 真</li>
+</ul>
+
+    <div class='pre p1 fill-light mt0'>Qieyun</div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+          
         
           
           <section class='p2 mb2 clearfix bg-white minishadow'>
@@ -431,7 +552,7 @@
     
       
       <pre class='p1 overflow-auto round fill-light'>&gt; Qieyun.get上字(<span class="hljs-number">1</span>);
-<span class="hljs-string">"德"</span></pre>
+<span class="hljs-string">'德'</span></pre>
     
   
 
@@ -617,7 +738,7 @@
     
       
       <pre class='p1 overflow-auto round fill-light'>&gt; Qieyun.get反切(<span class="hljs-number">1644</span>);  <span class="hljs-comment">// 轉小韻</span>
-<span class="hljs-string">"陟兖切"</span></pre>
+<span class="hljs-string">'陟兖切'</span></pre>
     
   
 

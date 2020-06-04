@@ -1,4 +1,4 @@
-# qieyun-js [![JSDelivr badge](https://data.jsdelivr.com/v1/package/npm/qieyun/badge)](https://www.jsdelivr.com/package/npm/qieyun)
+# qieyun-js [![](https://data.jsdelivr.com/v1/package/npm/qieyun/badge)](https://www.jsdelivr.com/package/npm/qieyun)
 
 《切韻》音系 JavaScript 函式庫
 

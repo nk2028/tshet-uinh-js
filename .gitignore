@@ -1,5 +1,6 @@
 .mypy_cache
 node_modules
+/venv
 /cache
 /output
-/index.js
+/index.mjs

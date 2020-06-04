@@ -1,14 +1,14 @@
 {
   "name": "qieyun",
-  "version": "0.6.1",
+  "version": "0.7.0",
   "description": "JavaScript library for the Qieyun phonological system | 《切韻》音系 JavaScript 函式庫",
   "main": "index.js",
   "scripts": {
-    "test": "node test/index.js"
+    "test": "node --experimental-modules test/index.mjs"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ngkhyen2028/qieyun-js.git"
+    "url": "git+https://github.com/nk2028/qieyun-js.git"
   },
   "keywords": [
     "guangyun",
@@ -16,12 +16,12 @@
     "historical-linguistics",
     "chinese-nlp"
   ],
-  "author": "The Ngioxkhyen 2028 Project",
+  "author": "Ngiox Khyen 2028 Project",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/ngkhyen2028/qieyun-js/issues"
+    "url": "https://github.com/nk2028/qieyun-js/issues"
   },
-  "homepage": "https://github.com/ngkhyen2028/qieyun-js#readme",
+  "homepage": "https://github.com/nk2028/qieyun-js#readme",
   "files": [
     "index.js"
   ],

@@ -122,7 +122,9 @@ conn.close()
 
 # Concatenate all output files
 
-with open(os.path.join(here, '../index.mjs'), 'w') as fout:
+with open(os.path.join(here, '../index.js'), 'w') as fout:
+	fout.write('''var Qieyun = (function () {\n''')
+
 	def concat_files(l):
 		for i in l:
 			with open(i) as f:
@@ -132,3 +134,16 @@ with open(os.path.join(here, '../index.mjs'), 'w') as fout:
 		, os.path.join(here, '../output/char_entity.js') \
 		, os.path.join(here, '../output/small_rhyme.js') \
 		, os.path.join(here, 'brogue2.js')))
+
+	fout.write('''return { query漢字: query漢字
+, query小韻號: query小韻號
+, get上字: get上字
+, get下字: get下字
+, get反切: get反切
+, get音韻地位: get音韻地位
+, 音韻地位: 音韻地位
+};
+})();
+
+try { module.exports = exports = Qieyun; } catch (e) {}
+''')

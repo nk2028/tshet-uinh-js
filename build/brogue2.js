@@ -67,7 +67,7 @@ var __char_entities_and_小韻數組 = __解析字頭資料(字頭資料)
  * , { "小韻號": 2837, "解釋": "誤也越也責也度也古臥切七" }
  * ]
  */
-export function query漢字(漢字) {
+function query漢字(漢字) {
 	var res = __char_entities[漢字];
 	if (!res)
 		return [];
@@ -94,7 +94,7 @@ export function query漢字(漢字) {
  *   [ '氶', '晉譙王名' ]
  * ]
  */
-export function query小韻號(小韻號) {
+function query小韻號(小韻號) {
 	return __小韻數組[小韻號 - 1];
 }
 
@@ -106,10 +106,10 @@ export function query小韻號(小韻號) {
  * @returns {string} 返回該小韻的反切上字。若無反切，返回 `null`。
  * @example
  * > Qieyun.get上字(1);
- * "德"
+ * '德'
  * @see {@link get下字} {@link get反切}
  */
-export function get上字(小韻號) {
+function get上字(小韻號) {
 	// return __small_rhymes[小韻號 - 1][3];
 	var res = [...__small_rhymes[小韻號 - 1]][3];
 	if (res == 'x')  // 沒有反切的小韻
@@ -127,7 +127,7 @@ export function get上字(小韻號) {
  * null
  * @see {@link get上字} {@link get反切}
  */
-export function get下字(小韻號) {
+function get下字(小韻號) {
 	// return __small_rhymes[小韻號 - 1][4];
 	var res = [...__small_rhymes[小韻號 - 1]][4];
 	if (res == 'x')  // 沒有反切的小韻
@@ -142,10 +142,10 @@ export function get下字(小韻號) {
  * @returns {string} 返回該小韻的反切。若無反切，返回 `null`。
  * @example
  * > Qieyun.get反切(1644);  // 轉小韻
- * "陟兖切"
+ * '陟兖切'
  * @see {@link get上字} {@link get下字}
  */
-export function get反切(小韻號) {
+function get反切(小韻號) {
 	var 上字 = get上字(小韻號);
 	if (!上字)
 		return null;
@@ -162,7 +162,7 @@ export function get反切(小韻號) {
  * @example
  * > let 音韻地位 = Qieyun.get音韻地位(739);
  */
-export function get音韻地位(小韻號) {
+function get音韻地位(小韻號) {
 	function __小韻號2母(小韻號) {
 		return __母id到母[__small_rhymes[小韻號 - 1][0]];
 	}
@@ -243,7 +243,7 @@ export function get音韻地位(小韻號) {
  * @example
  * > let 音韻地位 = new Qieyun.音韻地位("見", "合", "一", null, "戈", "平");
  */
-export class 音韻地位 {
+class 音韻地位 {
 	constructor(母, 開合, 等, 重紐, 韻賅上去入, 聲) {
 		/**
 		 * @member {string}

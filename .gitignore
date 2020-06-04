@@ -3,4 +3,4 @@ node_modules
 /venv
 /cache
 /output
-/index.mjs
+/index.js

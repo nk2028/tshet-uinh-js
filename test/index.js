@@ -58,3 +58,18 @@ assertEqual(Qieyun.get音韻地位(2245).屬於('開口'), false);
 assertEqual(Qieyun.get音韻地位(2245).屬於('開口 或 三等'), true);
 
 })();
+
+/* Tests in documentation */
+
+(function test4() {
+	let 音韻地位 = Qieyun.get音韻地位(739);
+	assertEqual(音韻地位.母, '見');
+	assertEqual(音韻地位.開合, '合');
+	assertEqual(音韻地位.等, '一');
+	assertEqual(音韻地位.重紐, null);
+	assertEqual(音韻地位.韻賅上去入, '戈');
+	assertEqual(音韻地位.聲, '平');
+	assertEqual(音韻地位.攝, '果');
+	assertEqual(音韻地位.音韻描述, '見合一戈平');
+	assertEqual(音韻地位.屬於('果攝'), true);
+})();

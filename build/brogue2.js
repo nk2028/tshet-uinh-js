@@ -246,6 +246,7 @@ function get音韻地位(小韻號) {
 class 音韻地位 {
 	constructor(母, 開合, 等, 重紐, 韻賅上去入, 聲) {
 		/**
+		 * 聲母
 		 * @member {string}
 		 * @example
 		 * > let 音韻地位 = Qieyun.get音韻地位(739);
@@ -255,6 +256,7 @@ class 音韻地位 {
 		this.母 = 母;
 
 		/**
+		 * 開合
 		 * @member {string}
 		 * @example
 		 * > let 音韻地位 = Qieyun.get音韻地位(739);
@@ -264,6 +266,7 @@ class 音韻地位 {
 		this.開合 = 開合;
 
 		/**
+		 * 等
 		 * @member {string}
 		 * @example
 		 * > let 音韻地位 = Qieyun.get音韻地位(739);
@@ -273,6 +276,7 @@ class 音韻地位 {
 		this.等 = 等;
 
 		/**
+		 * 重紐
 		 * @member {string}
 		 * @example
 		 * > let 音韻地位 = Qieyun.get音韻地位(739);
@@ -282,6 +286,7 @@ class 音韻地位 {
 		this.重紐 = 重紐;
 
 		/**
+		 * 韻母（舉平以賅上去入）
 		 * @member {string}
 		 * @example
 		 * > let 音韻地位 = Qieyun.get音韻地位(739);
@@ -291,6 +296,7 @@ class 音韻地位 {
 		this.韻賅上去入 = 韻賅上去入;
 
 		/**
+		 * 聲調
 		 * @member {string}
 		 * @example
 		 * > let 音韻地位 = Qieyun.get音韻地位(739);
@@ -301,6 +307,8 @@ class 音韻地位 {
 	}
 
 	/**
+	 * 韻母
+	 * @member {string}
 	 * @example
 	 * > let 音韻地位 = Qieyun.get音韻地位(739);
 	 * > 音韻地位.韻;
@@ -311,6 +319,8 @@ class 音韻地位 {
 	};
 
 	/**
+	 * 攝
+	 * @member {string}
 	 * @example
 	 * > let 音韻地位 = Qieyun.get音韻地位(739);
 	 * > 音韻地位.攝;
@@ -321,6 +331,8 @@ class 音韻地位 {
 	};
 
 	/**
+	 * 音韻描述
+	 * @member {string}
 	 * @example
 	 * > let 音韻地位 = Qieyun.get音韻地位(739);
 	 * > 音韻地位.音韻描述;
@@ -367,7 +379,8 @@ class 音韻地位 {
 			, 等 = this.等
 			, 重紐 = this.重紐
 			, 韻賅上去入 = this.韻賅上去入
-			, 聲 = this.聲;
+			, 聲 = this.聲
+			, 攝 = this.攝;
 
 		function __equal組(s) {
 			return __組到母[s].some(x => 母 == x);

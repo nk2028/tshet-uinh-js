@@ -6,6 +6,7 @@
  * </style>
  * <script>
  *   window.addEventListener("load", function(event) {
+ *     document.documentElement.lang = 'zh-Hant';
  *     var xs = document.querySelectorAll('div.clearfix.small.pointer.toggle-sibling');  // Right
  *     for (const x of xs)
  *       x.click();

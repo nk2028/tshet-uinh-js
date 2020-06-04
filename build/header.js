@@ -1,4 +1,6 @@
 /**
+ * <style> th, td { border: 1px solid; } h3#qieyun, div#split-right > section:first-child > div.pre.p1.fill-light.mt0 { display: none; } p > img { max-width: 100%; } </style> <script> var xs = document.getElementsByClassName('toggle-sibling'); for (const x of xs) x.click(); </script>
+ *
  * # 《切韻》音系 JavaScript 函式庫
  *
  * Browser:
@@ -18,8 +20,6 @@
  * ```
  *
  * ![如圖為《切韻》音系 JavaScript 函式庫的工作流](/qieyun-js/demo/qieyun-js.png)
- *
- * <style> th, td { border: 1px solid; } h3#qieyun, div#split-right > section:first-child > div.pre.p1.fill-light.mt0 { display: none; } p > img { max-width: 100%; } </style>
  *
  * 各參數的取值如下：
  *

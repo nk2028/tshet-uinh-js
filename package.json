@@ -4,7 +4,7 @@
   "description": "JavaScript library for the Qieyun phonological system | 《切韻》音系 JavaScript 函式庫",
   "main": "index.js",
   "scripts": {
-    "test": "node --experimental-modules test/index.js",
+    "test": "node test/index.js",
     "docs": "documentation build index.js -f html -o docs"
   },
   "repository": {

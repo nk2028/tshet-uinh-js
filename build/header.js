@@ -6,9 +6,16 @@
  * </style>
  * <script>
  *   window.addEventListener("load", function(event) {
- *     var xs = document.getElementsByClassName('toggle-sibling');
+ *     var xs = document.querySelectorAll('div.clearfix.small.pointer.toggle-sibling');  # Right
  *     for (const x of xs)
  *       x.click();
+ *     xs = document.querySelectorAll('li > a.toggle-sibling');  # Left
+ *     for (const x of xs) {
+ *       var href = x.href;
+ *       x.href = 'javascript:void(0)';
+ *       x.click();
+ *       x.href = href;
+ *     }
  *   });
  * </script>
  *

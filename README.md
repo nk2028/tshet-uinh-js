@@ -20,6 +20,8 @@ $ npm install qieyun
 > const Qieyun = require('qieyun');
 ```
 
+![如圖為《切韻》音系 JavaScript 函式庫的工作流](https://nk2028.shn.hk/qieyun-js/demo/qieyun-js.png)
+
 [Documentation](https://nk2028.shn.hk/qieyun-js/)
 
 ## License

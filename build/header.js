@@ -1,9 +1,25 @@
 /**
  * # 《切韻》音系 JavaScript 函式庫
  *
+ * Browser:
+ *
+ * ```html
+ * <script src="https://cdn.jsdelivr.net/npm/qieyun@0.7.0"></script>
+ * ```
+ *
+ * Node.js:
+ *
+ * ```sh
+ * $ npm install qieyun
+ * ```
+ *
+ * ```javascript
+ * > const Qieyun = require('qieyun');
+ * ```
+ *
  * ![如圖為《切韻》音系 JavaScript 函式庫的工作流](/qieyun-js/demo/qieyun-js.png)
  *
- * <style> th, td { border: 1px solid; } h3#qieyun, div#split-right > section:first-child > div.pre.p1.fill-light.mt0 { display: none; } </style>
+ * <style> th, td { border: 1px solid; } h3#qieyun, div#split-right > section:first-child > div.pre.p1.fill-light.mt0 { display: none; } p > img { max-width: 100%; } </style>
  *
  * 各參數的取值如下：
  *

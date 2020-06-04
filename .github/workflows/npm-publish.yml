@@ -18,9 +18,9 @@ jobs:
           node-version: 12
           registry-url: https://registry.npmjs.org/
       - run: |
-        pip install -r requirements.txt
-        npm install
-        python build/main.py
+          pip install -r requirements.txt
+          npm install
+          python build/main.py
       - run: npm test
       - run: npm publish
         env:

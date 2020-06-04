@@ -202,7 +202,18 @@
   </div>
   
 
-  <style> th, td { border: 1px solid; } h3#qieyun, div#split-right > section:first-child > div.pre.p1.fill-light.mt0 { display: none; } p > img { max-width: 100%; } </style> <script> var xs = document.getElementsByClassName('toggle-sibling'); for (const x of xs) x.click(); </script>
+  <style>
+  th, td { border: 1px solid; }
+  h3#qieyun, div#split-right > section:first-child > div.pre.p1.fill-light.mt0 { display: none; }
+  p > img { max-width: 100%; }
+</style>
+<script>
+  window.addEventListener("load", function(event) {
+    var xs = document.getElementsByClassName('toggle-sibling');
+    for (const x of xs)
+      x.click();
+  });
+</script>
 <h1>《切韻》音系 JavaScript 函式庫</h1>
 <p>Browser:</p>
 <pre class='hljs'><span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">"https://cdn.jsdelivr.net/npm/qieyun@0.7.0"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span></pre>

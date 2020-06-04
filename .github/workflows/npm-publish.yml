@@ -24,6 +24,8 @@ jobs:
       - run: |
           pip install -r requirements.txt
           npm install
+          pip install pysqlite3-binary
+          sed -r -i 's/import sqlite3/import pysqlite3 as sqlite3/' build/main.py
           python build/main.py
       - run: npm test
       - run: npm publish

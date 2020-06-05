@@ -31,10 +31,10 @@ for (const expected of stmt.iterate()) {
 
 (function test2() {
 
-const stmt = db.prepare('SELECT 小韻號, 音韻地位 FROM 廣韻小韻全');
+const stmt = db.prepare('SELECT 小韻號, 音韻描述 FROM 廣韻小韻全');
 
 for (const expected of stmt.iterate())
-	if (Qieyun.get音韻地位(expected.小韻號).音韻描述 !== expected.音韻地位)
+	if (Qieyun.get音韻地位(expected.小韻號).音韻描述 !== expected.音韻描述)
 		throw new Error('Test failed!' + expected.小韻號);
 
 })();

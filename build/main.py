@@ -28,7 +28,7 @@ def download_file_if_not_exist(url, name):
 		print(name, e)
 		sys.exit(0)
 
-download_file_if_not_exist('https://cdn.jsdelivr.net/npm/qieyun-sqlite@0.1.28/data.sqlite3', 'data.sqlite3')
+download_file_if_not_exist('https://github.com/nk2028/qieyun-sqlite/releases/latest/download/data.sqlite3', 'data.sqlite3')
 download_file_if_not_exist('https://raw.githubusercontent.com/BYVoid/ytenx/master/ytenx/sync/kyonh/YonhMiuk.txt', 'YonhMiuk.txt')
 download_file_if_not_exist('https://raw.githubusercontent.com/BYVoid/ytenx/master/ytenx/sync/kyonh/YonhGheh.txt', 'YonhGheh.txt')
 

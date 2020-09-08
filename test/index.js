@@ -57,6 +57,9 @@ assertEqual(Qieyun.get音韻地位(3822).屬於('鹽韻'), true);
 assertEqual(Qieyun.get音韻地位(2245).屬於('開口'), false);
 assertEqual(Qieyun.get音韻地位(2245).屬於('開口 或 三等'), true);
 
+assertEqual(Qieyun.get音韻地位(1352).屬於('影組'), true); // 羽
+assertEqual(Qieyun.get音韻地位(1291).屬於('影組'), false); // 以
+
 })();
 
 /* Tests in documentation */

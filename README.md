@@ -1,6 +1,8 @@
 # qieyun-js [![](https://data.jsdelivr.com/v1/package/npm/qieyun/badge)](https://www.jsdelivr.com/package/npm/qieyun)
 
-《切韻》音系 JavaScript 函式庫
+JavaScript library for the Qieyun phonological system
+
+[Documentation](https://nk2028.shn.hk/qieyun-js/)
 
 ## Usage
 
@@ -20,9 +22,32 @@ $ npm install qieyun
 > const Qieyun = require('qieyun');
 ```
 
-![如圖為《切韻》音系 JavaScript 函式庫的工作流](https://nk2028.shn.hk/qieyun-js/demo/qieyun-js.png)
+![](https://nk2028.shn.hk/qieyun-js/demo/qieyun-js.png)
 
-[Documentation](https://nk2028.shn.hk/qieyun-js/)
+## Build & Test
+
+### Build
+
+```sh
+pip install -r requirements.txt
+scripts/A_prepare_data.sh
+python scripts/B_create_map.py
+scripts/C_concat_files.sh
+```
+
+### Test
+
+```sh
+npm install
+npm test
+```
+
+### Build Documentation
+
+```sh
+npm install
+npm run docs
+```
 
 ## License
 

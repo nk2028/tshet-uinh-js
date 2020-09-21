@@ -1,7 +1,7 @@
 {
   "name": "qieyun",
   "version": "0.7.3",
-  "description": "JavaScript library for the Qieyun phonological system | 《切韻》音系 JavaScript 函式庫",
+  "description": "JavaScript library for the Qieyun phonological system 《切韻》音系 JavaScript 函式庫",
   "main": "index.js",
   "scripts": {
     "test": "node test/index.js",
@@ -12,10 +12,9 @@
     "url": "git+https://github.com/nk2028/qieyun-js.git"
   },
   "keywords": [
-    "guangyun",
-    "linguistics",
-    "historical-linguistics",
-    "chinese-nlp"
+    "Historical Linguistics",
+    "Qieyun",
+    "Middle Chinese"
   ],
   "author": "Ngiox Khyen 2028 Project",
   "license": "MIT",

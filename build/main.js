@@ -11,8 +11,9 @@ var __組到母=
 
 function __解析小韻資料(str) {
 	var res = str.match(/.{5}/gu);
-	if (res.length != 3874)
-		throw new Error('Invalid length of small rhymes');
+	if (res.length != 3874) {
+		throw new Error('Invalid length of small rhymes, the length is ' + res.length);
+	}
 	return res;
 }
 

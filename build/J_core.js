@@ -25,7 +25,8 @@
  * ]
  */
 function query漢字(漢字) {
-	const res = _字頭資料[漢字];
+	const 漢字編碼 = 漢字.codePointAt(0);
+	const res = _字頭資料.get(漢字編碼);
 	return !res ? [] : res.map(function(小韻號_解釋) {
 		const 小韻號 = 小韻號_解釋[0], 解釋 = 小韻號_解釋[1];
 		return {"小韻號": 小韻號, "解釋": 解釋};
@@ -117,7 +118,7 @@ function get反切(小韻號) {
  * > let 音韻地位 = Qieyun.get音韻地位(739);
  */
 function get音韻地位(小韻號) {
-	function _小韻號2母(小韻號) {
+	function _小韻號到母(小韻號) {
 		return _母id到母[_小韻資料[小韻號 - 1][0]];
 	}
 
@@ -137,25 +138,25 @@ function get音韻地位(小韻號) {
 			if 等 == 3: return 'a'
 			if 等 == 4: return 'b' */
 	
-	function _小韻號2開合(小韻號) {
+	function _小韻號到開合(小韻號) {
 		const res = _小韻資料[小韻號 - 1][1];
 		return ['0','1','2','3','4','5'].some(x => res == x) ? '開' : '合';
 	}
 	
-	function _小韻號2等(小韻號) {
+	function _小韻號到等(小韻號) {
 		const res = _小韻資料[小韻號 - 1][1];
 		return ['0','6'].some(x => res == x) ? '一'
 			: ['1','7'].some(x => res == x) ? '二'
 			: ['2','3','4','8','9','a'].some(x => res == x) ? '三' : '四';
 	}
 	
-	function _小韻號2重紐(小韻號) {
+	function _小韻號到重紐(小韻號) {
 		const res = _小韻資料[小韻號 - 1][1];
 		return ['2','8'].some(x => res == x) ? 'A'
 			: ['3','9'].some(x => res == x) ? 'B' : null;
 	}
 	
-	function _小韻號2韻賅上去入(小韻號) {
+	function _小韻號到韻賅上去入(小韻號) {
 		function _getProto韻(小韻號) {
 			// return _小韻資料[小韻號 - 1][2];  // JS: '莊O3𧤛'[3] = "\ud85e"
 			return [..._小韻資料[小韻號 - 1]][2];
@@ -164,7 +165,7 @@ function get音韻地位(小韻號) {
 		return _韻到韻賅上去入[_getProto韻(小韻號)];
 	}
 	
-	function _小韻號2聲(小韻號) {
+	function _小韻號到聲(小韻號) {
 		if (小韻號 <= 0)
 			throw new Error('Invalid 小韻號');
 		if (小韻號 <= 1156)
@@ -178,7 +179,7 @@ function get音韻地位(小韻號) {
 		throw new Error('Invalid 小韻號');
 	}
 
-	return new 音韻地位(_小韻號2母(小韻號), _小韻號2開合(小韻號), _小韻號2等(小韻號), _小韻號2重紐(小韻號), _小韻號2韻賅上去入(小韻號), _小韻號2聲(小韻號));
+	return new 音韻地位(_小韻號到母(小韻號), _小韻號到開合(小韻號), _小韻號到等(小韻號), _小韻號到重紐(小韻號), _小韻號到韻賅上去入(小韻號), _小韻號到聲(小韻號));
 }
 
 /* 5. 由《切韻》音系音韻地位得出各項音韻屬性 */

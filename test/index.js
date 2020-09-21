@@ -3,7 +3,7 @@
 const Qieyun = require('../index.js');
 const Database = require('better-sqlite3');
 
-const db = new Database('cache/data.sqlite3');
+const db = new Database('cache/qieyun.sqlite3');
 
 function assertEqual(a, b) {
 	if (a !== b) {

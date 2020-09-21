@@ -25,14 +25,11 @@
  * ]
  */
 function query漢字(漢字) {
-	const res = _char_entities[漢字];
-	if (!res)
-		return [];
-	else
-		return res.map(function(小韻號_解釋) {
-			const 小韻號 = 小韻號_解釋[0], 解釋 = 小韻號_解釋[1];
-			return {"小韻號": 小韻號, "解釋": 解釋};
-		});
+	const res = _字頭資料[漢字];
+	return !res ? [] : res.map(function(小韻號_解釋) {
+		const 小韻號 = 小韻號_解釋[0], 解釋 = 小韻號_解釋[1];
+		return {"小韻號": 小韻號, "解釋": 解釋};
+	});
 }
 
 /* 2. 由小韻號查出對應的字頭和解釋 */
@@ -67,8 +64,8 @@ function query小韻號(小韻號) {
  * @see {@link get下字} {@link get反切}
  */
 function get上字(小韻號) {
-	// return _small_rhymes[小韻號 - 1][3];
-	const res = [..._small_rhymes[小韻號 - 1]][3];
+	// return _小韻資料[小韻號 - 1][3];
+	const res = [..._小韻資料[小韻號 - 1]][3];
 	if (res == 'x')  // 沒有反切的小韻
 		return null;
 	else
@@ -85,8 +82,8 @@ function get上字(小韻號) {
  * @see {@link get上字} {@link get反切}
  */
 function get下字(小韻號) {
-	// return _small_rhymes[小韻號 - 1][4];
-	const res = [..._small_rhymes[小韻號 - 1]][4];
+	// return _小韻資料[小韻號 - 1][4];
+	const res = [..._小韻資料[小韻號 - 1]][4];
 	if (res == 'x')  // 沒有反切的小韻
 		return null;
 	else
@@ -121,7 +118,7 @@ function get反切(小韻號) {
  */
 function get音韻地位(小韻號) {
 	function _小韻號2母(小韻號) {
-		return _母id到母[_small_rhymes[小韻號 - 1][0]];
+		return _母id到母[_小韻資料[小韻號 - 1][0]];
 	}
 
 	/* def make開合等重紐(開合, 等, 重紐):
@@ -141,27 +138,27 @@ function get音韻地位(小韻號) {
 			if 等 == 4: return 'b' */
 	
 	function _小韻號2開合(小韻號) {
-		const res = _small_rhymes[小韻號 - 1][1];
+		const res = _小韻資料[小韻號 - 1][1];
 		return ['0','1','2','3','4','5'].some(x => res == x) ? '開' : '合';
 	}
 	
 	function _小韻號2等(小韻號) {
-		const res = _small_rhymes[小韻號 - 1][1];
+		const res = _小韻資料[小韻號 - 1][1];
 		return ['0','6'].some(x => res == x) ? '一'
 			: ['1','7'].some(x => res == x) ? '二'
 			: ['2','3','4','8','9','a'].some(x => res == x) ? '三' : '四';
 	}
 	
 	function _小韻號2重紐(小韻號) {
-		const res = _small_rhymes[小韻號 - 1][1];
+		const res = _小韻資料[小韻號 - 1][1];
 		return ['2','8'].some(x => res == x) ? 'A'
 			: ['3','9'].some(x => res == x) ? 'B' : null;
 	}
 	
 	function _小韻號2韻賅上去入(小韻號) {
 		function _getProto韻(小韻號) {
-			// return _small_rhymes[小韻號 - 1][2];  // JS: '莊O3𧤛'[3] = "\ud85e"
-			return [..._small_rhymes[小韻號 - 1]][2];
+			// return _小韻資料[小韻號 - 1][2];  // JS: '莊O3𧤛'[3] = "\ud85e"
+			return [..._小韻資料[小韻號 - 1]][2];
 		}
 	
 		return _韻到韻賅上去入[_getProto韻(小韻號)];

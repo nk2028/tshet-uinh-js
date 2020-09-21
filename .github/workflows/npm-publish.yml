@@ -25,9 +25,9 @@ jobs:
           pip install -r requirements.txt
           npm install
           pip install pysqlite3-binary
-          sed -r -i 's/import sqlite3/import pysqlite3 as sqlite3/' scripts/B_create_map.py
+          sed -r -i 's/import sqlite3/import pysqlite3 as sqlite3/' scripts/B_generate_map1.py
           scripts/A_prepare_data.sh
-          python scripts/B_create_map.py
+          python scripts/B_generate_map1.py
           scripts/C_concat_files.sh
       - run: npm test
       - run: npm publish

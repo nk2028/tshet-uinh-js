@@ -1,12 +1,15 @@
 #!/bin/sh
 
-echo 'const Qieyun = (function () {' > index.js
+echo '"use strict";
+const Qieyun = (function () {' > index.js
 
 cat build/header.js >> index.js
-cat output/map1.js >> index.js
 cat output/字頭資料.js >> index.js
 cat output/小韻資料.js >> index.js
-cat build/main.js >> index.js
+cat output/map1.js >> index.js
+cat build/map.js >> index.js
+cat build/unpack_data.js >> index.js
+cat build/core.js >> index.js
 
 echo 'return { query漢字: query漢字
 , query小韻號: query小韻號

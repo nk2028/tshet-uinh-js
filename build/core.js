@@ -1,48 +1,3 @@
-const __組到母=
-{"幫":["幫","滂","並","明"]
-,"端":["端","透","定","泥"]
-,"知":["知","徹","澄","孃"]
-,"精":["精","清","從","心","邪"]
-,"莊":["莊","初","崇","生","俟"]
-,"章":["章","昌","船","書","常"]
-,"見":["見","溪","羣","疑"]
-,"影":["影","曉","匣","云"]
-}
-
-function __解析小韻資料(str) {
-	const res = str.match(/.{5}/gu);
-	if (res.length != 3874) {
-		throw new Error('Invalid length of small rhymes, the length is ' + res.length);
-	}
-	return res;
-}
-
-function __解析字頭資料(str) {
-	const r = /(\d+)([^\d])([^\d]+)/gu, d = {}, match;
-
-	const 小韻數組 = new Array(3874);
-	for (const i = 0; i < 3874; i++)
-		小韻數組[i] = new Array();
-
-	while ((match = r.exec(str)) !== null) {
-		const 小韻號 = match[1] | 0, 字頭 = match[2], 解釋 = match[3];
-
-		if (!d[字頭])
-			d[字頭] = [[小韻號, 解釋]];
-		else
-			d[字頭].push([小韻號, 解釋]);
-
-		小韻數組[小韻號 - 1].push([字頭, 解釋]);
-	}
-
-	return [d, 小韻數組];
-}
-
-const __small_rhymes = __解析小韻資料(小韻資料);
-const __char_entities_and_小韻數組 = __解析字頭資料(字頭資料)
-	, __char_entities = __char_entities_and_小韻數組[0]
-	, __小韻數組 = __char_entities_and_小韻數組[1];
-
 /* 1. 由字頭查出對應的小韻號和解釋 */
 
 /**
@@ -70,7 +25,7 @@ const __char_entities_and_小韻數組 = __解析字頭資料(字頭資料)
  * ]
  */
 function query漢字(漢字) {
-	const res = __char_entities[漢字];
+	const res = _char_entities[漢字];
 	if (!res)
 		return [];
 	else
@@ -97,7 +52,7 @@ function query漢字(漢字) {
  * ]
  */
 function query小韻號(小韻號) {
-	return __小韻數組[小韻號 - 1];
+	return _小韻數組[小韻號 - 1];
 }
 
 /* 3. 查詢《廣韻》某個小韻的反切 */
@@ -112,8 +67,8 @@ function query小韻號(小韻號) {
  * @see {@link get下字} {@link get反切}
  */
 function get上字(小韻號) {
-	// return __small_rhymes[小韻號 - 1][3];
-	const res = [...__small_rhymes[小韻號 - 1]][3];
+	// return _small_rhymes[小韻號 - 1][3];
+	const res = [..._small_rhymes[小韻號 - 1]][3];
 	if (res == 'x')  // 沒有反切的小韻
 		return null;
 	else
@@ -130,8 +85,8 @@ function get上字(小韻號) {
  * @see {@link get上字} {@link get反切}
  */
 function get下字(小韻號) {
-	// return __small_rhymes[小韻號 - 1][4];
-	const res = [...__small_rhymes[小韻號 - 1]][4];
+	// return _small_rhymes[小韻號 - 1][4];
+	const res = [..._small_rhymes[小韻號 - 1]][4];
 	if (res == 'x')  // 沒有反切的小韻
 		return null;
 	else
@@ -165,8 +120,8 @@ function get反切(小韻號) {
  * > let 音韻地位 = Qieyun.get音韻地位(739);
  */
 function get音韻地位(小韻號) {
-	function __小韻號2母(小韻號) {
-		return __母id到母[__small_rhymes[小韻號 - 1][0]];
+	function _小韻號2母(小韻號) {
+		return _母id到母[_small_rhymes[小韻號 - 1][0]];
 	}
 
 	/* def make開合等重紐(開合, 等, 重紐):
@@ -185,34 +140,34 @@ function get音韻地位(小韻號) {
 			if 等 == 3: return 'a'
 			if 等 == 4: return 'b' */
 	
-	function __小韻號2開合(小韻號) {
-		const res = __small_rhymes[小韻號 - 1][1];
+	function _小韻號2開合(小韻號) {
+		const res = _small_rhymes[小韻號 - 1][1];
 		return ['0','1','2','3','4','5'].some(x => res == x) ? '開' : '合';
 	}
 	
-	function __小韻號2等(小韻號) {
-		const res = __small_rhymes[小韻號 - 1][1];
+	function _小韻號2等(小韻號) {
+		const res = _small_rhymes[小韻號 - 1][1];
 		return ['0','6'].some(x => res == x) ? '一'
 			: ['1','7'].some(x => res == x) ? '二'
 			: ['2','3','4','8','9','a'].some(x => res == x) ? '三' : '四';
 	}
 	
-	function __小韻號2重紐(小韻號) {
-		const res = __small_rhymes[小韻號 - 1][1];
+	function _小韻號2重紐(小韻號) {
+		const res = _small_rhymes[小韻號 - 1][1];
 		return ['2','8'].some(x => res == x) ? 'A'
 			: ['3','9'].some(x => res == x) ? 'B' : null;
 	}
 	
-	function __小韻號2韻賅上去入(小韻號) {
-		function __getProto韻(小韻號) {
-			// return __small_rhymes[小韻號 - 1][2];  // JS: '莊O3𧤛'[3] = "\ud85e"
-			return [...__small_rhymes[小韻號 - 1]][2];
+	function _小韻號2韻賅上去入(小韻號) {
+		function _getProto韻(小韻號) {
+			// return _small_rhymes[小韻號 - 1][2];  // JS: '莊O3𧤛'[3] = "\ud85e"
+			return [..._small_rhymes[小韻號 - 1]][2];
 		}
 	
-		return __韻到韻賅上去入[__getProto韻(小韻號)];
+		return _韻到韻賅上去入[_getProto韻(小韻號)];
 	}
 	
-	function __小韻號2聲(小韻號) {
+	function _小韻號2聲(小韻號) {
 		if (小韻號 <= 0)
 			throw new Error('Invalid 小韻號');
 		if (小韻號 <= 1156)
@@ -226,7 +181,7 @@ function get音韻地位(小韻號) {
 		throw new Error('Invalid 小韻號');
 	}
 
-	return new 音韻地位(__小韻號2母(小韻號), __小韻號2開合(小韻號), __小韻號2等(小韻號), __小韻號2重紐(小韻號), __小韻號2韻賅上去入(小韻號), __小韻號2聲(小韻號));
+	return new 音韻地位(_小韻號2母(小韻號), _小韻號2開合(小韻號), _小韻號2等(小韻號), _小韻號2重紐(小韻號), _小韻號2韻賅上去入(小韻號), _小韻號2聲(小韻號));
 }
 
 /* 5. 由《切韻》音系音韻地位得出各項音韻屬性 */
@@ -317,7 +272,7 @@ class 音韻地位 {
 	 * '戈'
 	 */
 	get 韻() {
-		return __韻賅上去入and聲到韻[this.韻賅上去入 + this.聲];
+		return _韻賅上去入與聲到韻[this.韻賅上去入 + this.聲];
 	};
 
 	/**
@@ -329,7 +284,7 @@ class 音韻地位 {
 	 * '果'
 	 */
 	get 攝() {
-		return __韻賅上去入到攝[this.韻賅上去入];
+		return _韻賅上去入到攝[this.韻賅上去入];
 	};
 
 	/**
@@ -384,11 +339,11 @@ class 音韻地位 {
 			, 聲 = this.聲
 			, 攝 = this.攝;
 
-		function __equal組(s) {
-			return __組到母[s].some(x => 母 == x);
+		function _equal組(s) {
+			return _組到母[s].some(x => 母 == x);
 		}
 
-		function __equal聲(s) {
+		function _equal聲(s) {
 			if (['平', '上', '去', '入'].some(x => s == x))
 				return s == 聲;
 			if (s == '仄')
@@ -407,11 +362,11 @@ class 音韻地位 {
 				return s.slice(0, -1).split('').some(s => 攝 == s);
 
 			else if (s.endsWith('組'))
-				return s.slice(0, -1).split('').some(s => __equal組(s));
+				return s.slice(0, -1).split('').some(s => _equal組(s));
 			else if (s.endsWith('等'))
 				return s.slice(0, -1).split('').some(s => 等 == s);
 			else if (s.endsWith('聲'))
-				return s.slice(0, -1).split('').some(s => __equal聲(s));
+				return s.slice(0, -1).split('').some(s => _equal聲(s));
 
 			else if (s == '開口')
 				return 開合 == '開';

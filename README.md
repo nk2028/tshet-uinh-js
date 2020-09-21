@@ -31,7 +31,7 @@ $ npm install qieyun
 ```sh
 pip install -r requirements.txt
 scripts/A_prepare_data.sh
-python scripts/B_create_map.py
+python scripts/B_generate_map1.py
 scripts/C_concat_files.sh
 ```
 

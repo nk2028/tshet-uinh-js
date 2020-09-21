@@ -1,4 +1,4 @@
-var __組到母=
+const __組到母=
 {"幫":["幫","滂","並","明"]
 ,"端":["端","透","定","泥"]
 ,"知":["知","徹","澄","孃"]
@@ -10,7 +10,7 @@ var __組到母=
 }
 
 function __解析小韻資料(str) {
-	var res = str.match(/.{5}/gu);
+	const res = str.match(/.{5}/gu);
 	if (res.length != 3874) {
 		throw new Error('Invalid length of small rhymes, the length is ' + res.length);
 	}
@@ -18,14 +18,14 @@ function __解析小韻資料(str) {
 }
 
 function __解析字頭資料(str) {
-	var r = /(\d+)([^\d])([^\d]+)/gu, d = {}, match;
+	const r = /(\d+)([^\d])([^\d]+)/gu, d = {}, match;
 
-	var 小韻數組 = new Array(3874);
-	for (var i = 0; i < 3874; i++)
+	const 小韻數組 = new Array(3874);
+	for (const i = 0; i < 3874; i++)
 		小韻數組[i] = new Array();
 
 	while ((match = r.exec(str)) !== null) {
-		var 小韻號 = match[1] | 0, 字頭 = match[2], 解釋 = match[3];
+		const 小韻號 = match[1] | 0, 字頭 = match[2], 解釋 = match[3];
 
 		if (!d[字頭])
 			d[字頭] = [[小韻號, 解釋]];
@@ -38,8 +38,8 @@ function __解析字頭資料(str) {
 	return [d, 小韻數組];
 }
 
-var __small_rhymes = __解析小韻資料(小韻資料);
-var __char_entities_and_小韻數組 = __解析字頭資料(字頭資料)
+const __small_rhymes = __解析小韻資料(小韻資料);
+const __char_entities_and_小韻數組 = __解析字頭資料(字頭資料)
 	, __char_entities = __char_entities_and_小韻數組[0]
 	, __小韻數組 = __char_entities_and_小韻數組[1];
 
@@ -70,12 +70,12 @@ var __char_entities_and_小韻數組 = __解析字頭資料(字頭資料)
  * ]
  */
 function query漢字(漢字) {
-	var res = __char_entities[漢字];
+	const res = __char_entities[漢字];
 	if (!res)
 		return [];
 	else
 		return res.map(function(小韻號_解釋) {
-			var 小韻號 = 小韻號_解釋[0], 解釋 = 小韻號_解釋[1];
+			const 小韻號 = 小韻號_解釋[0], 解釋 = 小韻號_解釋[1];
 			return {"小韻號": 小韻號, "解釋": 解釋};
 		});
 }
@@ -113,7 +113,7 @@ function query小韻號(小韻號) {
  */
 function get上字(小韻號) {
 	// return __small_rhymes[小韻號 - 1][3];
-	var res = [...__small_rhymes[小韻號 - 1]][3];
+	const res = [...__small_rhymes[小韻號 - 1]][3];
 	if (res == 'x')  // 沒有反切的小韻
 		return null;
 	else
@@ -131,7 +131,7 @@ function get上字(小韻號) {
  */
 function get下字(小韻號) {
 	// return __small_rhymes[小韻號 - 1][4];
-	var res = [...__small_rhymes[小韻號 - 1]][4];
+	const res = [...__small_rhymes[小韻號 - 1]][4];
 	if (res == 'x')  // 沒有反切的小韻
 		return null;
 	else
@@ -148,7 +148,7 @@ function get下字(小韻號) {
  * @see {@link get上字} {@link get下字}
  */
 function get反切(小韻號) {
-	var 上字 = get上字(小韻號);
+	const 上字 = get上字(小韻號);
 	if (!上字)
 		return null;
 	else
@@ -186,19 +186,19 @@ function get音韻地位(小韻號) {
 			if 等 == 4: return 'b' */
 	
 	function __小韻號2開合(小韻號) {
-		var res = __small_rhymes[小韻號 - 1][1];
+		const res = __small_rhymes[小韻號 - 1][1];
 		return ['0','1','2','3','4','5'].some(x => res == x) ? '開' : '合';
 	}
 	
 	function __小韻號2等(小韻號) {
-		var res = __small_rhymes[小韻號 - 1][1];
+		const res = __small_rhymes[小韻號 - 1][1];
 		return ['0','6'].some(x => res == x) ? '一'
 			: ['1','7'].some(x => res == x) ? '二'
 			: ['2','3','4','8','9','a'].some(x => res == x) ? '三' : '四';
 	}
 	
 	function __小韻號2重紐(小韻號) {
-		var res = __small_rhymes[小韻號 - 1][1];
+		const res = __small_rhymes[小韻號 - 1][1];
 		return ['2','8'].some(x => res == x) ? 'A'
 			: ['3','9'].some(x => res == x) ? 'B' : null;
 	}

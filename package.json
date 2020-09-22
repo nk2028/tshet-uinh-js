@@ -1,6 +1,6 @@
 {
   "name": "qieyun",
-  "version": "0.7.4-rc.0",
+  "version": "0.7.4",
   "description": "JavaScript library for the Qieyun phonological system 《切韻》音系 JavaScript 函式庫",
   "main": "index.js",
   "scripts": {

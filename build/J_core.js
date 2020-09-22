@@ -25,11 +25,14 @@
  * ]
  */
 function query漢字(漢字) {
+	if ([...漢字].length !== 1) {
+		throw new Error('漢字 must only contain one Chinese character');
+	}
 	const 漢字編碼 = 漢字.codePointAt(0);
 	const res = _字頭資料.get(漢字編碼);
-	return !res ? [] : res.map(function(小韻號_解釋) {
-		const 小韻號 = 小韻號_解釋[0], 解釋 = 小韻號_解釋[1];
-		return {"小韻號": 小韻號, "解釋": 解釋};
+	return !res ? [] : res.map((小韻號與解釋) => {
+		const [小韻號, 解釋] = 小韻號與解釋;
+		return {小韻號: 小韻號, 解釋: 解釋};
 	});
 }
 
@@ -50,6 +53,9 @@ function query漢字(漢字) {
  * ]
  */
 function query小韻號(小韻號) {
+	if (小韻號 < 1 || 小韻號 > 3874) {
+		throw new RangeError('Invalid 小韻號: ' + 小韻號);
+	}
 	return _小韻數組[小韻號 - 1];
 }
 
@@ -65,12 +71,11 @@ function query小韻號(小韻號) {
  * @see {@link get下字} {@link get反切}
  */
 function get上字(小韻號) {
-	// return _小韻資料[小韻號 - 1][3];
-	const res = [..._小韻資料[小韻號 - 1]][3];
-	if (res == 'x')  // 沒有反切的小韻
-		return null;
-	else
-		return res;
+	if (小韻號 < 1 || 小韻號 > 3874) {
+		throw new RangeError('Invalid 小韻號: ' + 小韻號);
+	}
+	const 上字 = [..._小韻資料[小韻號 - 1]][3];
+	return 上字 === 'x' ? null : 上字;  // 'x': 沒有反切的小韻
 }
 
 /**
@@ -83,12 +88,11 @@ function get上字(小韻號) {
  * @see {@link get上字} {@link get反切}
  */
 function get下字(小韻號) {
-	// return _小韻資料[小韻號 - 1][4];
-	const res = [..._小韻資料[小韻號 - 1]][4];
-	if (res == 'x')  // 沒有反切的小韻
-		return null;
-	else
-		return res;
+	if (小韻號 < 1 || 小韻號 > 3874) {
+		throw new RangeError('Invalid 小韻號: ' + 小韻號);
+	}
+	const 下字 = [..._小韻資料[小韻號 - 1]][4];
+	return 下字 === 'x' ? null : 下字;  // 'x': 沒有反切的小韻
 }
 
 /**
@@ -101,11 +105,11 @@ function get下字(小韻號) {
  * @see {@link get上字} {@link get下字}
  */
 function get反切(小韻號) {
-	const 上字 = get上字(小韻號);
-	if (!上字)
-		return null;
-	else
-		return 上字 + get下字(小韻號) + '切';
+	if (小韻號 < 1 || 小韻號 > 3874) {
+		throw new RangeError('Invalid 小韻號: ' + 小韻號);
+	}
+	const 反切 = [..._小韻資料[小韻號 - 1]].slice(3, 5).join('');
+	return 反切 === 'xx' ? null : 反切 + '切';  // 'xx': 沒有反切的小韻
 }
 
 /* 4. 查詢《廣韻》小韻號對應的《切韻》音系音韻地位 */
@@ -118,9 +122,11 @@ function get反切(小韻號) {
  * > let 音韻地位 = Qieyun.get音韻地位(739);
  */
 function get音韻地位(小韻號) {
-	function _小韻號到母(小韻號) {
-		return _母id到母[_小韻資料[小韻號 - 1][0]];
+	if (小韻號 < 1 || 小韻號 > 3874) {
+		throw new RangeError('Invalid 小韻號: ' + 小韻號);
 	}
+
+	const 母 = _母id到母[_小韻資料[小韻號 - 1][0]];
 
 	/* def make開合等重紐(開合, 等, 重紐):
 		if 開合 == '開':
@@ -137,49 +143,23 @@ function get音韻地位(小韻號) {
 			if 等 == 3 and 重紐 == 'B': return '9'
 			if 等 == 3: return 'a'
 			if 等 == 4: return 'b' */
-	
-	function _小韻號到開合(小韻號) {
-		const res = _小韻資料[小韻號 - 1][1];
-		return ['0','1','2','3','4','5'].some(x => res == x) ? '開' : '合';
-	}
-	
-	function _小韻號到等(小韻號) {
-		const res = _小韻資料[小韻號 - 1][1];
-		return ['0','6'].some(x => res == x) ? '一'
-			: ['1','7'].some(x => res == x) ? '二'
-			: ['2','3','4','8','9','a'].some(x => res == x) ? '三' : '四';
-	}
-	
-	function _小韻號到重紐(小韻號) {
-		const res = _小韻資料[小韻號 - 1][1];
-		return ['2','8'].some(x => res == x) ? 'A'
-			: ['3','9'].some(x => res == x) ? 'B' : null;
-	}
-	
-	function _小韻號到韻賅上去入(小韻號) {
-		function _getProto韻(小韻號) {
-			// return _小韻資料[小韻號 - 1][2];  // JS: '莊O3𧤛'[3] = "\ud85e"
-			return [..._小韻資料[小韻號 - 1]][2];
-		}
-	
-		return _韻到韻賅上去入[_getProto韻(小韻號)];
-	}
-	
-	function _小韻號到聲(小韻號) {
-		if (小韻號 <= 0)
-			throw new Error('Invalid 小韻號');
-		if (小韻號 <= 1156)
-			return '平';
-		if (小韻號 <= 2091)
-			return '上'
-		if (小韻號 <= 3182)
-			return '去';
-		if (小韻號 <= 3874)
-			return '入';
-		throw new Error('Invalid 小韻號');
-	}
 
-	return new 音韻地位(_小韻號到母(小韻號), _小韻號到開合(小韻號), _小韻號到等(小韻號), _小韻號到重紐(小韻號), _小韻號到韻賅上去入(小韻號), _小韻號到聲(小韻號));
+	const _id = _小韻資料[小韻號 - 1][1];
+
+	const 開合 = _id <= 5 ? '開' : '合';
+
+	const 等 = _id === '0' || _id === '6' ? '一' :
+		_id === '1' || _id === '7' ? '二' :
+		['2','3','4','8','9','a'].some((x) => _id === x) ? '三' : '四';
+
+	const 重紐 = _id === '2' || _id === '8' ? 'A' :
+		_id === '3' || _id === '9' ? 'B' : null;
+
+	const 韻賅上去入 = _韻到韻賅上去入[[..._小韻資料[小韻號 - 1]][2]];
+
+	const 聲 = 小韻號 <= 1156 ? '平' : 小韻號 <= 2091 ? '上' : 小韻號 <= 3182 ? '去' : '入';
+
+	return new 音韻地位(母, 開合, 等, 重紐, 韻賅上去入, 聲);
 }
 
 /* 5. 由《切韻》音系音韻地位得出各項音韻屬性 */
@@ -271,7 +251,7 @@ class 音韻地位 {
 	 */
 	get 韻() {
 		return _韻賅上去入與聲到韻[this.韻賅上去入 + this.聲];
-	};
+	}
 
 	/**
 	 * 攝
@@ -283,7 +263,7 @@ class 音韻地位 {
 	 */
 	get 攝() {
 		return _韻賅上去入到攝[this.韻賅上去入];
-	};
+	}
 
 	/**
 	 * 音韻描述
@@ -294,14 +274,14 @@ class 音韻地位 {
 	 * '見合一戈平'
 	 */
 	get 音韻描述() {
-		let 母 = this.母;
-		let 開合 = this.開合;
-		let 等 = this.等;
-		let 重紐 = this.重紐;
-		let 韻賅上去入 = this.韻賅上去入;
-		let 聲 = this.聲;
-		return 母 + 開合 + 等 + (重紐 || '') + 韻賅上去入 + 聲;
-	};
+		const 母 = this.母;
+		const 開合 = this.開合;
+		const 等 = this.等;
+		const 重紐 = this.重紐 || '';
+		const 韻賅上去入 = this.韻賅上去入;
+		const 聲 = this.聲;
+		return 母 + 開合 + 等 + 重紐 + 韻賅上去入 + 聲;
+	}
 
 	/* 6. 判斷某個小韻是否屬於給定的音韻地位 */
 
@@ -338,44 +318,58 @@ class 音韻地位 {
 		let 攝 = this.攝;
 
 		function _equal組(s) {
-			return _組到母[s].some(x => 母 == x);
+			return _組到母[s].some((x) => 母 === x);
 		}
 
 		function _equal聲(s) {
-			if (['平', '上', '去', '入'].some(x => s == x))
-				return s == 聲;
-			if (s == '仄')
-				return 聲 == '上' || 聲 == '去' || 聲 == '入';
-			if (s == '舒')
-				return 聲 == '平' || 聲 == '上' || 聲 == '去';
+			if (['平', '上', '去', '入'].some((x) => s === x)) {
+				return s === 聲;
+			} if (s === '仄') {
+				return 聲 === '上' || 聲 === '去' || 聲 === '入';
+			} if (s === '舒') {
+				return 聲 === '平' || 聲 === '上' || 聲 === '去';
+			}
 			throw new Error('Invalid 聲');
 		}
 
-		return s.split(' 或 ').some(s => s.split(' ').every(function (s) {
-			if (s.endsWith('母'))
-				return s.slice(0, -1).split('').some(s => 母 == s);
-			else if (s.endsWith('韻'))
-				return s.slice(0, -1).split('').some(s => 韻賅上去入 == s);
-			else if (s.endsWith('攝'))
-				return s.slice(0, -1).split('').some(s => 攝 == s);
+		return s.split(' 或 ').some((s) => s.split(' ').every((s) => {
+			if (s.endsWith('母')) {
+				return [...s].slice(0, -1).some((s) => 母 === s);
+			} else if (s.endsWith('韻')) {
+				return [...s].slice(0, -1).some((s) => 韻賅上去入 === s);
+			} else if (s.endsWith('攝')) {
+				return [...s].slice(0, -1).some((s) => 攝 === s);
+			}
 
-			else if (s.endsWith('組'))
-				return s.slice(0, -1).split('').some(s => _equal組(s));
-			else if (s.endsWith('等'))
-				return s.slice(0, -1).split('').some(s => 等 == s);
-			else if (s.endsWith('聲'))
-				return s.slice(0, -1).split('').some(s => _equal聲(s));
+			else if (s.endsWith('組')) {
+				return [...s].slice(0, -1).some((s) => _equal組(s));
+			} else if (s.endsWith('等')) {
+				return [...s].slice(0, -1).some((s) => 等 === s);
+			} else if (s.endsWith('聲')) {
+				return [...s].slice(0, -1).some((s) => _equal聲(s));
+			}
 
-			else if (s == '開口')
-				return 開合 == '開';
-			else if (s == '合口')
-				return 開合 == '合';
-			else if (s == '重紐A類')
-				return 重紐 == 'A';
-			else if (s == '重紐B類')
-				return 重紐 == 'B';
+			else if (s === '開口') {
+				return 開合 === '開';
+			} else if (s === '合口') {
+				return 開合 === '合';
+			} else if (s === '重紐A類') {
+				return 重紐 === 'A';
+			} else if (s === '重紐B類') {
+				return 重紐 === 'B';
+			}
 
 			throw new Error('無此運算符');
 		}));
 	}
 }
+
+const _qieyunExports = {
+	query漢字: query漢字,
+	query小韻號: query小韻號,
+	get上字: get上字,
+	get下字: get下字,
+	get反切: get反切,
+	get音韻地位: get音韻地位,
+	音韻地位: 音韻地位
+};

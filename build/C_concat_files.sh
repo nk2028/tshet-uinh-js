@@ -11,14 +11,7 @@ cat build/H_map.js >> index.js
 cat build/I_unpack_data.js >> index.js
 cat build/J_core.js >> index.js
 
-echo 'return { query漢字: query漢字
-, query小韻號: query小韻號
-, get上字: get上字
-, get下字: get下字
-, get反切: get反切
-, get音韻地位: get音韻地位
-, 音韻地位: 音韻地位
-};
+echo 'return _qieyunExports;
 })();
 
 try { module.exports = exports = Qieyun; } catch (e) {}' >> index.js

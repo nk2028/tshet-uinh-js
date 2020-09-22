@@ -2,6 +2,8 @@
 
 JavaScript library for the Qieyun phonological system
 
+![](https://nk2028.shn.hk/qieyun-js/demo/qieyun-js.png)
+
 [Documentation](https://nk2028.shn.hk/qieyun-js/)
 
 ## Usage
@@ -21,8 +23,6 @@ $ npm install qieyun
 ```javascript
 > const Qieyun = require('qieyun');
 ```
-
-![](https://nk2028.shn.hk/qieyun-js/demo/qieyun-js.png)
 
 ## Build & Test
 

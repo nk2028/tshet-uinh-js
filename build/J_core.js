@@ -294,12 +294,12 @@ class 音韻地位 {
 	 * '見合一戈平'
 	 */
 	get 音韻描述() {
-		let 母 = this.母
-			, 開合 = this.開合
-			, 等 = this.等
-			, 重紐 = this.重紐
-			, 韻賅上去入 = this.韻賅上去入
-			, 聲 = this.聲;
+		let 母 = this.母;
+		let 開合 = this.開合;
+		let 等 = this.等;
+		let 重紐 = this.重紐;
+		let 韻賅上去入 = this.韻賅上去入;
+		let 聲 = this.聲;
 		return 母 + 開合 + 等 + (重紐 || '') + 韻賅上去入 + 聲;
 	};
 
@@ -329,13 +329,13 @@ class 音韻地位 {
 	 * true
 	 */
 	屬於(s) {
-		let 母 = this.母
-			, 開合 = this.開合
-			, 等 = this.等
-			, 重紐 = this.重紐
-			, 韻賅上去入 = this.韻賅上去入
-			, 聲 = this.聲
-			, 攝 = this.攝;
+		let 母 = this.母;
+		let 開合 = this.開合;
+		let 等 = this.等;
+		let 重紐 = this.重紐;
+		let 韻賅上去入 = this.韻賅上去入;
+		let 聲 = this.聲;
+		let 攝 = this.攝;
 
 		function _equal組(s) {
 			return _組到母[s].some(x => 母 == x);

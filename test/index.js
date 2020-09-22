@@ -2,15 +2,9 @@
 
 const Qieyun = require('../index.js');
 const Database = require('better-sqlite3');
-
+const chai = require('chai');
+const should = chai.should();
 const db = new Database('cache/qieyun.sqlite3');
-
-function assertEqual(a, b) {
-	if (a !== b) {
-		console.error(a, 'should be equal to', b);
-		throw new Error('Test failed!');
-	}
-}
 
 /* 1. 由漢字查出對應的《廣韻》小韻號和解釋 */
 
@@ -20,9 +14,9 @@ const stmt = db.prepare('SELECT * FROM 廣韻字頭');
 
 for (const expected of stmt.iterate()) {
 	const 字頭 = expected.字頭;
-	if ([...字頭].length == 1)
-		if (!Qieyun.query漢字(字頭).some(got => got.小韻號 === expected.小韻號 && got.解釋 === expected.解釋))
-			throw new Error('Test failed!');
+	if ([...字頭].length == 1) {
+		Qieyun.query漢字(字頭).some(got => got.小韻號 === expected.小韻號 && got.解釋 === expected.解釋).should.equal(true);
+	}
 }
 
 })();
@@ -43,22 +37,22 @@ for (const expected of stmt.iterate())
 
 (function test3() {
 
-assertEqual(Qieyun.get音韻地位(12).屬於('云母'), true);
-assertEqual(Qieyun.get音韻地位(526).屬於('透母'), true);
+Qieyun.get音韻地位(12).屬於('云母').should.equal(true);
+Qieyun.get音韻地位(526).屬於('透母').should.equal(true);
 
-assertEqual(Qieyun.get音韻地位(1852).屬於('開口'), true);
+Qieyun.get音韻地位(1852).屬於('開口').should.equal(true);
 
-assertEqual(Qieyun.get音韻地位(13).屬於('三等'), true);
+Qieyun.get音韻地位(13).屬於('三等').should.equal(true);
 
-assertEqual(Qieyun.get音韻地位(1113).屬於('重紐B類'), true);
+Qieyun.get音韻地位(1113).屬於('重紐B類').should.equal(true);
 
-assertEqual(Qieyun.get音韻地位(3822).屬於('鹽韻'), true);
+Qieyun.get音韻地位(3822).屬於('鹽韻').should.equal(true);
 
-assertEqual(Qieyun.get音韻地位(2245).屬於('開口'), false);
-assertEqual(Qieyun.get音韻地位(2245).屬於('開口 或 三等'), true);
+Qieyun.get音韻地位(2245).屬於('開口').should.equal(false);
+Qieyun.get音韻地位(2245).屬於('開口 或 三等').should.equal(true);
 
-assertEqual(Qieyun.get音韻地位(1352).屬於('影組'), true); // 羽
-assertEqual(Qieyun.get音韻地位(1291).屬於('影組'), false); // 以
+Qieyun.get音韻地位(1352).屬於('影組').should.equal(true); // 羽
+Qieyun.get音韻地位(1291).屬於('影組').should.equal(false); // 以
 
 })();
 
@@ -66,13 +60,13 @@ assertEqual(Qieyun.get音韻地位(1291).屬於('影組'), false); // 以
 
 (function test4() {
 	let 音韻地位 = Qieyun.get音韻地位(739);
-	assertEqual(音韻地位.母, '見');
-	assertEqual(音韻地位.開合, '合');
-	assertEqual(音韻地位.等, '一');
-	assertEqual(音韻地位.重紐, null);
-	assertEqual(音韻地位.韻賅上去入, '戈');
-	assertEqual(音韻地位.聲, '平');
-	assertEqual(音韻地位.攝, '果');
-	assertEqual(音韻地位.音韻描述, '見合一戈平');
-	assertEqual(音韻地位.屬於('果攝'), true);
+	音韻地位.母.should.equal('見');
+	音韻地位.開合.should.equal('合');
+	音韻地位.等.should.equal('一');
+	should.equal(音韻地位.重紐, null);
+	音韻地位.韻賅上去入.should.equal('戈');
+	音韻地位.聲.should.equal('平');
+	音韻地位.攝.should.equal('果');
+	音韻地位.音韻描述.should.equal('見合一戈平');
+	音韻地位.屬於('果攝').should.equal(true);
 })();

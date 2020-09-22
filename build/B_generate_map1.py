@@ -33,12 +33,8 @@ with open('output/G_map1.js', 'w') as f:
 
 # 壓縮的小韻資料
 
-def build_母到母id():
-	母到母id = pandas.read_csv('build/initial_map.csv', dtype=str, na_filter=False)
-	母到母id_obj = {x: y for x, y in zip(母到母id['Initial'], 母到母id['InitialID'])}
-	return 母到母id_obj
-
-母到母ID_OBJ = build_母到母id()
+母到母id = pandas.read_csv('build/initial_map.csv', dtype=str, na_filter=False)
+母到母id_obj = {x: y for x, y in zip(母到母id['Initial'], 母到母id['InitialID'])}
 
 def make開合等重紐(開合, 等, 重紐):
 	if 開合 == '開':
@@ -58,7 +54,7 @@ def make開合等重紐(開合, 等, 重紐):
 
 with open('output/F_壓縮的小韻資料.js', 'w') as f:
 	f.write('const 壓縮的小韻資料=\n`')
-	f.write('\\\n'.join(''.join((母到母ID_OBJ[母], make開合等重紐(開合, 等, 重紐), 韻, 'xx' if not 反切 else 反切 or '')) \
+	f.write('\\\n'.join(''.join((母到母id_obj[母], make開合等重紐(開合, 等, 重紐), 韻, 'xx' if not 反切 else 反切 or '')) \
 		for 母, 開合, 等, 韻, 重紐, 反切 \
 		in cur.execute('SELECT 母, 開合, 等, 韻, 重紐, 上字 || 下字 FROM 廣韻小韻全 ORDER BY 小韻號;')))
 	f.write('`;\n')  # 母, 開合, 等, 韻, 重紐，且等為數字

@@ -1,10 +1,10 @@
-# qieyun-js [![](https://data.jsdelivr.com/v1/package/npm/qieyun/badge)](https://www.jsdelivr.com/package/npm/qieyun)
+# qieyun-js [![](https://github.com/nk2028/qieyun-js/workflows/Node.js%20Package/badge.svg)](https://github.com/nk2028/qieyun-js/actions?query=workflow%3A%22Node.js+Package%22) [![](https://data.jsdelivr.com/v1/package/npm/qieyun/badge)](https://www.jsdelivr.com/package/npm/qieyun)
 
-JavaScript library for the Qieyun phonological system
+JavaScript library for the _Qieyun_ phonological system
 
 ![](https://nk2028.shn.hk/qieyun-js/demo/qieyun-js.png)
 
-[Documentation](https://nk2028.shn.hk/qieyun-js/)
+Documentation: [link](https://nk2028.shn.hk/qieyun-js/)
 
 ## Usage
 

@@ -60,7 +60,7 @@
  * * 母 谿 -> 溪
  * * 母 群 -> 羣
  * * 韻 餚 -> 肴
- * * 韻 眞 -> 真
+ * * 韻 真 -> 眞
  *
  * [GitHub](https://github.com/nk2028/qieyun-js) - [npm](https://www.npmjs.com/package/qieyun) - [JSDelivr](https://www.jsdelivr.com/package/npm/qieyun)
  * @module Qieyun

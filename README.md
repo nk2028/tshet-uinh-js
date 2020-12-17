@@ -49,12 +49,6 @@ npm install
 npm run docs
 ```
 
-## License
-
-Dictionary data is in the public domain.
-
-Source code is distributed under MIT license.
-
 ## Note for developers
 
 You need to substitute all the occurrences of the version string before publishing a new release.

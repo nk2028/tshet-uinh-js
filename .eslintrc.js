@@ -12,7 +12,9 @@ module.exports = {
     ecmaVersion: 12,
   },
   rules: {
+    'max-len': 1,
     'no-nested-ternary': 0,
     'object-property-newline': 0,
+    'quotes': [1, 'single'],
   },
 };

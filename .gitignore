@@ -1,5 +1,4 @@
 .mypy_cache
-.vscode
 node_modules
 /venv
 /cache

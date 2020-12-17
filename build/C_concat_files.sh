@@ -1,14 +1,16 @@
 #!/bin/sh
 
-echo 'const Qieyun = (function () {' > index.js
+echo "const Qieyun = (() => {
+`sed 's/^\(.\)/  \1/' build/D_header.js`
 
-cat build/D_header.js >> index.js
-cat output/E_壓縮的字頭資料.js >> index.js
-cat output/F_壓縮的小韻資料.js >> index.js
-cat output/G_map1.js >> index.js
-sed 's/^\(.\)/  \1/' build/H_core.js >> index.js
+  `cat output/E_壓縮的字頭資料.js`
 
-echo '
+  `cat output/F_壓縮的小韻資料.js`
+
+`sed 's/^\(.\)/  \1/' build/G_map.js`
+
+`sed 's/^\(.\)/  \1/' build/H_core.js`
+
   return {
     query漢字,
     query小韻號,
@@ -20,4 +22,4 @@ echo '
   };
 })();
 
-try { module.exports = exports = Qieyun; } catch (e) { /* continue regardless of error */ }' >> index.js
+try { module.exports = Qieyun; } catch (e) { /* continue regardless of error */ }" > index.js

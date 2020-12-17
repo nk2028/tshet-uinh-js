@@ -13,6 +13,7 @@ module.exports = {
   },
   rules: {
     'max-len': 1,
+    'no-constant-condition': ['error', { checkLoops: false }],
     'no-nested-ternary': 0,
     'object-property-newline': 0,
     'quotes': [1, 'single'],

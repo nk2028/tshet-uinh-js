@@ -286,7 +286,7 @@
 <li>母 谿 -> 溪</li>
 <li>母 群 -> 羣</li>
 <li>韻 餚 -> 肴</li>
-<li>韻 眞 -> 真</li>
+<li>韻 真 -> 眞</li>
 </ul>
 <p><a href="https://github.com/nk2028/qieyun-js">GitHub</a> - <a href="https://www.npmjs.com/package/qieyun">npm</a> - <a href="https://www.jsdelivr.com/package/npm/qieyun">JSDelivr</a></p>
 
@@ -343,7 +343,7 @@
 <pre class='hljs'>&gt; Qieyun.query漢字(<span class="hljs-string">'笑'</span>);
 []
 &gt; Qieyun.query漢字(<span class="hljs-string">'𥬇'</span>);
-[{ <span class="hljs-string">"小韻號"</span>: <span class="hljs-number">2768</span>, <span class="hljs-string">"解釋"</span>: <span class="hljs-string">"欣也喜也亦作笑私妙切五"</span> }]</pre>
+[{ <span class="hljs-string">'小韻號'</span>: <span class="hljs-number">2768</span>, <span class="hljs-string">'解釋'</span>: <span class="hljs-string">'欣也喜也亦作笑私妙切五'</span> }]</pre>
 
     <div class='pre p1 fill-light mt0'>query漢字(漢字: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a></div>
   
@@ -395,8 +395,8 @@
     
       
       <pre class='p1 overflow-auto round fill-light'>&gt; Qieyun.query漢字(<span class="hljs-string">'過'</span>);
-[ { <span class="hljs-string">"小韻號"</span>: <span class="hljs-number">739</span>, <span class="hljs-string">"解釋"</span>: <span class="hljs-string">"經也又過所也釋名曰過所至關津以示之也或曰傳過也移所在識以爲信也亦姓風俗通云過國夏諸侯後因爲氏漢有兖州刺史過栩"</span> }
-, { <span class="hljs-string">"小韻號"</span>: <span class="hljs-number">2837</span>, <span class="hljs-string">"解釋"</span>: <span class="hljs-string">"誤也越也責也度也古臥切七"</span> }
+[ { <span class="hljs-string">'小韻號'</span>: <span class="hljs-number">739</span>, <span class="hljs-string">'解釋'</span>: <span class="hljs-string">'經也又過所也釋名曰過所至關津以示之也或曰傳過也移所在識以爲信也亦姓風俗通云過國夏諸侯後因爲氏漢有兖州刺史過栩'</span> }
+, { <span class="hljs-string">'小韻號'</span>: <span class="hljs-number">2837</span>, <span class="hljs-string">'解釋'</span>: <span class="hljs-string">'誤也越也責也度也古臥切七'</span> }
 ]</pre>
     
   
@@ -669,7 +669,7 @@
     <div class='py1 quiet mt1 prose-big'>Example</div>
     
       
-      <pre class='p1 overflow-auto round fill-light'>&gt; Qieyun.get下字(<span class="hljs-number">1919</span>);  <span class="hljs-comment">// 拯小韻無反切</span>
+      <pre class='p1 overflow-auto round fill-light'>&gt; Qieyun.get下字(<span class="hljs-number">1919</span>); <span class="hljs-comment">// 拯小韻無反切</span>
 <span class="hljs-literal">null</span></pre>
     
   
@@ -762,7 +762,7 @@
     <div class='py1 quiet mt1 prose-big'>Example</div>
     
       
-      <pre class='p1 overflow-auto round fill-light'>&gt; Qieyun.get反切(<span class="hljs-number">1644</span>);  <span class="hljs-comment">// 轉小韻</span>
+      <pre class='p1 overflow-auto round fill-light'>&gt; Qieyun.get反切(<span class="hljs-number">1644</span>); <span class="hljs-comment">// 轉小韻</span>
 <span class="hljs-string">'陟兖切'</span></pre>
     
   
@@ -966,7 +966,7 @@
     <div class='py1 quiet mt1 prose-big'>Example</div>
     
       
-      <pre class='p1 overflow-auto round fill-light'>&gt; <span class="hljs-keyword">let</span> 音韻地位 = <span class="hljs-keyword">new</span> Qieyun.音韻地位(<span class="hljs-string">"見"</span>, <span class="hljs-string">"合"</span>, <span class="hljs-string">"一"</span>, <span class="hljs-literal">null</span>, <span class="hljs-string">"戈"</span>, <span class="hljs-string">"平"</span>);</pre>
+      <pre class='p1 overflow-auto round fill-light'>&gt; <span class="hljs-keyword">let</span> 音韻地位 = <span class="hljs-keyword">new</span> Qieyun.音韻地位(<span class="hljs-string">'見'</span>, <span class="hljs-string">'合'</span>, <span class="hljs-string">'一'</span>, <span class="hljs-literal">null</span>, <span class="hljs-string">'戈'</span>, <span class="hljs-string">'平'</span>);</pre>
     
   
 
@@ -1604,7 +1604,7 @@
     <div class='py1 quiet mt1 prose-big'>Example</div>
     
       
-      <pre class='p1 overflow-auto round fill-light'>&gt; <span class="hljs-keyword">let</span> 音韻地位 = Qieyun.get音韻地位(<span class="hljs-number">1919</span>);  <span class="hljs-comment">// 拯小韻</span>
+      <pre class='p1 overflow-auto round fill-light'>&gt; <span class="hljs-keyword">let</span> 音韻地位 = Qieyun.get音韻地位(<span class="hljs-number">1919</span>); <span class="hljs-comment">// 拯小韻</span>
 &gt; 音韻地位.屬於(<span class="hljs-string">'章母'</span>);
 <span class="hljs-literal">true</span>
 &gt; 音韻地位.屬於(<span class="hljs-string">'清韻'</span>);

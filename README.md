@@ -6,39 +6,10 @@ JavaScript library for the _Qieyun_ phonological system
 
 ![](https://nk2028.shn.hk/qieyun-js/demo/qieyun-js.png)
 
-Documentation: [link](https://nk2028.shn.hk/qieyun-js/)
+## Documentation 
 
-## Usage
-
-Browser:
-
-```html
-<script src="https://cdn.jsdelivr.net/npm/qieyun@0.7.4"></script>
-```
-
-Node.js:
-
-```sh
-$ npm install qieyun
-```
-
-```javascript
-> const Qieyun = require('qieyun');
-```
-
-## Build & Test
-
-### Build
-
-See the [build script](.github/workflows/test.yml).
-
-### Build Documentation
-
-```sh
-npm install
-npm run docs
-```
+See [here](https://nk2028.shn.hk/qieyun-js/).
 
 ## Note for developers
 
-You need to substitute all the occurrences of the version string before publishing a new release.
+See [CONTRIBUTING.md](CONTRIBUTING.md).

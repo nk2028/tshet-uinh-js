@@ -25,7 +25,7 @@
  * Browser:
  *
  * ```html
- * <script src="https://cdn.jsdelivr.net/npm/qieyun@0.7.4"></script>
+ * <script src="https://cdn.jsdelivr.net/npm/qieyun@0.7.5"></script>
  * ```
  *
  * Node.js:

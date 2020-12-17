@@ -4,6 +4,10 @@
 
 Please follow the [Airbnb JavaScript Style Guide](https://github.com/airbnb/javascript).
 
+## File Naming
+
+Use the extension `*.js.txt` to lets the tools recognize a file as a data file instead of a JavaScript file.
+
 ## Build
 
 See the [build script](.github/workflows/build.yml).

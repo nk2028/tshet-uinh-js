@@ -12,19 +12,23 @@ cur = conn.cursor()
 
 def make開合等重紐(開合, 等, 重紐):
 	if 開合 == '開':
-		if 等 == 1: return '0'
-		if 等 == 2: return '1'
-		if 等 == 3 and 重紐 == 'A': return '2'
-		if 等 == 3 and 重紐 == 'B': return '3'
-		if 等 == 3: return '4'
-		if 等 == 4: return '5'
+		return \
+			'0' if 等 == 1 else \
+			'1' if 等 == 2 else \
+			'2' if 等 == 3 and 重紐 == 'A' else \
+			'3' if 等 == 3 and 重紐 == 'B' else \
+			'4' if 等 == 3 else \
+			'5' if 等 == 4 else \
+			None
 	if 開合 == '合':
-		if 等 == 1: return '6'
-		if 等 == 2: return '7'
-		if 等 == 3 and 重紐 == 'A': return '8'
-		if 等 == 3 and 重紐 == 'B': return '9'
-		if 等 == 3: return 'a'
-		if 等 == 4: return 'b'
+		return \
+			'6' if 等 == 1 else \
+			'7' if 等 == 2 else \
+			'8' if 等 == 3 and 重紐 == 'A' else \
+			'9' if 等 == 3 and 重紐 == 'B' else \
+			'a' if 等 == 3 else \
+			'b' if 等 == 4 else \
+			None
 
 with open('output/F_壓縮的小韻資料.js', 'w') as f:
 	f.write('const 壓縮的小韻資料 = `')

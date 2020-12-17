@@ -7,7 +7,7 @@ echo "const Qieyun = (() => {
 
   `cat output/F_壓縮的小韻資料.js`
 
-`sed 's/^\(.\)/  \1/' build/G_map.js`
+`sed 's/^\(.\)/  \1/' build/G_map.js.txt`
 
 `sed 's/^\(.\)/  \1/' build/H_core.js`
 

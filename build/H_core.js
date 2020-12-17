@@ -14,11 +14,12 @@ function 解凍小韻資料() {
 function 解凍字頭資料() {
   const r = /(\d+)([^\d])([^\d]+)/gu;
   const 字頭資料 = new Map();
-  let match;
+  const 小韻數組 = [...Array(3874)].map(() => []); // [ [], [], [], ..., [] ],  repeat 3874 times
 
-  const 小韻數組 = [...Array(3874)].map(() => []);
+  while (true) {
+    const match = r.exec(壓縮的字頭資料);
+    if (match == null) break;
 
-  while ((match = r.exec(壓縮的字頭資料)) != null) {
     const 小韻號 = parseInt(match[1], 10);
     const 字頭 = match[2];
     const 字頭編碼 = 字頭.codePointAt(0);
@@ -155,69 +156,19 @@ function get反切(小韻號) {
   return 反切 === 'xx' ? null : `${反切}切`; // 'xx': 沒有反切的小韻
 }
 
-/* 4. 查詢《廣韻》小韻號對應的《切韻》音系音韻地位 */
-
-/**
- * 查詢《廣韻》小韻號對應的《切韻》音系音韻地位。
- * @param {number} 小韻號
- * @returns {音韻地位} 該小韻號對應的音韻地位。
- * @example
- * > let 音韻地位 = Qieyun.get音韻地位(739);
- */
-function get音韻地位(小韻號) {
-  if (小韻號 < 1 || 小韻號 > 3874) {
-    throw new RangeError(`Invalid 小韻號: ${小韻號}`);
-  }
-
-  const 母 = 母id到母[小韻資料[小韻號 - 1][0]];
-
-  /* def make開合等重紐(開合, 等, 重紐):
-    if 開合 == '開':
-      if 等 == 1: return '0'
-      if 等 == 2: return '1'
-      if 等 == 3 and 重紐 == 'A': return '2'
-      if 等 == 3 and 重紐 == 'B': return '3'
-      if 等 == 3: return '4'
-      if 等 == 4: return '5'
-    if 開合 == '合':
-      if 等 == 1: return '6'
-      if 等 == 2: return '7'
-      if 等 == 3 and 重紐 == 'A': return '8'
-      if 等 == 3 and 重紐 == 'B': return '9'
-      if 等 == 3: return 'a'
-      if 等 == 4: return 'b' */
-
-  const id = 小韻資料[小韻號 - 1][1];
-
-  const 開合 = id <= 5 ? '開' : '合';
-
-  const 等 = id === '0' || id === '6' ? '一'
-    : id === '1' || id === '7' ? '二'
-      : ['2', '3', '4', '8', '9', 'a'].some((x) => id === x) ? '三' : '四';
-
-  const 重紐 = id === '2' || id === '8' ? 'A'
-    : id === '3' || id === '9' ? 'B' : null;
-
-  const 韻賅上去入 = 韻到韻賅上去入[[...小韻資料[小韻號 - 1]][2]];
-
-  const 聲 = 小韻號 <= 1156 ? '平' : 小韻號 <= 2091 ? '上' : 小韻號 <= 3182 ? '去' : '入';
-
-  return new 音韻地位(母, 開合, 等, 重紐, 韻賅上去入, 聲);
-}
-
-/* 5. 由《切韻》音系音韻地位得出各項音韻屬性 */
+/* 4. 由《切韻》音系音韻地位得出各項音韻屬性 */
 
 /**
  * 《切韻》音系音韻地位。
  *
- * 可使用字符串 \(母, 開合, 等, 重紐, 韻賅上去入, 聲\) 初始化。
+ * 可使用字串 \(母, 開合, 等, 重紐, 韻賅上去入, 聲\) 初始化。
  * @param {string} 母 聲母：幫, 滂, 並, 明, …
  * @param {string} 開合 開合：開, 合
  * @param {string} 等 等：一, 二, 三, 四
  * @param {string} 重紐 重紐：`null`, A, B
  * @param {string} 韻賅上去入 韻母（舉平以賅上去入）：東, 冬, 鍾, 江, …, 祭, 泰, 夬, 廢
  * @param {string} 聲 聲調：平, 上, 去, 入
- * @returns {音韻地位} 字符串所描述的音韻地位。
+ * @returns {音韻地位} 字串所描述的音韻地位。
  * @example
  * > let 音韻地位 = new Qieyun.音韻地位('見', '合', '一', null, '戈', '平');
  */
@@ -328,22 +279,22 @@ class 音韻地位 {
     return 母 + 開合 + 等 + (重紐 || '') + 韻賅上去入 + 聲;
   }
 
-  /* 6. 判斷某個小韻是否屬於給定的音韻地位 */
+  /* 5. 判斷某個小韻是否屬於給定的音韻地位 */
 
   /**
    * 判斷某個小韻是否屬於給定的音韻地位。
-   * @param {string} s 描述音韻地位的字符串
+   * @param {string} s 描述音韻地位的字串
    *
-   * 字符串中音韻地位的描述格式：`...母`, `...組`, `...等`, `...韻`, `...攝`, `...聲`, `開口`, `合口`, `重紐A類`, `重紐B類`。
+   * 字串中音韻地位的描述格式：`...母`, `...組`, `...等`, `...韻`, `...攝`, `...聲`, `開口`, `合口`, `重紐A類`, `重紐B類`。
    *
    * 亦支援「開口」、「合口」、「重紐A類」、「重紐B類」四項。
    *
-   * 字符串先以「或」字分隔，再以空格分隔。不支援括號。
+   * 字串首先以「或」字分隔，再以空格分隔。不支援括號。
    *
    * 如「(端精組 且 重紐A類) 或 (以母 且 四等 且 去聲)」可以表示為 `端精組 重紐A類 或 以母 四等 去聲`。
    *
    * **注意**：`屬於` 函數中的「韻」指的是韻賅上去入。
-   * @returns {boolean} 若描述音韻地位的字符串符合該音韻地位，返回 `true`；否則返回 `false`。
+   * @returns {boolean} 若描述音韻地位的字串符合該音韻地位，返回 `true`；否則返回 `false`。
    * @example
    * > let 音韻地位 = Qieyun.get音韻地位(1919); // 拯小韻
    * > 音韻地位.屬於('章母');
@@ -366,45 +317,25 @@ class 音韻地位 {
 
     function equal組(i) {
       const vs = 組到母[i];
-      if (vs == null) {
-        throw new Error(`No such 組: ${i}`);
-      }
+      if (vs == null) return false; // No such 組, must be not equal
       return vs.some((v) => 母 === v);
     }
 
     function equal聲(i) {
-      if (['平', '上', '去', '入'].some((x) => i === x)) {
-        return i === 聲;
-      }
-      if (i === '仄') {
-        return 聲 === '上' || 聲 === '去' || 聲 === '入';
-      }
-      if (i === '舒') {
-        return 聲 === '平' || 聲 === '上' || 聲 === '去';
-      }
-      throw new Error(`Invalid 聲: ${i}`);
+      if (['平', '上', '去', '入'].includes(i)) return i === 聲;
+      if (i === '仄') return 聲 !== '平';
+      if (i === '舒') return 聲 !== '入';
+      return false; // No such 聲, must be not equal
     }
 
     return s.split(' 或 ').some((xs) => xs.split(' ').every((ys) => {
-      if (ys.endsWith('母')) {
-        return [...ys].slice(0, -1).some((i) => 母 === i);
-      }
-      if (ys.endsWith('韻')) {
-        return [...ys].slice(0, -1).some((i) => 韻賅上去入 === i);
-      }
-      if (ys.endsWith('攝')) {
-        return [...ys].slice(0, -1).some((i) => 攝 === i);
-      }
+      if (ys.endsWith('母')) return [...ys].slice(0, -1).includes(母);
+      if (ys.endsWith('韻')) return [...ys].slice(0, -1).includes(韻賅上去入);
+      if (ys.endsWith('攝')) return [...ys].slice(0, -1).includes(攝);
 
-      if (ys.endsWith('組')) {
-        return [...ys].slice(0, -1).some((i) => equal組(i));
-      }
-      if (ys.endsWith('等')) {
-        return [...ys].slice(0, -1).some((i) => 等 === i);
-      }
-      if (ys.endsWith('聲')) {
-        return [...ys].slice(0, -1).some((i) => equal聲(i));
-      }
+      if (ys.endsWith('組')) return [...ys].slice(0, -1).some((i) => equal組(i));
+      if (ys.endsWith('等')) return [...ys].slice(0, -1).includes(等);
+      if (ys.endsWith('聲')) return [...ys].slice(0, -1).some((i) => equal聲(i));
 
       if (ys === '開口') return 開合 === '開';
       if (ys === '合口') return 開合 === '合';
@@ -414,4 +345,54 @@ class 音韻地位 {
       throw new Error(`No such 運算符: ${ys}`);
     }));
   }
+}
+
+/* 6. 查詢《廣韻》小韻號對應的《切韻》音系音韻地位 */
+
+/**
+ * 查詢《廣韻》小韻號對應的《切韻》音系音韻地位。
+ * @param {number} 小韻號
+ * @returns {音韻地位} 該小韻號對應的音韻地位。
+ * @example
+ * > let 音韻地位 = Qieyun.get音韻地位(739);
+ */
+function get音韻地位(小韻號) {
+  if (小韻號 < 1 || 小韻號 > 3874) {
+    throw new RangeError(`Invalid 小韻號: ${小韻號}`);
+  }
+
+  const 母 = 母id到母[小韻資料[小韻號 - 1][0]];
+
+  /* def make開合等重紐(開合, 等, 重紐):
+    if 開合 == '開':
+      if 等 == 1: return '0'
+      if 等 == 2: return '1'
+      if 等 == 3 and 重紐 == 'A': return '2'
+      if 等 == 3 and 重紐 == 'B': return '3'
+      if 等 == 3: return '4'
+      if 等 == 4: return '5'
+    if 開合 == '合':
+      if 等 == 1: return '6'
+      if 等 == 2: return '7'
+      if 等 == 3 and 重紐 == 'A': return '8'
+      if 等 == 3 and 重紐 == 'B': return '9'
+      if 等 == 3: return 'a'
+      if 等 == 4: return 'b' */
+
+  const id = 小韻資料[小韻號 - 1][1];
+
+  const 開合 = id <= 5 ? '開' : '合';
+
+  const 等 = id === '0' || id === '6' ? '一'
+    : id === '1' || id === '7' ? '二'
+      : ['2', '3', '4', '8', '9', 'a'].some((x) => id === x) ? '三' : '四';
+
+  const 重紐 = id === '2' || id === '8' ? 'A'
+    : id === '3' || id === '9' ? 'B' : null;
+
+  const 韻賅上去入 = 韻到韻賅上去入[[...小韻資料[小韻號 - 1]][2]];
+
+  const 聲 = 小韻號 <= 1156 ? '平' : 小韻號 <= 2091 ? '上' : 小韻號 <= 3182 ? '去' : '入';
+
+  return new 音韻地位(母, 開合, 等, 重紐, 韻賅上去入, 聲);
 }

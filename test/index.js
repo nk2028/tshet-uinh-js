@@ -1,5 +1,3 @@
-'use strict';
-
 const Qieyun = require('../index.js');
 const Database = require('better-sqlite3');
 const chai = require('chai');
@@ -29,7 +27,7 @@ const db = new Database('cache/qieyun.sqlite3');
 	}
 })();
 
-/* 3. 判斷某個小韻是否屬於給定的音韻地位（以字符串描述） */
+/* 3. 判斷某個小韻是否屬於給定的音韻地位（以字串描述） */
 
 (function test3() {
 	Qieyun.get音韻地位(12).屬於('云母').should.equal(true);

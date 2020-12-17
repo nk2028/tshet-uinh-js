@@ -89,16 +89,6 @@
               
                 
                 <li><a
-                  href='#get音韻地位'
-                  class="">
-                  get音韻地位
-                  
-                </a>
-                
-                </li>
-              
-                
-                <li><a
                   href='#音韻地位'
                   class=" toggle-sibling">
                   音韻地位
@@ -176,6 +166,16 @@
                   
                   
                 </div>
+                
+                </li>
+              
+                
+                <li><a
+                  href='#get音韻地位'
+                  class="">
+                  get音韻地位
+                  
+                </a>
                 
                 </li>
               
@@ -784,83 +784,6 @@
   
   <div class='clearfix'>
     
-    <h3 class='fl m0' id='get音韻地位'>
-      get音韻地位
-    </h3>
-    
-    
-  </div>
-  
-
-  <p>查詢《廣韻》小韻號對應的《切韻》音系音韻地位。</p>
-
-    <div class='pre p1 fill-light mt0'>get音韻地位(小韻號: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>): <a href="#%E9%9F%B3%E9%9F%BB%E5%9C%B0%E4%BD%8D">音韻地位</a></div>
-  
-  
-
-  
-  
-  
-  
-  
-  
-
-  
-    <div class='py1 quiet mt1 prose-big'>Parameters</div>
-    <div class='prose'>
-      
-        <div class='space-bottom0'>
-          <div>
-            <span class='code bold'>小韻號</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)</code>
-	    
-          </div>
-          
-        </div>
-      
-    </div>
-  
-
-  
-
-  
-    
-      <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code><a href="#%E9%9F%B3%E9%9F%BB%E5%9C%B0%E4%BD%8D">音韻地位</a></code>:
-        該小韻號對應的音韻地位。
-
-      
-    
-  
-
-  
-
-  
-
-  
-    <div class='py1 quiet mt1 prose-big'>Example</div>
-    
-      
-      <pre class='p1 overflow-auto round fill-light'>&gt; <span class="hljs-keyword">let</span> 音韻地位 = Qieyun.get音韻地位(<span class="hljs-number">739</span>);</pre>
-    
-  
-
-  
-
-  
-
-  
-
-  
-</section>
-
-          
-        
-          
-          <section class='p2 mb2 clearfix bg-white minishadow'>
-
-  
-  <div class='clearfix'>
-    
     <h3 class='fl m0' id='音韻地位'>
       音韻地位
     </h3>
@@ -870,7 +793,7 @@
   
 
   <p>《切韻》音系音韻地位。</p>
-<p>可使用字符串 (母, 開合, 等, 重紐, 韻賅上去入, 聲) 初始化。</p>
+<p>可使用字串 (母, 開合, 等, 重紐, 韻賅上去入, 聲) 初始化。</p>
 
     <div class='pre p1 fill-light mt0'>new 音韻地位(母: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>, 開合: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>, 等: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>, 重紐: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>, 韻賅上去入: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>, 聲: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>): <a href="#%E9%9F%B3%E9%9F%BB%E5%9C%B0%E4%BD%8D">音韻地位</a></div>
   
@@ -952,7 +875,7 @@
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
       <code><a href="#%E9%9F%B3%E9%9F%BB%E5%9C%B0%E4%BD%8D">音韻地位</a></code>:
-        字符串所描述的音韻地位。
+        字串所描述的音韻地位。
 
       
     
@@ -1566,10 +1489,10 @@
         <div class='space-bottom0'>
           <div>
             <span class='code bold'>s</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
-	    描述音韻地位的字符串
-<p>字符串中音韻地位的描述格式：<code>...母</code>, <code>...組</code>, <code>...等</code>, <code>...韻</code>, <code>...攝</code>, <code>...聲</code>, <code>開口</code>, <code>合口</code>, <code>重紐A類</code>, <code>重紐B類</code>。</p>
+	    描述音韻地位的字串
+<p>字串中音韻地位的描述格式：<code>...母</code>, <code>...組</code>, <code>...等</code>, <code>...韻</code>, <code>...攝</code>, <code>...聲</code>, <code>開口</code>, <code>合口</code>, <code>重紐A類</code>, <code>重紐B類</code>。</p>
 <p>亦支援「開口」、「合口」、「重紐A類」、「重紐B類」四項。</p>
-<p>字符串先以「或」字分隔，再以空格分隔。不支援括號。</p>
+<p>字串首先以「或」字分隔，再以空格分隔。不支援括號。</p>
 <p>如「(端精組 且 重紐A類) 或 (以母 且 四等 且 去聲)」可以表示為 <code>端精組 重紐A類 或 以母 四等 去聲</code>。</p>
 <p><strong>注意</strong>：<code>屬於</code> 函數中的「韻」指的是韻賅上去入。</p>
 
@@ -1586,7 +1509,7 @@
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
       <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></code>:
-        若描述音韻地位的字符串符合該音韻地位，返回 
+        若描述音韻地位的字串符合該音韻地位，返回 
 <code>true</code>
 ；否則返回 
 <code>false</code>
@@ -1627,6 +1550,83 @@
     </div>
   
 </div>
+
+  
+
+  
+
+  
+</section>
+
+          
+        
+          
+          <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
+    <h3 class='fl m0' id='get音韻地位'>
+      get音韻地位
+    </h3>
+    
+    
+  </div>
+  
+
+  <p>查詢《廣韻》小韻號對應的《切韻》音系音韻地位。</p>
+
+    <div class='pre p1 fill-light mt0'>get音韻地位(小韻號: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>): <a href="#%E9%9F%B3%E9%9F%BB%E5%9C%B0%E4%BD%8D">音韻地位</a></div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>小韻號</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)</code>
+	    
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code><a href="#%E9%9F%B3%E9%9F%BB%E5%9C%B0%E4%BD%8D">音韻地位</a></code>:
+        該小韻號對應的音韻地位。
+
+      
+    
+  
+
+  
+
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Example</div>
+    
+      
+      <pre class='p1 overflow-auto round fill-light'>&gt; <span class="hljs-keyword">let</span> 音韻地位 = Qieyun.get音韻地位(<span class="hljs-number">739</span>);</pre>
+    
+  
+
+  
 
   
 

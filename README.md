@@ -1,4 +1,6 @@
-# qieyun-js [![](https://github.com/nk2028/qieyun-js/workflows/Node.js%20Package/badge.svg)](https://github.com/nk2028/qieyun-js/actions?query=workflow%3A%22Node.js+Package%22) [![](https://data.jsdelivr.com/v1/package/npm/qieyun/badge)](https://www.jsdelivr.com/package/npm/qieyun)
+# qieyun-js
+
+[![](https://badge.fury.io/js/qieyun.svg)](https://www.npmjs.com/package/qieyun) [![](https://data.jsdelivr.com/v1/package/npm/qieyun/badge)](https://www.jsdelivr.com/package/npm/qieyun) [![](https://github.com/nk2028/qieyun-js/workflows/Package/badge.svg)](https://github.com/nk2028/qieyun-js/actions?query=workflow%3A%22Package%22)
 
 JavaScript library for the _Qieyun_ phonological system
 
@@ -28,19 +30,7 @@ $ npm install qieyun
 
 ### Build
 
-```sh
-pip install -r requirements.txt
-build/A_prepare_data.sh
-python build/B_generate.py
-build/C_concat_files.sh
-```
-
-### Test
-
-```sh
-npm install
-npm test
-```
+See the [build script](.github/workflows/test.yml).
 
 ### Build Documentation
 

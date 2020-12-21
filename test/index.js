@@ -69,5 +69,9 @@ const db = new Database('cache/qieyun.sqlite3');
 	音韻地位.聲.should.equal('平');
 	音韻地位.攝.should.equal('果');
 	音韻地位.音韻描述.should.equal('見合一戈平');
+	音韻地位.表達式.should.equal('見母 合口 一等 戈韻 平聲');
 	音韻地位.屬於('果攝').should.equal(true);
+
+	音韻地位 = Qieyun.get音韻地位(94);
+	音韻地位.表達式.should.equal('曉母 合口 三等 重紐A類 支韻 平聲');
 })();

@@ -41,6 +41,6 @@ jobs:
         python build/B_generate.py
         build/C_concat_files.sh
     - name: Lint with ESLint
-      run: npx eslint index.js
+      run: npm run lint
     - name: Test
       run: npm test

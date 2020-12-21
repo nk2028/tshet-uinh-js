@@ -38,7 +38,7 @@ build/C_concat_files.sh
 Lint:
 
 ```sh
-npx eslint index.js
+npm run lint
 ```
 
 Test:

@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "node test/index.js",
+    "lint": "eslint index.js",
     "docs": "documentation build index.js -f html -o docs"
   },
   "repository": {

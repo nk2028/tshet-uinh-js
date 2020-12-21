@@ -280,7 +280,7 @@ class 音韻地位 {
   }
 
   /**
-   * 生成音韻地位的表達式，可用於 {@link 屬於} 函數
+   * 音韻地位表達式，可用於 `屬於` 函數
    * @member {string}
    * @example
    * > let 音韻地位 = Qieyun.get音韻地位(739);

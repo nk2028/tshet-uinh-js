@@ -47,7 +47,7 @@ export function validate(母, 呼, 等, 重紐, 韻, 聲) {
     assert(呼.length === 1 && [...所有呼].includes(呼), `Unexpected 呼: ${JSON.stringify(呼)}`);
   }
 
-  if ([...重紐母].includes(母) || [...重紐韻].includes(韻)) {
+  if ([...重紐母].includes(母) && [...重紐韻].includes(韻)) {
     assert(重紐.length === 1 && [...所有重紐].includes(重紐), `Unexpected 重紐: ${JSON.stringify(重紐)}`);
   } else {
     assert(重紐 == null, '重紐 should be null');

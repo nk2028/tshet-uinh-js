@@ -22,6 +22,8 @@ jobs:
       run: build/main.sh
     - name: Lint with ESLint
       run: npm run lint
+    - name: Bundle
+      run: npm run bundle
     - name: Test
       run: npm test
     - name: Publish to npm

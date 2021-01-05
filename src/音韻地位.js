@@ -1,6 +1,6 @@
 import { encode, decode } from './音韻編碼';
 import { m字頭2音韻編碼解釋, m音韻編碼2字頭解釋, m音韻編碼2反切 } from './資料';
-import { 韻到攝, 組到母 } from './其他音韻屬性';
+import { 韻到攝, 組到母 } from './拓展音韻屬性';
 
 export function query字頭(字頭) {
   const res = m字頭2音韻編碼解釋.get(字頭);

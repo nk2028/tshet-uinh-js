@@ -26,13 +26,13 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
-    - name: Install Node.js dependencies
-      run: |
-        npm install --global rollup
-        npm install
+    - name: Install bundler
+      run: npm install --global rollup
+    - name: Install dependencies
+      run: npm install
     - name: Build
       run: build/main.sh
-    - name: Lint with ESLint
+    - name: Lint
       run: npm run lint
     - name: Bundle
       run: npm run bundle

@@ -1,0 +1,55 @@
+name: Documentation
+
+on:
+  release:
+    types: [created]
+
+jobs:
+  publish:
+    runs-on: ubuntu-20.04
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup Node.js
+      uses: actions/setup-node@v1
+      with:
+        node-version: 14
+        registry-url: https://registry.npmjs.org/
+    - name: Install dependencies
+      run: npm install
+    - name: Build
+      run: build/main.sh
+    - name: Build documentation
+      run: npm run docs
+    - name: Publish
+      run: |
+        # Create a temporary directory
+        export temp_dir=`mktemp -d -p ~`
+
+        (
+        # Preserve .git
+        mv .git $temp_dir
+        cd $temp_dir
+
+        # Switch branch
+        git fetch
+        git checkout gh-pages
+        )
+
+        (
+        # Go to docs directory
+        cd docs
+
+        # Move .git
+        mv $temp_dir/.git .
+
+        # Set commit identity
+        git config user.email "sgalal.me@outlook.com"
+        git config user.name "sgalal"
+
+        # Publish
+        git add .
+        if [ -n "$(git status --porcelain)" ]; then
+          git commit -m "Publish `TZ='Asia/Hong_Kong' date`"
+          git push -f origin gh-pages
+        fi
+        )

@@ -65,3 +65,8 @@
  * [GitHub](https://github.com/nk2028/qieyun-js) - [npm](https://www.npmjs.com/package/qieyun) - [JSDelivr](https://www.jsdelivr.com/package/npm/qieyun)
  * @module Qieyun
  */
+
+import { query字頭, 音韻地位 } from './音韻地位';
+import { validate, encode, decode } from './音韻編碼';
+
+export { query字頭, 音韻地位, validate, encode, decode };

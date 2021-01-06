@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset='utf-8'>
-  <title>qieyun 0.7.6 | Documentation</title>
+  <title>qieyun 0.8.0 | Documentation</title>
   <meta name='description' content='JavaScript library for the Qieyun phonological system 《切韻》音系 JavaScript 函式庫'>
   <meta name='viewport' content='width=device-width,initial-scale=1'>
   <link href='assets/bass.css' rel='stylesheet'>
@@ -15,7 +15,7 @@
       <div id='split-left' class='overflow-auto fs0 height-viewport-100'>
         <div class='py1 px2'>
           <h3 class='mb0 no-anchor'>qieyun</h3>
-          <div class='mb1'><code>0.7.6</code></div>
+          <div class='mb1'><code>0.8.0</code></div>
           <input
             placeholder='Filter'
             id='filter-input'
@@ -39,9 +39,9 @@
               
                 
                 <li><a
-                  href='#query漢字'
+                  href='#query字頭'
                   class="">
-                  query漢字
+                  query字頭
                   
                 </a>
                 
@@ -49,39 +49,9 @@
               
                 
                 <li><a
-                  href='#query小韻號'
+                  href='#iter音韻地位'
                   class="">
-                  query小韻號
-                  
-                </a>
-                
-                </li>
-              
-                
-                <li><a
-                  href='#get上字'
-                  class="">
-                  get上字
-                  
-                </a>
-                
-                </li>
-              
-                
-                <li><a
-                  href='#get下字'
-                  class="">
-                  get下字
-                  
-                </a>
-                
-                </li>
-              
-                
-                <li><a
-                  href='#get反切'
-                  class="">
-                  get反切
+                  iter音韻地位
                   
                 </a>
                 
@@ -108,9 +78,9 @@
                       </a></li>
                       
                       <li><a
-                        href='#音韻地位開合'
+                        href='#音韻地位呼'
                         class='regular pre-open'>
-                        #開合
+                        #呼
                       </a></li>
                       
                       <li><a
@@ -126,9 +96,9 @@
                       </a></li>
                       
                       <li><a
-                        href='#音韻地位韻賅上去入'
+                        href='#音韻地位韻'
                         class='regular pre-open'>
-                        #韻賅上去入
+                        #韻
                       </a></li>
                       
                       <li><a
@@ -138,9 +108,15 @@
                       </a></li>
                       
                       <li><a
-                        href='#音韻地位韻'
+                        href='#音韻地位清濁'
                         class='regular pre-open'>
-                        #韻
+                        #清濁
+                      </a></li>
+                      
+                      <li><a
+                        href='#音韻地位音'
+                        class='regular pre-open'>
+                        #音
                       </a></li>
                       
                       <li><a
@@ -150,9 +126,9 @@
                       </a></li>
                       
                       <li><a
-                        href='#音韻地位音韻描述'
+                        href='#音韻地位描述'
                         class='regular pre-open'>
-                        #音韻描述
+                        #描述
                       </a></li>
                       
                       <li><a
@@ -162,9 +138,39 @@
                       </a></li>
                       
                       <li><a
+                        href='#音韻地位編碼'
+                        class='regular pre-open'>
+                        #編碼
+                      </a></li>
+                      
+                      <li><a
+                        href='#音韻地位代表字'
+                        class='regular pre-open'>
+                        #代表字
+                      </a></li>
+                      
+                      <li><a
+                        href='#音韻地位條目'
+                        class='regular pre-open'>
+                        #條目
+                      </a></li>
+                      
+                      <li><a
+                        href='#音韻地位反切'
+                        class='regular pre-open'>
+                        #反切
+                      </a></li>
+                      
+                      <li><a
                         href='#音韻地位屬於'
                         class='regular pre-open'>
                         #屬於
+                      </a></li>
+                      
+                      <li><a
+                        href='#音韻地位等於'
+                        class='regular pre-open'>
+                        #等於
                       </a></li>
                       
                     </ul>
@@ -177,9 +183,29 @@
               
                 
                 <li><a
-                  href='#get音韻地位'
+                  href='#validate'
                   class="">
-                  get音韻地位
+                  validate
+                  
+                </a>
+                
+                </li>
+              
+                
+                <li><a
+                  href='#encode'
+                  class="">
+                  encode
+                  
+                </a>
+                
+                </li>
+              
+                
+                <li><a
+                  href='#decode'
+                  class="">
+                  decode
                   
                 </a>
                 
@@ -230,11 +256,11 @@
 </script>
 <h1>《切韻》音系 JavaScript 函式庫</h1>
 <p>Browser:</p>
-<pre class='hljs'><span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">"https://cdn.jsdelivr.net/npm/qieyun@0.7.6"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span></pre>
+<pre class='hljs'><span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">"https://cdn.jsdelivr.net/npm/qieyun@0.8.0"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span></pre>
 <p>Node.js:</p>
 <pre class='hljs'>$ npm install qieyun</pre>
 <pre class='hljs'>&gt; <span class="hljs-keyword">const</span> Qieyun = <span class="hljs-built_in">require</span>(<span class="hljs-string">'qieyun'</span>);</pre>
-<p><img src="/qieyun-js/demo/qieyun-js.png" alt="如圖為《切韻》音系 JavaScript 函式庫的工作流"></p>
+<p><img src="https://raw.githubusercontent.com/nk2028/qieyun-js/670190f/demo/qieyun-js.png" alt="如圖為《切韻》音系 JavaScript 函式庫的工作流"></p>
 <p>各參數的取值如下：</p>
 <table>
 <thead>
@@ -253,16 +279,16 @@
 <td align="left"><strong>幫</strong>滂並明<br/><strong>端</strong>透定泥<br/>來<br/><strong>知</strong>徹澄孃<br/><strong>精</strong>清從心邪<br/><strong>莊</strong>初崇生俟<br/><strong>章</strong>昌常書船<br/>日<br/><strong>見</strong>溪羣疑<br/><strong>影</strong>曉匣云<br/>以<br/>（粗體字為組，未涵蓋「來日以」）</td>
 </tr>
 <tr>
+<td align="left">呼</td>
+<td align="left">呼</td>
+<td align="left">rounding</td>
+<td align="left">開口<br/>合口</td>
+</tr>
+<tr>
 <td align="left">等</td>
 <td align="left">等</td>
 <td align="left">division</td>
 <td align="left">一二三四</td>
-</tr>
-<tr>
-<td align="left">開合</td>
-<td align="left">開合</td>
-<td align="left">rounding</td>
-<td align="left">開口<br/>合口</td>
 </tr>
 <tr>
 <td align="left">重紐</td>
@@ -274,7 +300,7 @@
 <td align="left">韻<br/>攝</td>
 <td align="left">韻母<br/>攝</td>
 <td align="left">rhyme<br/>class</td>
-<td align="left">通：東冬鍾<br/>江：江<br/>止：支脂之微<br/>遇：魚虞模<br/>蟹：齊祭泰佳皆夬灰咍廢<br/>臻：眞諄臻文欣元魂痕<br/>山：寒桓刪山先仙<br/>效：蕭宵肴豪<br/>果：歌戈<br/>假：麻<br/>宕：陽唐<br/>梗：庚耕清青<br/>曾：蒸登<br/>流：尤侯幽<br/>深：侵<br/>咸：覃談鹽添咸銜嚴凡<br/>（冒號前為攝，後為對應的韻）</td>
+<td align="left">通：東冬鍾<br/>江：江<br/>止：支脂之微<br/>遇：魚虞模<br/>蟹：齊祭泰佳皆夬灰咍廢<br/>臻：眞臻文欣元魂痕<br/>山：寒刪山先仙<br/>效：蕭宵肴豪<br/>果：歌<br/>假：麻<br/>宕：陽唐<br/>梗：庚耕清青<br/>曾：蒸登<br/>流：尤侯幽<br/>深：侵<br/>咸：覃談鹽添咸銜嚴凡<br/>（冒號前為攝，後為對應的韻）</td>
 </tr>
 <tr>
 <td align="left">聲</td>
@@ -284,7 +310,9 @@
 </tr>
 </tbody>
 </table>
+<p>音韻地位六要素：母、呼、等、重紐、韻、聲。</p>
 <p><strong>注意</strong>：元韻置於臻攝而非山攝。</p>
+<p>不設諄、桓、戈韻。分別併入眞、寒、歌韻。</p>
 <p>不支援異體字，請手動轉換：</p>
 <ul>
 <li>母 娘 -> 孃</li>
@@ -336,22 +364,17 @@
   
   <div class='clearfix'>
     
-    <h3 class='fl m0' id='query漢字'>
-      query漢字
+    <h3 class='fl m0' id='query字頭'>
+      query字頭
     </h3>
     
     
   </div>
   
 
-  <p>由字頭查出對應的小韻號和解釋。</p>
-<p><strong>注意</strong>：此函數不具備異體字轉換功能，如：</p>
-<pre class='hljs'>&gt; Qieyun.query漢字(<span class="hljs-string">'笑'</span>);
-[]
-&gt; Qieyun.query漢字(<span class="hljs-string">'𥬇'</span>);
-[{ <span class="hljs-string">'小韻號'</span>: <span class="hljs-number">2768</span>, <span class="hljs-string">'解釋'</span>: <span class="hljs-string">'欣也喜也亦作笑私妙切五'</span> }]</pre>
+  <p>由字頭查出相應的音韻地位和解釋。</p>
 
-    <div class='pre p1 fill-light mt0'>query漢字(漢字: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a></div>
+    <div class='pre p1 fill-light mt0'>query字頭(字頭: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;{音韻地位: <a href="#%E9%9F%B3%E9%9F%BB%E5%9C%B0%E4%BD%8D">音韻地位</a>, 解釋: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>}></div>
   
   
 
@@ -368,93 +391,8 @@
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>漢字</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)</code>
-	    
-          </div>
-          
-        </div>
-      
-    </div>
-  
-
-  
-
-  
-    
-      <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a></code>:
-        該漢字對應的小韻號和解釋。
-<p>數組的每一項包括 <code>小韻號</code> 與 <code>解釋</code> 兩個字段。
-小韻號表示該字在《廣韻》中的小韻號，取值 (1 ≤ <em>i</em> ≤ 3874)。</p>
-<p>若找不到結果，則返回空數組。</p>
-
-      
-    
-  
-
-  
-
-  
-
-  
-    <div class='py1 quiet mt1 prose-big'>Example</div>
-    
-      
-      <pre class='p1 overflow-auto round fill-light'>&gt; Qieyun.query漢字(<span class="hljs-string">'過'</span>);
-[ { <span class="hljs-string">'小韻號'</span>: <span class="hljs-number">739</span>, <span class="hljs-string">'解釋'</span>: <span class="hljs-string">'經也又過所也釋名曰過所至關津以示之也或曰傳過也移所在識以爲信也亦姓風俗通云過國夏諸侯後因爲氏漢有兖州刺史過栩'</span> }
-, { <span class="hljs-string">'小韻號'</span>: <span class="hljs-number">2837</span>, <span class="hljs-string">'解釋'</span>: <span class="hljs-string">'誤也越也責也度也古臥切七'</span> }
-]</pre>
-    
-  
-
-  
-
-  
-
-  
-
-  
-</section>
-
-          
-        
-          
-          <section class='p2 mb2 clearfix bg-white minishadow'>
-
-  
-  <div class='clearfix'>
-    
-    <h3 class='fl m0' id='query小韻號'>
-      query小韻號
-    </h3>
-    
-    
-  </div>
-  
-
-  <p>由小韻號查出對應的字頭和解釋。</p>
-
-    <div class='pre p1 fill-light mt0'>query小韻號(小韻號: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a></div>
-  
-  
-
-  
-  
-  
-  
-  
-  
-
-  
-    <div class='py1 quiet mt1 prose-big'>Parameters</div>
-    <div class='prose'>
-      
-        <div class='space-bottom0'>
-          <div>
-            <span class='code bold'>小韻號</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)</code>
-	    《廣韻》小韻號 (1 ≤ 
-<em>i</em>
- ≤ 3874)
+            <span class='code bold'>字頭</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
+	    待查找的漢字
 
           </div>
           
@@ -468,8 +406,9 @@
   
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a></code>:
-        返回值為二維數組，表示該小韻中的所有漢字及其解釋。
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;{音韻地位: <a href="#%E9%9F%B3%E9%9F%BB%E5%9C%B0%E4%BD%8D">音韻地位</a>, 解釋: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>}></code>:
+        陣列。陣列的每一項包含音韻地位和解釋。
+<p>若字頭不存在，則回傳空陣列。</p>
 
       
     
@@ -483,13 +422,13 @@
     <div class='py1 quiet mt1 prose-big'>Example</div>
     
       
-      <pre class='p1 overflow-auto round fill-light'>&gt; Qieyun.query小韻號(<span class="hljs-number">1919</span>);
+      <pre class='p1 overflow-auto round fill-light'>&gt; Qieyun.query字頭(<span class="hljs-string">'結'</span>);
+[ { 音韻地位: 音韻地位 { <span class="hljs-string">'見開四先入'</span> }, 解釋: <span class="hljs-string">'締也古屑切十五'</span> } ]
+&gt; Qieyun.query字頭(<span class="hljs-string">'冷'</span>);
 [
-  [ <span class="hljs-string">'拯'</span>, <span class="hljs-string">'救也助也無韻切音蒸上聲五'</span> ],
-  [ <span class="hljs-string">'抍'</span>, <span class="hljs-string">'[同上]'</span> ],
-  [ <span class="hljs-string">'撜'</span>, <span class="hljs-string">'並上同見說文'</span> ],
-  [ <span class="hljs-string">'𨋬'</span>, <span class="hljs-string">'[⿱氶車/𨋬]'</span> ],
-  [ <span class="hljs-string">'氶'</span>, <span class="hljs-string">'晉譙王名'</span> ]
+  { 音韻地位: 音韻地位 { <span class="hljs-string">'來開四青平'</span> }, 解釋: <span class="hljs-string">'冷凙吳人云冰凌又力頂切'</span> },
+  { 音韻地位: 音韻地位 { <span class="hljs-string">'來開二庚上'</span> }, 解釋: <span class="hljs-string">'寒也魯打切又魯頂切一'</span> },
+  { 音韻地位: 音韻地位 { <span class="hljs-string">'來開四青上'</span> }, 解釋: <span class="hljs-string">'寒也又姓前趙錄有徐州刺史冷道字安義又盧打切'</span> },
 ]</pre>
     
   
@@ -511,43 +450,27 @@
   
   <div class='clearfix'>
     
-    <h3 class='fl m0' id='get上字'>
-      get上字
+    <h3 class='fl m0' id='iter音韻地位'>
+      iter音韻地位
     </h3>
     
     
   </div>
   
 
-  <p>查詢《廣韻》某個小韻的反切上字。</p>
+  <p>所有至少對應一個字頭的音韻地位。</p>
 
-    <div class='pre p1 fill-light mt0'>get上字(小韻號: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></div>
-  
-  
-
-  
-  
-  
-  
+    <div class='pre p1 fill-light mt0'>iter音韻地位(): IterableIterator&#x3C;<a href="#%E9%9F%B3%E9%9F%BB%E5%9C%B0%E4%BD%8D">音韻地位</a>></div>
   
   
 
   
-    <div class='py1 quiet mt1 prose-big'>Parameters</div>
-    <div class='prose'>
-      
-        <div class='space-bottom0'>
-          <div>
-            <span class='code bold'>小韻號</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)</code>
-	    《廣韻》小韻號 (1 ≤ 
-<em>i</em>
- ≤ 3874)
+  
+  
+  
+  
+  
 
-          </div>
-          
-        </div>
-      
-    </div>
   
 
   
@@ -555,22 +478,8 @@
   
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></code>:
-        返回該小韻的反切上字。若無反切，返回 
-<code>null</code>
-。
-
-      
-    
-  
-
-  
-    <div class='py1 quiet mt1 prose-big'>Related</div>
-    
-      
-        <a href="#get%E4%B8%8B%E5%AD%97">get下字</a>
- 
-<a href="#get%E5%8F%8D%E5%88%87">get反切</a>
+      <code>IterableIterator&#x3C;<a href="#%E9%9F%B3%E9%9F%BB%E5%9C%B0%E4%BD%8D">音韻地位</a>></code>:
+        生成器，所有至少對應一個字頭的音韻地位。
 
       
     
@@ -579,198 +488,7 @@
   
 
   
-    <div class='py1 quiet mt1 prose-big'>Example</div>
-    
-      
-      <pre class='p1 overflow-auto round fill-light'>&gt; Qieyun.get上字(<span class="hljs-number">1</span>);
-<span class="hljs-string">'德'</span></pre>
-    
-  
 
-  
-
-  
-
-  
-
-  
-</section>
-
-          
-        
-          
-          <section class='p2 mb2 clearfix bg-white minishadow'>
-
-  
-  <div class='clearfix'>
-    
-    <h3 class='fl m0' id='get下字'>
-      get下字
-    </h3>
-    
-    
-  </div>
-  
-
-  <p>查詢《廣韻》某個小韻的反切下字。</p>
-
-    <div class='pre p1 fill-light mt0'>get下字(小韻號: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></div>
-  
-  
-
-  
-  
-  
-  
-  
-  
-
-  
-    <div class='py1 quiet mt1 prose-big'>Parameters</div>
-    <div class='prose'>
-      
-        <div class='space-bottom0'>
-          <div>
-            <span class='code bold'>小韻號</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)</code>
-	    《廣韻》小韻號 (1 ≤ 
-<em>i</em>
- ≤ 3874)
-
-          </div>
-          
-        </div>
-      
-    </div>
-  
-
-  
-
-  
-    
-      <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></code>:
-        返回該小韻的反切下字。若無反切，返回 
-<code>null</code>
-。
-
-      
-    
-  
-
-  
-    <div class='py1 quiet mt1 prose-big'>Related</div>
-    
-      
-        <a href="#get%E4%B8%8A%E5%AD%97">get上字</a>
- 
-<a href="#get%E5%8F%8D%E5%88%87">get反切</a>
-
-      
-    
-  
-
-  
-
-  
-    <div class='py1 quiet mt1 prose-big'>Example</div>
-    
-      
-      <pre class='p1 overflow-auto round fill-light'>&gt; Qieyun.get下字(<span class="hljs-number">1919</span>); <span class="hljs-comment">// 拯小韻無反切</span>
-<span class="hljs-literal">null</span></pre>
-    
-  
-
-  
-
-  
-
-  
-
-  
-</section>
-
-          
-        
-          
-          <section class='p2 mb2 clearfix bg-white minishadow'>
-
-  
-  <div class='clearfix'>
-    
-    <h3 class='fl m0' id='get反切'>
-      get反切
-    </h3>
-    
-    
-  </div>
-  
-
-  <p>查詢《廣韻》某個小韻的反切。</p>
-
-    <div class='pre p1 fill-light mt0'>get反切(小韻號: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></div>
-  
-  
-
-  
-  
-  
-  
-  
-  
-
-  
-    <div class='py1 quiet mt1 prose-big'>Parameters</div>
-    <div class='prose'>
-      
-        <div class='space-bottom0'>
-          <div>
-            <span class='code bold'>小韻號</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)</code>
-	    《廣韻》小韻號 (1 ≤ 
-<em>i</em>
- ≤ 3874)
-
-          </div>
-          
-        </div>
-      
-    </div>
-  
-
-  
-
-  
-    
-      <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></code>:
-        返回該小韻的反切。若無反切，返回 
-<code>null</code>
-。
-
-      
-    
-  
-
-  
-    <div class='py1 quiet mt1 prose-big'>Related</div>
-    
-      
-        <a href="#get%E4%B8%8A%E5%AD%97">get上字</a>
- 
-<a href="#get%E4%B8%8B%E5%AD%97">get下字</a>
-
-      
-    
-  
-
-  
-
-  
-    <div class='py1 quiet mt1 prose-big'>Example</div>
-    
-      
-      <pre class='p1 overflow-auto round fill-light'>&gt; Qieyun.get反切(<span class="hljs-number">1644</span>); <span class="hljs-comment">// 轉小韻</span>
-<span class="hljs-string">'陟兖切'</span></pre>
-    
   
 
   
@@ -799,9 +517,9 @@
   
 
   <p>《切韻》音系音韻地位。</p>
-<p>可使用字串 (母, 開合, 等, 重紐, 韻賅上去入, 聲) 初始化。</p>
+<p>可使用字串 (母, 呼, 等, 重紐, 韻, 聲) 初始化。</p>
 
-    <div class='pre p1 fill-light mt0'>new 音韻地位(母: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>, 開合: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>, 等: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>, 重紐: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>, 韻賅上去入: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>, 聲: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>): <a href="#%E9%9F%B3%E9%9F%BB%E5%9C%B0%E4%BD%8D">音韻地位</a></div>
+    <div class='pre p1 fill-light mt0'>new 音韻地位(母: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>, 呼: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>, 等: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>, 重紐: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>, 韻: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>, 聲: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>): <a href="#%E9%9F%B3%E9%9F%BB%E5%9C%B0%E4%BD%8D">音韻地位</a></div>
   
   
 
@@ -827,8 +545,10 @@
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>開合</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
-	    開合：開, 合
+            <span class='code bold'>呼</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
+	    呼：
+<code>null</code>
+, 開, 合
 
           </div>
           
@@ -856,7 +576,7 @@
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>韻賅上去入</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
+            <span class='code bold'>韻</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
 	    韻母（舉平以賅上去入）：東, 冬, 鍾, 江, …, 祭, 泰, 夬, 廢
 
           </div>
@@ -895,7 +615,10 @@
     <div class='py1 quiet mt1 prose-big'>Example</div>
     
       
-      <pre class='p1 overflow-auto round fill-light'>&gt; <span class="hljs-keyword">let</span> 音韻地位 = <span class="hljs-keyword">new</span> Qieyun.音韻地位(<span class="hljs-string">'見'</span>, <span class="hljs-string">'合'</span>, <span class="hljs-string">'一'</span>, <span class="hljs-literal">null</span>, <span class="hljs-string">'戈'</span>, <span class="hljs-string">'平'</span>);</pre>
+      <pre class='p1 overflow-auto round fill-light'>&gt; <span class="hljs-keyword">new</span> Qieyun.音韻地位(<span class="hljs-string">'幫'</span>, <span class="hljs-literal">null</span>, <span class="hljs-string">'三'</span>, <span class="hljs-literal">null</span>, <span class="hljs-string">'凡'</span>, <span class="hljs-string">'入'</span>);
+音韻地位 { <span class="hljs-string">'幫三凡入'</span> }
+&gt; <span class="hljs-keyword">new</span> Qieyun.音韻地位(<span class="hljs-string">'羣'</span>, <span class="hljs-string">'開'</span>, <span class="hljs-string">'三'</span>, <span class="hljs-string">'A'</span>, <span class="hljs-string">'支'</span>, <span class="hljs-string">'平'</span>);
+音韻地位 { <span class="hljs-string">'羣開三A支平'</span> }</pre>
     
   
 
@@ -949,9 +672,12 @@
     <div class='py1 quiet mt1 prose-big'>Example</div>
     
       
-      <pre class='p1 overflow-auto round fill-light'>&gt; <span class="hljs-keyword">let</span> 音韻地位 = Qieyun.get音韻地位(<span class="hljs-number">739</span>);
+      <pre class='p1 overflow-auto round fill-light'>&gt; 音韻地位 = <span class="hljs-keyword">new</span> Qieyun.音韻地位(<span class="hljs-string">'幫'</span>, <span class="hljs-literal">null</span>, <span class="hljs-string">'三'</span>, <span class="hljs-literal">null</span>, <span class="hljs-string">'凡'</span>, <span class="hljs-string">'入'</span>);
 &gt; 音韻地位.母;
-<span class="hljs-string">'見'</span></pre>
+<span class="hljs-string">'幫'</span>
+&gt; 音韻地位 = <span class="hljs-keyword">new</span> Qieyun.音韻地位(<span class="hljs-string">'羣'</span>, <span class="hljs-string">'開'</span>, <span class="hljs-string">'三'</span>, <span class="hljs-string">'A'</span>, <span class="hljs-string">'支'</span>, <span class="hljs-string">'平'</span>);
+&gt; 音韻地位.母;
+<span class="hljs-string">'羣'</span></pre>
     
   
 
@@ -967,11 +693,11 @@
       </div>
     </div>
   
-    <div class='border-bottom' id='音韻地位開合'>
+    <div class='border-bottom' id='音韻地位呼'>
       <div class="clearfix small pointer toggle-sibling">
         <div class="py1 contain">
             <a class='icon pin-right py1 dark-link caret-right'>▸</a>
-            <span class='code strong strong truncate'>開合</span>
+            <span class='code strong strong truncate'>呼</span>
         </div>
       </div>
       <div class="clearfix display-none toggle-target">
@@ -979,9 +705,9 @@
 
   
 
-  <p>開合</p>
+  <p>呼</p>
 
-    <div class='pre p1 fill-light mt0'>開合</div>
+    <div class='pre p1 fill-light mt0'>呼</div>
   
     <p>
       Type:
@@ -1011,9 +737,12 @@
     <div class='py1 quiet mt1 prose-big'>Example</div>
     
       
-      <pre class='p1 overflow-auto round fill-light'>&gt; <span class="hljs-keyword">let</span> 音韻地位 = Qieyun.get音韻地位(<span class="hljs-number">739</span>);
-&gt; 音韻地位.開合;
-<span class="hljs-string">'合'</span></pre>
+      <pre class='p1 overflow-auto round fill-light'>&gt; 音韻地位 = <span class="hljs-keyword">new</span> Qieyun.音韻地位(<span class="hljs-string">'幫'</span>, <span class="hljs-literal">null</span>, <span class="hljs-string">'三'</span>, <span class="hljs-literal">null</span>, <span class="hljs-string">'凡'</span>, <span class="hljs-string">'入'</span>);
+&gt; 音韻地位.呼;
+<span class="hljs-literal">null</span>
+&gt; 音韻地位 = <span class="hljs-keyword">new</span> Qieyun.音韻地位(<span class="hljs-string">'羣'</span>, <span class="hljs-string">'開'</span>, <span class="hljs-string">'三'</span>, <span class="hljs-string">'A'</span>, <span class="hljs-string">'支'</span>, <span class="hljs-string">'平'</span>);
+&gt; 音韻地位.呼;
+<span class="hljs-string">'開'</span></pre>
     
   
 
@@ -1073,9 +802,12 @@
     <div class='py1 quiet mt1 prose-big'>Example</div>
     
       
-      <pre class='p1 overflow-auto round fill-light'>&gt; <span class="hljs-keyword">let</span> 音韻地位 = Qieyun.get音韻地位(<span class="hljs-number">739</span>);
+      <pre class='p1 overflow-auto round fill-light'>&gt; 音韻地位 = <span class="hljs-keyword">new</span> Qieyun.音韻地位(<span class="hljs-string">'幫'</span>, <span class="hljs-literal">null</span>, <span class="hljs-string">'三'</span>, <span class="hljs-literal">null</span>, <span class="hljs-string">'凡'</span>, <span class="hljs-string">'入'</span>);
 &gt; 音韻地位.等;
-<span class="hljs-string">'一'</span></pre>
+<span class="hljs-string">'三'</span>
+&gt; 音韻地位 = <span class="hljs-keyword">new</span> Qieyun.音韻地位(<span class="hljs-string">'羣'</span>, <span class="hljs-string">'開'</span>, <span class="hljs-string">'三'</span>, <span class="hljs-string">'A'</span>, <span class="hljs-string">'支'</span>, <span class="hljs-string">'平'</span>);
+&gt; 音韻地位.等;
+<span class="hljs-string">'三'</span></pre>
     
   
 
@@ -1135,9 +867,12 @@
     <div class='py1 quiet mt1 prose-big'>Example</div>
     
       
-      <pre class='p1 overflow-auto round fill-light'>&gt; <span class="hljs-keyword">let</span> 音韻地位 = Qieyun.get音韻地位(<span class="hljs-number">739</span>);
+      <pre class='p1 overflow-auto round fill-light'>&gt; 音韻地位 = <span class="hljs-keyword">new</span> Qieyun.音韻地位(<span class="hljs-string">'幫'</span>, <span class="hljs-literal">null</span>, <span class="hljs-string">'三'</span>, <span class="hljs-literal">null</span>, <span class="hljs-string">'凡'</span>, <span class="hljs-string">'入'</span>);
 &gt; 音韻地位.重紐;
-<span class="hljs-literal">null</span></pre>
+<span class="hljs-literal">null</span>
+&gt; 音韻地位 = <span class="hljs-keyword">new</span> Qieyun.音韻地位(<span class="hljs-string">'羣'</span>, <span class="hljs-string">'開'</span>, <span class="hljs-string">'三'</span>, <span class="hljs-string">'A'</span>, <span class="hljs-string">'支'</span>, <span class="hljs-string">'平'</span>);
+&gt; 音韻地位.重紐;
+<span class="hljs-string">'A'</span></pre>
     
   
 
@@ -1153,11 +888,11 @@
       </div>
     </div>
   
-    <div class='border-bottom' id='音韻地位韻賅上去入'>
+    <div class='border-bottom' id='音韻地位韻'>
       <div class="clearfix small pointer toggle-sibling">
         <div class="py1 contain">
             <a class='icon pin-right py1 dark-link caret-right'>▸</a>
-            <span class='code strong strong truncate'>韻賅上去入</span>
+            <span class='code strong strong truncate'>韻</span>
         </div>
       </div>
       <div class="clearfix display-none toggle-target">
@@ -1167,7 +902,7 @@
 
   <p>韻母（舉平以賅上去入）</p>
 
-    <div class='pre p1 fill-light mt0'>韻賅上去入</div>
+    <div class='pre p1 fill-light mt0'>韻</div>
   
     <p>
       Type:
@@ -1197,9 +932,12 @@
     <div class='py1 quiet mt1 prose-big'>Example</div>
     
       
-      <pre class='p1 overflow-auto round fill-light'>&gt; <span class="hljs-keyword">let</span> 音韻地位 = Qieyun.get音韻地位(<span class="hljs-number">739</span>);
-&gt; 音韻地位.韻賅上去入;
-<span class="hljs-string">'戈'</span></pre>
+      <pre class='p1 overflow-auto round fill-light'>&gt; 音韻地位 = <span class="hljs-keyword">new</span> Qieyun.音韻地位(<span class="hljs-string">'幫'</span>, <span class="hljs-literal">null</span>, <span class="hljs-string">'三'</span>, <span class="hljs-literal">null</span>, <span class="hljs-string">'凡'</span>, <span class="hljs-string">'入'</span>);
+&gt; 音韻地位.韻;
+<span class="hljs-string">'凡'</span>
+&gt; 音韻地位 = <span class="hljs-keyword">new</span> Qieyun.音韻地位(<span class="hljs-string">'羣'</span>, <span class="hljs-string">'開'</span>, <span class="hljs-string">'三'</span>, <span class="hljs-string">'A'</span>, <span class="hljs-string">'支'</span>, <span class="hljs-string">'平'</span>);
+&gt; 音韻地位.韻;
+<span class="hljs-string">'支'</span></pre>
     
   
 
@@ -1259,7 +997,10 @@
     <div class='py1 quiet mt1 prose-big'>Example</div>
     
       
-      <pre class='p1 overflow-auto round fill-light'>&gt; <span class="hljs-keyword">let</span> 音韻地位 = Qieyun.get音韻地位(<span class="hljs-number">739</span>);
+      <pre class='p1 overflow-auto round fill-light'>&gt; 音韻地位 = <span class="hljs-keyword">new</span> Qieyun.音韻地位(<span class="hljs-string">'幫'</span>, <span class="hljs-literal">null</span>, <span class="hljs-string">'三'</span>, <span class="hljs-literal">null</span>, <span class="hljs-string">'凡'</span>, <span class="hljs-string">'入'</span>);
+&gt; 音韻地位.聲;
+<span class="hljs-string">'入'</span>
+&gt; 音韻地位 = <span class="hljs-keyword">new</span> Qieyun.音韻地位(<span class="hljs-string">'羣'</span>, <span class="hljs-string">'開'</span>, <span class="hljs-string">'三'</span>, <span class="hljs-string">'A'</span>, <span class="hljs-string">'支'</span>, <span class="hljs-string">'平'</span>);
 &gt; 音韻地位.聲;
 <span class="hljs-string">'平'</span></pre>
     
@@ -1277,11 +1018,11 @@
       </div>
     </div>
   
-    <div class='border-bottom' id='音韻地位韻'>
+    <div class='border-bottom' id='音韻地位清濁'>
       <div class="clearfix small pointer toggle-sibling">
         <div class="py1 contain">
             <a class='icon pin-right py1 dark-link caret-right'>▸</a>
-            <span class='code strong strong truncate'>韻</span>
+            <span class='code strong strong truncate'>清濁</span>
         </div>
       </div>
       <div class="clearfix display-none toggle-target">
@@ -1289,9 +1030,9 @@
 
   
 
-  <p>韻母</p>
+  <p>清濁（全清、次清、全濁、次濁）</p>
 
-    <div class='pre p1 fill-light mt0'>韻</div>
+    <div class='pre p1 fill-light mt0'>清濁</div>
   
     <p>
       Type:
@@ -1321,9 +1062,77 @@
     <div class='py1 quiet mt1 prose-big'>Example</div>
     
       
-      <pre class='p1 overflow-auto round fill-light'>&gt; <span class="hljs-keyword">let</span> 音韻地位 = Qieyun.get音韻地位(<span class="hljs-number">739</span>);
-&gt; 音韻地位.韻;
-<span class="hljs-string">'戈'</span></pre>
+      <pre class='p1 overflow-auto round fill-light'>&gt; 音韻地位 = <span class="hljs-keyword">new</span> Qieyun.音韻地位(<span class="hljs-string">'幫'</span>, <span class="hljs-literal">null</span>, <span class="hljs-string">'三'</span>, <span class="hljs-literal">null</span>, <span class="hljs-string">'凡'</span>, <span class="hljs-string">'入'</span>);
+&gt; 音韻地位.清濁;
+<span class="hljs-string">'全清'</span>
+&gt; 音韻地位 = <span class="hljs-keyword">new</span> Qieyun.音韻地位(<span class="hljs-string">'羣'</span>, <span class="hljs-string">'開'</span>, <span class="hljs-string">'三'</span>, <span class="hljs-string">'A'</span>, <span class="hljs-string">'支'</span>, <span class="hljs-string">'平'</span>);
+&gt; 音韻地位.清濁;
+<span class="hljs-string">'全濁'</span></pre>
+    
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
+    <div class='border-bottom' id='音韻地位音'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>音</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+
+  <p>音（發音部位：脣、舌、齒、牙、喉）</p>
+
+    <div class='pre p1 fill-light mt0'>音</div>
+  
+    <p>
+      Type:
+      <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>
+    </p>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Example</div>
+    
+      
+      <pre class='p1 overflow-auto round fill-light'>&gt; 音韻地位 = <span class="hljs-keyword">new</span> Qieyun.音韻地位(<span class="hljs-string">'幫'</span>, <span class="hljs-literal">null</span>, <span class="hljs-string">'三'</span>, <span class="hljs-literal">null</span>, <span class="hljs-string">'凡'</span>, <span class="hljs-string">'入'</span>);
+&gt; 音韻地位.音;
+<span class="hljs-string">'脣'</span>
+&gt; 音韻地位 = <span class="hljs-keyword">new</span> Qieyun.音韻地位(<span class="hljs-string">'羣'</span>, <span class="hljs-string">'開'</span>, <span class="hljs-string">'三'</span>, <span class="hljs-string">'A'</span>, <span class="hljs-string">'支'</span>, <span class="hljs-string">'平'</span>);
+&gt; 音韻地位.音;
+<span class="hljs-string">'牙'</span></pre>
     
   
 
@@ -1383,9 +1192,12 @@
     <div class='py1 quiet mt1 prose-big'>Example</div>
     
       
-      <pre class='p1 overflow-auto round fill-light'>&gt; <span class="hljs-keyword">let</span> 音韻地位 = Qieyun.get音韻地位(<span class="hljs-number">739</span>);
+      <pre class='p1 overflow-auto round fill-light'>&gt; 音韻地位 = <span class="hljs-keyword">new</span> Qieyun.音韻地位(<span class="hljs-string">'幫'</span>, <span class="hljs-literal">null</span>, <span class="hljs-string">'三'</span>, <span class="hljs-literal">null</span>, <span class="hljs-string">'凡'</span>, <span class="hljs-string">'入'</span>);
 &gt; 音韻地位.攝;
-<span class="hljs-string">'果'</span></pre>
+<span class="hljs-string">'咸'</span>
+&gt; 音韻地位 = <span class="hljs-keyword">new</span> Qieyun.音韻地位(<span class="hljs-string">'羣'</span>, <span class="hljs-string">'開'</span>, <span class="hljs-string">'三'</span>, <span class="hljs-string">'A'</span>, <span class="hljs-string">'支'</span>, <span class="hljs-string">'平'</span>);
+&gt; 音韻地位.攝;
+<span class="hljs-string">'止'</span></pre>
     
   
 
@@ -1401,11 +1213,11 @@
       </div>
     </div>
   
-    <div class='border-bottom' id='音韻地位音韻描述'>
+    <div class='border-bottom' id='音韻地位描述'>
       <div class="clearfix small pointer toggle-sibling">
         <div class="py1 contain">
             <a class='icon pin-right py1 dark-link caret-right'>▸</a>
-            <span class='code strong strong truncate'>音韻描述</span>
+            <span class='code strong strong truncate'>描述</span>
         </div>
       </div>
       <div class="clearfix display-none toggle-target">
@@ -1413,9 +1225,9 @@
 
   
 
-  <p>音韻描述</p>
+  <p>描述</p>
 
-    <div class='pre p1 fill-light mt0'>音韻描述</div>
+    <div class='pre p1 fill-light mt0'>描述</div>
   
     <p>
       Type:
@@ -1445,9 +1257,12 @@
     <div class='py1 quiet mt1 prose-big'>Example</div>
     
       
-      <pre class='p1 overflow-auto round fill-light'>&gt; <span class="hljs-keyword">let</span> 音韻地位 = Qieyun.get音韻地位(<span class="hljs-number">739</span>);
-&gt; 音韻地位.音韻描述;
-<span class="hljs-string">'見合一戈平'</span></pre>
+      <pre class='p1 overflow-auto round fill-light'>&gt; 音韻地位 = <span class="hljs-keyword">new</span> Qieyun.音韻地位(<span class="hljs-string">'幫'</span>, <span class="hljs-literal">null</span>, <span class="hljs-string">'三'</span>, <span class="hljs-literal">null</span>, <span class="hljs-string">'凡'</span>, <span class="hljs-string">'入'</span>);
+&gt; 音韻地位.描述;
+<span class="hljs-string">'幫三凡入'</span>
+&gt; 音韻地位 = <span class="hljs-keyword">new</span> Qieyun.音韻地位(<span class="hljs-string">'羣'</span>, <span class="hljs-string">'開'</span>, <span class="hljs-string">'三'</span>, <span class="hljs-string">'A'</span>, <span class="hljs-string">'支'</span>, <span class="hljs-string">'平'</span>);
+&gt; 音韻地位.描述;
+<span class="hljs-string">'羣開三A支平'</span></pre>
     
   
 
@@ -1475,7 +1290,7 @@
 
   
 
-  <p>音韻地位表達式，可用於 <code>屬於</code> 函數</p>
+  <p>表達式，可用於 <code>屬於</code> 函數</p>
 
     <div class='pre p1 fill-light mt0'>表達式</div>
   
@@ -1507,12 +1322,279 @@
     <div class='py1 quiet mt1 prose-big'>Example</div>
     
       
-      <pre class='p1 overflow-auto round fill-light'>&gt; <span class="hljs-keyword">let</span> 音韻地位 = Qieyun.get音韻地位(<span class="hljs-number">739</span>);
+      <pre class='p1 overflow-auto round fill-light'>&gt; 音韻地位 = <span class="hljs-keyword">new</span> Qieyun.音韻地位(<span class="hljs-string">'幫'</span>, <span class="hljs-literal">null</span>, <span class="hljs-string">'三'</span>, <span class="hljs-literal">null</span>, <span class="hljs-string">'凡'</span>, <span class="hljs-string">'入'</span>);
 &gt; 音韻地位.表達式;
-<span class="hljs-string">'見母 合口 一等 戈韻 平聲'</span>
-&gt; 音韻地位 = Qieyun.get音韻地位(<span class="hljs-number">94</span>);
-&gt; 音韻地位.表達式;
-<span class="hljs-string">'曉母 合口 三等 重紐A類 支韻 平聲'</span></pre>
+<span class="hljs-string">'幫母 三等 凡韻 入聲'</span>
+&gt; 音韻地位 = <span class="hljs-keyword">new</span> Qieyun.音韻地位(<span class="hljs-string">'羣'</span>, <span class="hljs-string">'開'</span>, <span class="hljs-string">'三'</span>, <span class="hljs-string">'A'</span>, <span class="hljs-string">'支'</span>, <span class="hljs-string">'平'</span>);
+&gt; 音韻地位.描述;
+<span class="hljs-string">'羣母 開口 三等 重紐A類 支韻 平聲'</span></pre>
+    
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
+    <div class='border-bottom' id='音韻地位編碼'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>編碼</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+
+  <p>音韻地位對應的編碼。音韻編碼與音韻地位之間存在一一映射關係。</p>
+
+    <div class='pre p1 fill-light mt0'>編碼</div>
+  
+    <p>
+      Type:
+      <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>
+    </p>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Example</div>
+    
+      
+      <pre class='p1 overflow-auto round fill-light'>&gt; 音韻地位 = <span class="hljs-keyword">new</span> Qieyun.音韻地位(<span class="hljs-string">'幫'</span>, <span class="hljs-literal">null</span>, <span class="hljs-string">'三'</span>, <span class="hljs-literal">null</span>, <span class="hljs-string">'凡'</span>, <span class="hljs-string">'入'</span>);
+&gt; 音韻地位.編碼;
+<span class="hljs-string">'A5T'</span>
+&gt; 音韻地位 = <span class="hljs-keyword">new</span> Qieyun.音韻地位(<span class="hljs-string">'羣'</span>, <span class="hljs-string">'開'</span>, <span class="hljs-string">'三'</span>, <span class="hljs-string">'A'</span>, <span class="hljs-string">'支'</span>, <span class="hljs-string">'平'</span>);
+&gt; 音韻地位.編碼;
+<span class="hljs-string">'fEQ'</span></pre>
+    
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
+    <div class='border-bottom' id='音韻地位代表字'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>代表字</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+
+  <p>音韻地位的代表字。</p>
+<p>若音韻地位有音無字，則代表字為 <code>null</code>。</p>
+
+    <div class='pre p1 fill-light mt0'>代表字</div>
+  
+    <p>
+      Type:
+      <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>
+    </p>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Example</div>
+    
+      
+      <pre class='p1 overflow-auto round fill-light'>&gt; 音韻地位 = <span class="hljs-keyword">new</span> Qieyun.音韻地位(<span class="hljs-string">'幫'</span>, <span class="hljs-literal">null</span>, <span class="hljs-string">'三'</span>, <span class="hljs-literal">null</span>, <span class="hljs-string">'凡'</span>, <span class="hljs-string">'入'</span>);
+&gt; 音韻地位.代表字;
+<span class="hljs-string">'法'</span>
+&gt; 音韻地位 = <span class="hljs-keyword">new</span> Qieyun.音韻地位(<span class="hljs-string">'羣'</span>, <span class="hljs-string">'開'</span>, <span class="hljs-string">'三'</span>, <span class="hljs-string">'A'</span>, <span class="hljs-string">'支'</span>, <span class="hljs-string">'平'</span>);
+&gt; 音韻地位.代表字;
+<span class="hljs-string">'祇'</span></pre>
+    
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
+    <div class='border-bottom' id='音韻地位條目'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>條目</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+
+  <p>音韻地位對應的字頭和解釋。</p>
+<p>若音韻地位有音無字，則值為空陣列。</p>
+
+    <div class='pre p1 fill-light mt0'>條目</div>
+  
+    <p>
+      Type:
+      <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;{字頭: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>, 解釋: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>}>
+    </p>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Example</div>
+    
+      
+      <pre class='p1 overflow-auto round fill-light'>&gt; 音韻地位 = <span class="hljs-keyword">new</span> Qieyun.音韻地位(<span class="hljs-string">'影'</span>, <span class="hljs-string">'開'</span>, <span class="hljs-string">'二'</span>, <span class="hljs-literal">null</span>, <span class="hljs-string">'銜'</span>, <span class="hljs-string">'去'</span>);
+&gt; 音韻地位.條目;
+[ { 字頭: <span class="hljs-string">'𪒠'</span>, 解釋: <span class="hljs-string">'叫呼仿佛𪒠然自得音黯去聲一'</span> } ]</pre>
+    
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
+    <div class='border-bottom' id='音韻地位反切'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>反切</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+
+  <p>取得音韻地位對應的反切。</p>
+<p>注意在《廣韻》中存在重出的小韻，因此一個音韻地位可能對應多個反切。
+此時函式只回傳第一個反切。</p>
+<p>「拯」等小韻無反切，回傳 <code>null</code>。</p>
+
+    <div class='pre p1 fill-light mt0'>反切</div>
+  
+    <p>
+      Type:
+      <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>
+    </p>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Example</div>
+    
+      
+      <pre class='p1 overflow-auto round fill-light'>&gt; 音韻地位 = <span class="hljs-keyword">new</span> Qieyun.音韻地位(<span class="hljs-string">'端'</span>, <span class="hljs-string">'開'</span>, <span class="hljs-string">'一'</span>, <span class="hljs-literal">null</span>, <span class="hljs-string">'東'</span>, <span class="hljs-string">'平'</span>);
+&gt; 音韻地位.反切;
+<span class="hljs-string">'德紅'</span>
+&gt; 音韻地位 = <span class="hljs-keyword">new</span> Qieyun.音韻地位(<span class="hljs-string">'幫'</span>, <span class="hljs-literal">null</span>, <span class="hljs-string">'三'</span>, <span class="hljs-literal">null</span>, <span class="hljs-string">'凡'</span>, <span class="hljs-string">'入'</span>);
+&gt; 音韻地位.反切;
+<span class="hljs-string">'方乏'</span>
+&gt; 音韻地位 = <span class="hljs-keyword">new</span> Qieyun.音韻地位(<span class="hljs-string">'羣'</span>, <span class="hljs-string">'開'</span>, <span class="hljs-string">'三'</span>, <span class="hljs-string">'A'</span>, <span class="hljs-string">'支'</span>, <span class="hljs-string">'平'</span>);
+&gt; 音韻地位.反切;
+<span class="hljs-string">'巨支'</span>
+&gt; Qieyun.query字頭(<span class="hljs-string">'拯'</span>)[<span class="hljs-number">0</span>].音韻地位.反切; <span class="hljs-comment">// 拯小韻無反切</span>
+<span class="hljs-literal">null</span></pre>
     
   
 
@@ -1561,11 +1643,13 @@
           <div>
             <span class='code bold'>s</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
 	    描述音韻地位的字串
-<p>字串中音韻地位的描述格式：<code>...母</code>, <code>...組</code>, <code>...等</code>, <code>...韻</code>, <code>...攝</code>, <code>...聲</code>, <code>開口</code>, <code>合口</code>, <code>重紐A類</code>, <code>重紐B類</code>。</p>
-<p>亦支援「開口」、「合口」、「重紐A類」、「重紐B類」四項。</p>
+<p>字串中音韻地位的描述格式：</p>
+<ul>
+<li>音韻地位六要素：<code>...母</code>, <code>...等</code>, <code>...韻</code>, <code>...聲</code>, <code>開口</code>, <code>合口</code>, <code>重紐A類</code>, <code>重紐B類</code></li>
+<li>拓展音韻地位：<code>...組</code>, <code>...音</code>, <code>...攝</code>, <code>全清</code>, <code>次清</code>, <code>全濁</code>, <code>次濁</code></li>
+</ul>
 <p>字串首先以「或」字分隔，再以空格分隔。不支援括號。</p>
-<p>如「(端精組 且 重紐A類) 或 (以母 且 四等 且 去聲)」可以表示為 <code>端精組 重紐A類 或 以母 四等 去聲</code>。</p>
-<p><strong>注意</strong>：<code>屬於</code> 函數中的「韻」指的是韻賅上去入。</p>
+<p>如「(端精組 且 入聲) 或 (以母 且 四等 且 去聲)」可以表示為 <code>端精組 入聲 或 以母 四等 去聲</code>。</p>
 
           </div>
           
@@ -1580,9 +1664,9 @@
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
       <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></code>:
-        若描述音韻地位的字串符合該音韻地位，返回 
+        若描述音韻地位的字串符合該音韻地位，回傳 
 <code>true</code>
-；否則返回 
+；否則回傳 
 <code>false</code>
 。
 
@@ -1598,12 +1682,98 @@
     <div class='py1 quiet mt1 prose-big'>Example</div>
     
       
-      <pre class='p1 overflow-auto round fill-light'>&gt; <span class="hljs-keyword">let</span> 音韻地位 = Qieyun.get音韻地位(<span class="hljs-number">1919</span>); <span class="hljs-comment">// 拯小韻</span>
+      <pre class='p1 overflow-auto round fill-light'>&gt; 音韻地位 = <span class="hljs-keyword">new</span> Qieyun.音韻地位(<span class="hljs-string">'幫'</span>, <span class="hljs-literal">null</span>, <span class="hljs-string">'三'</span>, <span class="hljs-literal">null</span>, <span class="hljs-string">'凡'</span>, <span class="hljs-string">'入'</span>);
 &gt; 音韻地位.屬於(<span class="hljs-string">'章母'</span>);
-<span class="hljs-literal">true</span>
-&gt; 音韻地位.屬於(<span class="hljs-string">'清韻'</span>);
 <span class="hljs-literal">false</span>
-&gt; 音韻地位.屬於(<span class="hljs-string">'重紐A類 或 以母 或 端精章組 或 日母'</span>);
+&gt; 音韻地位.屬於(<span class="hljs-string">'一四等'</span>);
+<span class="hljs-literal">false</span>
+&gt; 音韻地位.屬於(<span class="hljs-string">'幫組 或 陽韻'</span>);
+<span class="hljs-literal">true</span></pre>
+    
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
+    <div class='border-bottom' id='音韻地位等於'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>等於(other)</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+
+  <p>判斷當前音韻地位是否等於另一音韻地位。</p>
+
+    <div class='pre p1 fill-light mt0'>等於(other: <a href="#%E9%9F%B3%E9%9F%BB%E5%9C%B0%E4%BD%8D">音韻地位</a>): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>other</span> <code class='quiet'>(<a href="#%E9%9F%B3%E9%9F%BB%E5%9C%B0%E4%BD%8D">音韻地位</a>)</code>
+	    另一音韻地位。
+
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></code>:
+        若相等，則回傳 
+<code>true</code>
+；否則回傳 
+<code>false</code>
+。
+
+      
+    
+  
+
+  
+
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Example</div>
+    
+      
+      <pre class='p1 overflow-auto round fill-light'>&gt; a = <span class="hljs-keyword">new</span> Qieyun.音韻地位(<span class="hljs-string">'羣'</span>, <span class="hljs-string">'開'</span>, <span class="hljs-string">'三'</span>, <span class="hljs-string">'A'</span>, <span class="hljs-string">'支'</span>, <span class="hljs-string">'平'</span>);
+&gt; b = <span class="hljs-keyword">new</span> Qieyun.音韻地位(<span class="hljs-string">'羣'</span>, <span class="hljs-string">'開'</span>, <span class="hljs-string">'三'</span>, <span class="hljs-string">'A'</span>, <span class="hljs-string">'支'</span>, <span class="hljs-string">'平'</span>);
+&gt; a === b;
+<span class="hljs-literal">false</span>
+&gt; a.等於(b);
 <span class="hljs-literal">true</span></pre>
     
   
@@ -1637,17 +1807,25 @@
   
   <div class='clearfix'>
     
-    <h3 class='fl m0' id='get音韻地位'>
-      get音韻地位
+    <h3 class='fl m0' id='validate'>
+      validate
     </h3>
     
     
   </div>
   
 
-  <p>查詢《廣韻》小韻號對應的《切韻》音系音韻地位。</p>
+  <p>驗證給定的音韻地位六要素是否合法。</p>
+<p>母必須為「幫滂並明端透定泥來知徹澄孃精清從心邪莊初崇生俟章昌常書船日
+見溪羣疑影曉匣云以」三十八聲類之一。</p>
+<p>韻必須為「東冬鍾江支脂之微魚虞模齊祭泰佳皆夬灰咍廢眞臻文欣元魂痕
+寒刪山仙先蕭宵肴豪歌麻陽唐庚耕清青蒸登尤侯幽侵覃談鹽添咸銜嚴凡」五十八韻之一。</p>
+<p>注意：不設諄、桓、戈韻。分別併入眞、寒、歌韻。</p>
+<p>當聲母為脣音，或韻母為模韻時，呼必須為 <code>null</code>。在其他情況下，呼必須取「開」或「合」。</p>
+<p>當聲母為脣牙喉音，且韻母為「支脂祭眞仙宵清侵鹽」九韻之一時，重紐必須取 <code>A</code> 或 <code>B</code>。
+在其他情況下，重紐必須取 <code>null</code>。</p>
 
-    <div class='pre p1 fill-light mt0'>get音韻地位(小韻號: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>): <a href="#%E9%9F%B3%E9%9F%BB%E5%9C%B0%E4%BD%8D">音韻地位</a></div>
+    <div class='pre p1 fill-light mt0'>validate(母: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>, 呼: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>, 等: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>, 重紐: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>, 韻: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>, 聲: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</div>
   
   
 
@@ -1664,8 +1842,180 @@
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>小韻號</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)</code>
-	    
+            <span class='code bold'>母</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
+	    聲母：幫, 滂, 並, 明, …
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>呼</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
+	    呼：
+<code>null</code>
+, 開, 合
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>等</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
+	    等：一, 二, 三, 四
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>重紐</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
+	    重紐：
+<code>null</code>
+, A, B
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>韻</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
+	    韻母（舉平以賅上去入）：東, 冬, 鍾, 江, …, 祭, 泰, 夬, 廢
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>聲</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
+	    聲調：平, 上, 去, 入
+
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Throws</div>
+    <ul>
+      
+        <li><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Error">Error</a>: 若給定的音韻地位六要素不合法，則拋出異常。
+</li>
+      
+    </ul>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+          
+        
+          
+          <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
+    <h3 class='fl m0' id='encode'>
+      encode
+    </h3>
+    
+    
+  </div>
+  
+
+  <p>將音韻地位六要素轉換為音韻編碼。</p>
+<p>此函式會首先驗證給定的音韻地位六要素是否合法，故無需重複呼叫 <code>validate</code> 函式。</p>
+
+    <div class='pre p1 fill-light mt0'>encode(母: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>, 呼: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>, 等: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>, 重紐: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>, 韻: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>, 聲: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>母</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
+	    聲母：幫, 滂, 並, 明, …
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>呼</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
+	    呼：
+<code>null</code>
+, 開, 合
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>等</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
+	    等：一, 二, 三, 四
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>重紐</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
+	    重紐：
+<code>null</code>
+, A, B
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>韻</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
+	    韻母（舉平以賅上去入）：東, 冬, 鍾, 江, …, 祭, 泰, 夬, 廢
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>聲</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
+	    聲調：平, 上, 去, 入
+
           </div>
           
         </div>
@@ -1678,8 +2028,97 @@
   
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code><a href="#%E9%9F%B3%E9%9F%BB%E5%9C%B0%E4%BD%8D">音韻地位</a></code>:
-        該小韻號對應的音韻地位。
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></code>:
+        給定的音韻地位對應的編碼。
+
+      
+    
+  
+
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Throws</div>
+    <ul>
+      
+        <li><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Error">Error</a>: 若給定的音韻地位六要素不合法，則拋出異常。
+</li>
+      
+    </ul>
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Example</div>
+    
+      
+      <pre class='p1 overflow-auto round fill-light'>&gt; Qieyun.encode(<span class="hljs-string">'幫'</span>, <span class="hljs-literal">null</span>, <span class="hljs-string">'三'</span>, <span class="hljs-literal">null</span>, <span class="hljs-string">'凡'</span>, <span class="hljs-string">'入'</span>);
+<span class="hljs-string">'A5T'</span>
+&gt; Qieyun.encode(<span class="hljs-string">'羣'</span>, <span class="hljs-string">'開'</span>, <span class="hljs-string">'三'</span>, <span class="hljs-string">'A'</span>, <span class="hljs-string">'支'</span>, <span class="hljs-string">'平'</span>);
+<span class="hljs-string">'fEQ'</span></pre>
+    
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+          
+        
+          
+          <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
+    <h3 class='fl m0' id='decode'>
+      decode
+    </h3>
+    
+    
+  </div>
+  
+
+  <p>將音韻編碼轉換為音韻地位六要素。</p>
+
+    <div class='pre p1 fill-light mt0'>decode(音韻編碼: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>): {母: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>, 呼: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>, 等: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>, 重紐: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>, 韻: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>, 聲: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>}</div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>音韻編碼</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
+	    表示音韻地位的編碼
+
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code>{母: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>, 呼: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>, 等: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>, 重紐: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>, 韻: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>, 聲: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>}</code>:
+        給定的音韻編碼對應的音韻地位。
 
       
     
@@ -1693,7 +2132,10 @@
     <div class='py1 quiet mt1 prose-big'>Example</div>
     
       
-      <pre class='p1 overflow-auto round fill-light'>&gt; <span class="hljs-keyword">let</span> 音韻地位 = Qieyun.get音韻地位(<span class="hljs-number">739</span>);</pre>
+      <pre class='p1 overflow-auto round fill-light'>&gt; Qieyun.decode(<span class="hljs-string">'A5T'</span>);
+{ 母: <span class="hljs-string">'幫'</span>, 呼: <span class="hljs-literal">null</span>, 等: <span class="hljs-string">'三'</span>, 重紐: <span class="hljs-literal">null</span>, 韻: <span class="hljs-string">'凡'</span>, 聲: <span class="hljs-string">'入'</span> }
+&gt; Qieyun.decode(<span class="hljs-string">'fEQ'</span>);
+{ 母: <span class="hljs-string">'羣'</span>, 呼: <span class="hljs-string">'開'</span>, 等: <span class="hljs-string">'三'</span>, 重紐: <span class="hljs-string">'A'</span>, 韻: <span class="hljs-string">'支'</span>, 聲: <span class="hljs-string">'平'</span> }</pre>
     
   
 

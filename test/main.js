@@ -7,7 +7,7 @@ chai.should();
 
 (function test1_1() {
   // 1.1. 查詢「之」字
-  let res = Qieyun.query字頭('之');
+  const res = Qieyun.query字頭('之');
   res.length.should.equal(1);
   res[0].音韻地位.描述.should.equal('章開三之平');
   res[0].解釋.should.equal('適也往也閒也亦姓出姓苑止而切四');
@@ -15,13 +15,13 @@ chai.should();
 
 (function test1_2() {
   // 1.2. 查詢「過」字。「過」字有兩讀
-  res = Qieyun.query字頭('過');
+  const res = Qieyun.query字頭('過');
   res.length.should.equal(2);
 }());
 
 (function test1_3() {
   // 1.3. 查詢不存在的字，沒有讀音
-  res = Qieyun.query字頭('!');
+  const res = Qieyun.query字頭('!');
   res.length.should.equal(0);
 }());
 
@@ -69,6 +69,8 @@ chai.should();
   音韻地位.聲.should.equal('入');
 
   // 4.2. 拓展音韻屬性
+  音韻地位.清濁.should.equal('全清');
+  音韻地位.音.should.equal('脣');
   音韻地位.攝.should.equal('咸');
 
   // 4.3. 其他
@@ -90,6 +92,8 @@ chai.should();
   音韻地位.聲.should.equal('平');
 
   // 4.2. 拓展音韻屬性
+  音韻地位.清濁.should.equal('全濁');
+  音韻地位.音.should.equal('牙');
   音韻地位.攝.should.equal('止');
 
   // 4.3. 其他

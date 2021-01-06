@@ -1,6 +1,6 @@
 import { encode, decode } from './音韻編碼';
 import { m字頭2音韻編碼解釋, m音韻編碼2字頭解釋, m音韻編碼2反切 } from './資料';
-import { 韻到攝, 組到母 } from './拓展音韻屬性';
+import { 母到清濁, 母到音, 韻到攝, 組到母 } from './拓展音韻屬性';
 
 /**
  * 由字頭查出相應的音韻地位和解釋。
@@ -8,8 +8,6 @@ import { 韻到攝, 組到母 } from './拓展音韻屬性';
  * @returns {Array<{音韻地位: 音韻地位, 解釋: string}>} 陣列。陣列的每一項包含音韻地位和解釋。
  *
  * 若字頭不存在，則回傳空陣列。
- *
- * 陣列中的元素並非一定按照某種順序排列。若有需要，需自行呼叫排序函式。
  * @example
  * > Qieyun.query字頭('結');
  * [ { 音韻地位: 音韻地位 { '見開四先入' }, 解釋: '締也古屑切十五' } ]
@@ -135,6 +133,38 @@ export class 音韻地位 {
      * '平'
      */
     this.聲 = 聲;
+  }
+
+  /**
+   * 清濁（全清、次清、全濁、次濁）
+   * @member {string}
+   * @example
+   * > 音韻地位 = new Qieyun.音韻地位('幫', null, '三', null, '凡', '入');
+   * > 音韻地位.清濁;
+   * '全清'
+   * > 音韻地位 = new Qieyun.音韻地位('羣', '開', '三', 'A', '支', '平');
+   * > 音韻地位.清濁;
+   * '全濁'
+   */
+  get 清濁() {
+    const { 母 } = this;
+    return 母到清濁[母];
+  }
+
+  /**
+   * 音（發音部位：脣、舌、齒、牙、喉）
+   * @member {string}
+   * @example
+   * > 音韻地位 = new Qieyun.音韻地位('幫', null, '三', null, '凡', '入');
+   * > 音韻地位.音;
+   * '脣'
+   * > 音韻地位 = new Qieyun.音韻地位('羣', '開', '三', 'A', '支', '平');
+   * > 音韻地位.音;
+   * '牙'
+   */
+  get 音() {
+    const { 母 } = this;
+    return 母到音[母];
   }
 
   /**
@@ -269,7 +299,10 @@ export class 音韻地位 {
    * 判斷某個小韻是否屬於給定的音韻地位。
    * @param {string} s 描述音韻地位的字串
    *
-   * 字串中音韻地位的描述格式：`...母`, `...組`, `...等`, `...韻`, `...攝`, `...聲`, `開口`, `合口`, `重紐A類`, `重紐B類`。
+   * 字串中音韻地位的描述格式：
+   * 
+   * * 音韻地位六要素：`...母`, `...等`, `...韻`, `...聲`, `開口`, `合口`, `重紐A類`, `重紐B類`
+   * * 拓展音韻地位：`...組`, `...音`, `...攝`, `全清`, `次清`, `全濁`, `次濁`
    *
    * 字串首先以「或」字分隔，再以空格分隔。不支援括號。
    *
@@ -285,7 +318,7 @@ export class 音韻地位 {
    * true
    */
   屬於(s) {
-    const { 母, 呼, 等, 重紐, 韻, 聲, 攝 } = this;
+    const { 母, 呼, 等, 重紐, 韻, 聲, 清濁, 音, 攝 } = this;
 
     function equal組(i) {
       const vs = 組到母[i];
@@ -302,17 +335,22 @@ export class 音韻地位 {
 
     return s.split(' 或 ').some((xs) => xs.split(' ').every((ys) => {
       if (ys.endsWith('母')) return [...ys].slice(0, -1).includes(母);
+      if (ys.endsWith('等')) return [...ys].slice(0, -1).includes(等);
       if (ys.endsWith('韻')) return [...ys].slice(0, -1).includes(韻);
-      if (ys.endsWith('攝')) return [...ys].slice(0, -1).includes(攝);
+      if (ys.endsWith('聲')) return [...ys].slice(0, -1).some((i) => equal聲(i));
 
       if (ys.endsWith('組')) return [...ys].slice(0, -1).some((i) => equal組(i));
-      if (ys.endsWith('等')) return [...ys].slice(0, -1).includes(等);
-      if (ys.endsWith('聲')) return [...ys].slice(0, -1).some((i) => equal聲(i));
+      if (ys.endsWith('音')) return [...ys].slice(0, -1).includes(音);
+      if (ys.endsWith('攝')) return [...ys].slice(0, -1).includes(攝);
 
       if (ys === '開口') return 呼 === '開';
       if (ys === '合口') return 呼 === '合';
       if (ys === '重紐A類') return 重紐 === 'A';
       if (ys === '重紐B類') return 重紐 === 'B';
+      if (ys === '全清') return 清濁 === '全清';
+      if (ys === '次清') return 清濁 === '次清';
+      if (ys === '全濁') return 清濁 === '全濁';
+      if (ys === '次濁') return 清濁 === '次濁';
 
       throw new Error(`No such 運算符: ${ys}`);
     }));

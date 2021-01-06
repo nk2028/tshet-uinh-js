@@ -43,16 +43,18 @@ chai.should();
 
 (function test3_1() {
   // 3.1. 查「東」字的反切
-  const res = Qieyun.query字頭('東');
+  const 字頭 = '東';
+  const res = Qieyun.query字頭(字頭);
   res.length.should.equal(1);
-  res[0].音韻地位.反切.should.equal('德紅');
+  res[0].音韻地位.反切(字頭).should.equal('德紅');
 }());
 
 (function test3_2() {
   // 3.2. 查「拯」字的反切，「拯」字無反切，值為 null
-  const res = Qieyun.query字頭('拯');
+  const 字頭 = '拯';
+  const res = Qieyun.query字頭(字頭);
   res.length.should.equal(1);
-  (res[0].音韻地位.反切 == null).should.equal(true);
+  (res[0].音韻地位.反切(字頭) == null).should.equal(true);
 }());
 
 // 4. 由音韻地位得出各項音韻屬性

@@ -307,6 +307,9 @@ export class 音韻地位 {
    * 字串首先以「或」字分隔，再以空格分隔。不支援括號。
    *
    * 如「(端精組 且 入聲) 或 (以母 且 四等 且 去聲)」可以表示為 `端精組 入聲 或 以母 四等 去聲`。
+   *
+   * 特別需要注意「呼」為 `null` 的情況。對於此函式，若「呼」為 `null` 時，「微虞灰廢文元魂寒歌陽凡」
+   * 十一韻視為合口，否則視為開口。
    * @returns {boolean} 若描述音韻地位的字串符合該音韻地位，回傳 `true`；否則回傳 `false`。
    * @example
    * > 音韻地位 = new Qieyun.音韻地位('幫', null, '三', null, '凡', '入');
@@ -319,6 +322,9 @@ export class 音韻地位 {
    */
   屬於(s) {
     const { 母, 呼, 等, 重紐, 韻, 聲, 清濁, 音, 攝 } = this;
+
+    const 脣音合口韻 = '微虞灰廢文元魂寒歌陽凡';
+    const is開口 = 呼 == null ? ![...脣音合口韻].includes(韻) : 呼 === '開';
 
     function equal組(i) {
       const vs = 組到母[i];
@@ -343,8 +349,8 @@ export class 音韻地位 {
       if (ys.endsWith('音')) return [...ys].slice(0, -1).includes(音);
       if (ys.endsWith('攝')) return [...ys].slice(0, -1).includes(攝);
 
-      if (ys === '開口') return 呼 === '開';
-      if (ys === '合口') return 呼 === '合';
+      if (ys === '開口') return is開口;
+      if (ys === '合口') return !is開口;
       if (ys === '重紐A類') return 重紐 === 'A';
       if (ys === '重紐B類') return 重紐 === 'B';
       if (ys === '全清') return 清濁 === '全清';

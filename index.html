@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset='utf-8'>
-  <title>qieyun 0.8.1 | Documentation</title>
+  <title>qieyun 0.8.2 | Documentation</title>
   <meta name='description' content='JavaScript library for the Qieyun phonological system 《切韻》音系 JavaScript 函式庫'>
   <meta name='viewport' content='width=device-width,initial-scale=1'>
   <link href='assets/bass.css' rel='stylesheet'>
@@ -15,7 +15,7 @@
       <div id='split-left' class='overflow-auto fs0 height-viewport-100'>
         <div class='py1 px2'>
           <h3 class='mb0 no-anchor'>qieyun</h3>
-          <div class='mb1'><code>0.8.1</code></div>
+          <div class='mb1'><code>0.8.2</code></div>
           <input
             placeholder='Filter'
             id='filter-input'
@@ -256,7 +256,7 @@
 </script>
 <h1>《切韻》音系 JavaScript 函式庫</h1>
 <p>Browser:</p>
-<pre class='hljs'><span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">"https://cdn.jsdelivr.net/npm/qieyun@0.8.1"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span></pre>
+<pre class='hljs'><span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">"https://cdn.jsdelivr.net/npm/qieyun@0.8.2"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span></pre>
 <p>Node.js:</p>
 <pre class='hljs'>$ npm install qieyun</pre>
 <pre class='hljs'>&gt; <span class="hljs-keyword">const</span> Qieyun = <span class="hljs-built_in">require</span>(<span class="hljs-string">'qieyun'</span>);</pre>
@@ -1541,7 +1541,7 @@
       <div class="clearfix small pointer toggle-sibling">
         <div class="py1 contain">
             <a class='icon pin-right py1 dark-link caret-right'>▸</a>
-            <span class='code strong strong truncate'>反切</span>
+            <span class='code strong strong truncate'>反切(字頭)</span>
         </div>
       </div>
       <div class="clearfix display-none toggle-target">
@@ -1550,16 +1550,9 @@
   
 
   <p>取得音韻地位對應的反切。</p>
-<p>注意在《廣韻》中存在重出的小韻，因此一個音韻地位可能對應多個反切。
-此時函式只回傳第一個反切。</p>
-<p>「拯」等小韻無反切，回傳 <code>null</code>。</p>
+<p>注意在《廣韻》中存在重出的小韻，因此在查詢反切時需要附加字頭訊息。</p>
 
-    <div class='pre p1 fill-light mt0'>反切</div>
-  
-    <p>
-      Type:
-      <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>
-    </p>
+    <div class='pre p1 fill-light mt0'>反切(字頭: any)</div>
   
   
 
@@ -1570,6 +1563,19 @@
   
   
 
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>字頭</span> <code class='quiet'>(any)</code>
+	    
+          </div>
+          
+        </div>
+      
+    </div>
   
 
   
@@ -1585,16 +1591,23 @@
     
       
       <pre class='p1 overflow-auto round fill-light'>&gt; 音韻地位 = <span class="hljs-keyword">new</span> Qieyun.音韻地位(<span class="hljs-string">'端'</span>, <span class="hljs-string">'開'</span>, <span class="hljs-string">'一'</span>, <span class="hljs-literal">null</span>, <span class="hljs-string">'東'</span>, <span class="hljs-string">'平'</span>);
-&gt; 音韻地位.反切;
+&gt; 音韻地位.反切(<span class="hljs-string">'東'</span>);
 <span class="hljs-string">'德紅'</span>
 &gt; 音韻地位 = <span class="hljs-keyword">new</span> Qieyun.音韻地位(<span class="hljs-string">'幫'</span>, <span class="hljs-literal">null</span>, <span class="hljs-string">'三'</span>, <span class="hljs-literal">null</span>, <span class="hljs-string">'凡'</span>, <span class="hljs-string">'入'</span>);
-&gt; 音韻地位.反切;
+&gt; 音韻地位.反切(<span class="hljs-string">'法'</span>);
 <span class="hljs-string">'方乏'</span>
 &gt; 音韻地位 = <span class="hljs-keyword">new</span> Qieyun.音韻地位(<span class="hljs-string">'羣'</span>, <span class="hljs-string">'開'</span>, <span class="hljs-string">'三'</span>, <span class="hljs-string">'A'</span>, <span class="hljs-string">'支'</span>, <span class="hljs-string">'平'</span>);
-&gt; 音韻地位.反切;
+&gt; 音韻地位.反切(<span class="hljs-string">'祇'</span>);
 <span class="hljs-string">'巨支'</span>
-&gt; Qieyun.query字頭(<span class="hljs-string">'拯'</span>)[<span class="hljs-number">0</span>].音韻地位.反切; <span class="hljs-comment">// 拯小韻無反切</span>
-<span class="hljs-literal">null</span></pre>
+&gt; 音韻地位.反切(); <span class="hljs-comment">// 若不提供字頭，則使用該音韻地位的預設反切</span>
+<span class="hljs-string">'巨支'</span>
+&gt; Qieyun.query字頭(<span class="hljs-string">'拯'</span>)[<span class="hljs-number">0</span>].音韻地位.反切(); <span class="hljs-comment">// 拯小韻無反切</span>
+<span class="hljs-literal">null</span>
+&gt; 音韻地位 = <span class="hljs-keyword">new</span> Qieyun.音韻地位(<span class="hljs-string">'知'</span>, <span class="hljs-string">'開'</span>, <span class="hljs-string">'二'</span>, <span class="hljs-literal">null</span>, <span class="hljs-string">'庚'</span>, <span class="hljs-string">'上'</span>);
+&gt; 音韻地位.反切(); <span class="hljs-comment">// 該音韻地位的預設反切為「張梗」</span>
+<span class="hljs-string">'張梗'</span>
+&gt; 音韻地位.反切(<span class="hljs-string">'打'</span>); <span class="hljs-comment">// 該音韻地位「打」字的反切為「德冷」</span>
+<span class="hljs-string">'德冷'</span></pre>
     
   
 

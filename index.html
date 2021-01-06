@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset='utf-8'>
-  <title>qieyun 0.8.0 | Documentation</title>
+  <title>qieyun 0.8.1 | Documentation</title>
   <meta name='description' content='JavaScript library for the Qieyun phonological system 《切韻》音系 JavaScript 函式庫'>
   <meta name='viewport' content='width=device-width,initial-scale=1'>
   <link href='assets/bass.css' rel='stylesheet'>
@@ -15,7 +15,7 @@
       <div id='split-left' class='overflow-auto fs0 height-viewport-100'>
         <div class='py1 px2'>
           <h3 class='mb0 no-anchor'>qieyun</h3>
-          <div class='mb1'><code>0.8.0</code></div>
+          <div class='mb1'><code>0.8.1</code></div>
           <input
             placeholder='Filter'
             id='filter-input'
@@ -256,7 +256,7 @@
 </script>
 <h1>《切韻》音系 JavaScript 函式庫</h1>
 <p>Browser:</p>
-<pre class='hljs'><span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">"https://cdn.jsdelivr.net/npm/qieyun@0.8.0"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span></pre>
+<pre class='hljs'><span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">"https://cdn.jsdelivr.net/npm/qieyun@0.8.1"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span></pre>
 <p>Node.js:</p>
 <pre class='hljs'>$ npm install qieyun</pre>
 <pre class='hljs'>&gt; <span class="hljs-keyword">const</span> Qieyun = <span class="hljs-built_in">require</span>(<span class="hljs-string">'qieyun'</span>);</pre>
@@ -1650,6 +1650,8 @@
 </ul>
 <p>字串首先以「或」字分隔，再以空格分隔。不支援括號。</p>
 <p>如「(端精組 且 入聲) 或 (以母 且 四等 且 去聲)」可以表示為 <code>端精組 入聲 或 以母 四等 去聲</code>。</p>
+<p>特別需要注意「呼」為 <code>null</code> 的情況。對於此函式，若「呼」為 <code>null</code> 時，「微虞灰廢文元魂寒歌陽凡」
+十一韻視為合口，否則視為開口。</p>
 
           </div>
           

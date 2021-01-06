@@ -14,6 +14,7 @@ module.exports = {
   rules: {
     'max-len': 0,
     'no-constant-condition': ['error', { checkLoops: false }],
+    'no-multi-str': 0,
     'no-nested-ternary': 0,
     'no-restricted-syntax': ['error', 'ForInStatement', 'LabeledStatement', 'WithStatement'],
     'no-use-before-define': 0,

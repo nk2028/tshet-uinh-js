@@ -27,7 +27,7 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
     - name: Install bundler
-      run: npm install --global rollup
+      run: npm install -g rollup
     - name: Install dependencies
       run: npm install
     - name: Build

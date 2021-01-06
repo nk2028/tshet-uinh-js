@@ -74,6 +74,8 @@ chai.should();
   // 4.3. 其他
   音韻地位.描述.should.equal('幫三凡入');
   音韻地位.表達式.should.equal('幫母 三等 凡韻 入聲');
+  音韻地位.編碼.should.equal('A5T');
+  音韻地位.代表字.should.equal('法');
 }());
 
 (function test4_2() {
@@ -93,6 +95,8 @@ chai.should();
   // 4.3. 其他
   音韻地位.描述.should.equal('羣開三A支平');
   音韻地位.表達式.should.equal('羣母 開口 三等 重紐A類 支韻 平聲');
+  音韻地位.編碼.should.equal('fEQ');
+  音韻地位.代表字.should.equal('祇');
 }());
 
 // 5. 屬於

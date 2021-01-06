@@ -70,7 +70,7 @@
  * @module Qieyun
  */
 
-import { query字頭, 音韻地位 } from './音韻地位';
+import { query字頭, iter音韻地位, 音韻地位 } from './音韻地位';
 import { validate, encode, decode } from './音韻編碼';
 
-export { query字頭, 音韻地位, validate, encode, decode };
+export { query字頭, iter音韻地位, 音韻地位, validate, encode, decode };

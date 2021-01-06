@@ -26,6 +26,8 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
+    - name: Install documentation generator
+      run: npm install -g documentation
     - name: Install bundler
       run: npm install -g rollup
     - name: Install dependencies
@@ -34,6 +36,8 @@ jobs:
       run: build/main.sh
     - name: Lint
       run: npm run lint
+    - name: Build documentation
+      run: npm run docs
     - name: Bundle
       run: npm run bundle
     - name: Test

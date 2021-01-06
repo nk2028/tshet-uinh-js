@@ -29,11 +29,10 @@ export function query字頭(字頭) {
 }
 
 /**
- * 生成器，回傳所有至少對應一個字頭的音韻地位。
- * @generator
- * @yields {音韻地位} 音韻地位，至少對應一個字頭。
+ * 所有至少對應一個字頭的音韻地位。
+ * @returns {IterableIterator<音韻地位>} 生成器，所有至少對應一個字頭的音韻地位。
  */
-export function* 音韻地位們() {
+export function* iter音韻地位() {
   for (const 音韻編碼 of m音韻編碼2字頭解釋.keys()) {
     const { 母, 呼, 等, 重紐, 韻, 聲 } = decode(音韻編碼);
     yield new 音韻地位(母, 呼, 等, 重紐, 韻, 聲);
@@ -205,22 +204,6 @@ export class 音韻地位 {
   }
 
   /**
-   * 音韻地位對應的字頭和解釋。
-   *
-   * 若音韻地位有音無字，則值為空陣列。
-   * @member {Array<{字頭: string, 解釋: string}>}
-   * @example
-   * > 音韻地位 = new Qieyun.音韻地位('影', '開', '二', null, '銜', '去');
-   * > 音韻地位.條目;
-   * [ { 字頭: '𪒠', 解釋: '叫呼仿佛𪒠然自得音黯去聲一' } ]
-   */
-  get 條目() {
-    const { 編碼 } = this;
-    const res = m音韻編碼2字頭解釋.get(編碼);
-    return res == null ? [] : res;
-  }
-
-  /**
    * 音韻地位的代表字。
    *
    * 若音韻地位有音無字，則代表字為 `null`。
@@ -237,6 +220,22 @@ export class 音韻地位 {
     const { 編碼 } = this;
     const res = m音韻編碼2字頭解釋.get(編碼);
     return res == null ? null : res[0].字頭; // 取音韻編碼對應的第一個字作為代表字
+  }
+
+  /**
+   * 音韻地位對應的字頭和解釋。
+   *
+   * 若音韻地位有音無字，則值為空陣列。
+   * @member {Array<{字頭: string, 解釋: string}>}
+   * @example
+   * > 音韻地位 = new Qieyun.音韻地位('影', '開', '二', null, '銜', '去');
+   * > 音韻地位.條目;
+   * [ { 字頭: '𪒠', 解釋: '叫呼仿佛𪒠然自得音黯去聲一' } ]
+   */
+  get 條目() {
+    const { 編碼 } = this;
+    const res = m音韻編碼2字頭解釋.get(編碼);
+    return res == null ? [] : res;
   }
 
   /**

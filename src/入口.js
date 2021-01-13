@@ -25,7 +25,7 @@
  * Browser:
  *
  * ```html
- * <script src="https://cdn.jsdelivr.net/npm/qieyun@0.8.2"></script>
+ * <script src="https://cdn.jsdelivr.net/npm/qieyun@0.9.0/bundle-umd.min.js"></script>
  * ```
  *
  * Node.js:
@@ -35,7 +35,7 @@
  * ```
  *
  * ```javascript
- * > const Qieyun = require('qieyun');
+ * > import Qieyun from 'qieyun';
  * ```
  *
  * ![如圖為《切韻》音系 JavaScript 函式庫的工作流](https://raw.githubusercontent.com/nk2028/qieyun-js/670190f/demo/qieyun-js.png)

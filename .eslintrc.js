@@ -12,6 +12,7 @@ module.exports = {
     sourceType: 'module',
   },
   rules: {
+    'camelcase': ['error', { allow: ['\\d_\\d'] }],
     'max-len': 0,
     'no-constant-condition': ['error', { checkLoops: false }],
     'no-multi-str': 0,
@@ -20,6 +21,7 @@ module.exports = {
     'no-use-before-define': 0,
     'object-curly-newline': 0,
     'object-property-newline': 0,
+    'import/extensions': 0,
     'quotes': [1, 'single'],
   },
 };

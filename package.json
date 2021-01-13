@@ -1,12 +1,12 @@
 {
   "name": "qieyun",
-  "version": "0.8.2",
-  "description": "JavaScript library for the Qieyun phonological system 《切韻》音系 JavaScript 函式庫",
-  "main": "bundle.js",
+  "version": "0.9.0",
+  "description": "A JavaScript library for the Qieyun phonological system",
+  "main": "bundle-cjs.js",
   "scripts": {
     "bundle": "rollup -c",
-    "test": "node test/main.js",
-    "lint": "eslint src/*.js",
+    "test": "node test/main.mjs",
+    "lint": "eslint src/*.js test/*.mjs",
     "docs": "documentation build src/*.js -f html -o docs"
   },
   "repository": {

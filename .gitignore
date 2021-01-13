@@ -1,7 +1,7 @@
 .mypy_cache
 node_modules
 /venv
-/bundle.js
+/bundle-*.js
 /docs
 
 /build/字頭表.csv

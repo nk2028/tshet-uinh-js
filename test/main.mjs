@@ -1,5 +1,5 @@
-const chai = require('chai');
-const Qieyun = require('../bundle.js');
+import chai from 'chai';
+import Qieyun from '../bundle-cjs.js';
 
 chai.should();
 

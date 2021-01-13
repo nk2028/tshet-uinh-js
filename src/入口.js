@@ -25,7 +25,7 @@
  * Browser:
  *
  * ```html
- * <script src="https://cdn.jsdelivr.net/npm/qieyun@0.9.0/bundle-umd.min.js"></script>
+ * <script src="https://cdn.jsdelivr.net/npm/qieyun@0.9.1/bundle-umd.min.js"></script>
  * ```
  *
  * Node.js:

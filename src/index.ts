@@ -1,7 +1,7 @@
 /**
  * # 《切韻》音系 JavaScript 函式庫
  *
- * ![如圖為《切韻》音系 JavaScript 函式庫的工作流](https://raw.githubusercontent.com/nk2028/qieyun-js/670190f/demo/qieyun-js.png)
+ * ![如圖為《切韻》音系 JavaScript 函式庫的工作流](https://raw.githubusercontent.com/nk2028/qieyun/670190f/demo/qieyun.png)
  *
  * 各參數的取值如下：
  *

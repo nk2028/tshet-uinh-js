@@ -36,7 +36,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/nk2028/qieyun-js.git"
+    "url": "git+https://github.com/nk2028/qieyun.git"
   },
   "keywords": [
     "Historical Linguistics",
@@ -46,9 +46,9 @@
   "author": "Ngiox Khyen 2028 Project",
   "license": "CC0-1.0",
   "bugs": {
-    "url": "https://github.com/nk2028/qieyun-js/issues"
+    "url": "https://github.com/nk2028/qieyun/issues"
   },
-  "homepage": "https://github.com/nk2028/qieyun-js#readme",
+  "homepage": "https://github.com/nk2028/qieyun#readme",
   "dependencies": {},
   "devDependencies": {
     "@ava/typescript": "^1.1.1",

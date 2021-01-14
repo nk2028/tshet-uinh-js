@@ -6,6 +6,24 @@ A JavaScript library for the Qieyun phonological system
 
 ![](https://raw.githubusercontent.com/nk2028/qieyun-js/670190f/demo/qieyun-js.png)
 
+## Usage
+
+Browser:
+
+```html
+<script src="https://cdn.jsdelivr.net/npm/qieyun@0.10.0/bundle-umd.min.js"></script>
+```
+
+Node.js:
+
+```sh
+$ npm install qieyun
+```
+
+```javascript
+> import Qieyun from 'qieyun';
+```
+
 ## Documentation 
 
 See [here](https://nk2028.shn.hk/qieyun-js/).

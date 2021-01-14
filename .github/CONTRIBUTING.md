@@ -4,19 +4,6 @@
 
 A detailed description is not available yet.
 
-## Code Style
-
-Please follow the [Airbnb JavaScript Style Guide](https://github.com/airbnb/javascript).
-
-## Prerequisites
-
-You need to install two packages globally:
-
-```sh
-npm install -g rollup
-npm install -g documentation
-```
-
 ## Build
 
 See the [build script](.github/workflows/build.yml) for details.

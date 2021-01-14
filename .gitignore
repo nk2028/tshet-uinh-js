@@ -1,11 +1,17 @@
-.mypy_cache
+.idea/*
+.nyc_output
+build
 node_modules
-/venv
-/bundle-*.js
+test
+src/**.js
+coverage
+*.log
+yarn.lock
+
 /docs
 
-/build/字頭表.csv
-/build/小韻表.csv
+/prepare/字頭表.csv
+/prepare/小韻表.csv
 
-/src/字頭資料.js
-/src/小韻資料.js
+/src/lib/字頭資料.ts
+/src/lib/小韻資料.ts

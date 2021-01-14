@@ -13,14 +13,14 @@ jobs:
       uses: actions/setup-node@v2
       with:
         node-version: '14'
-    - name: Install documentation generator
-      run: npm install -g documentation
     - name: Install dependencies
       run: npm install
+    - name: Prepare
+      run: prepare/main.sh
     - name: Build
-      run: build/main.sh
+      run: npm run build
     - name: Build documentation
-      run: npm run docs
+      run: npm run doc
     - name: Publish
       run: |
         # Create a temporary directory

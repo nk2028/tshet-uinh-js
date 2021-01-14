@@ -1,14 +1,9 @@
 {
   "name": "qieyun",
-  "version": "0.10.4",
+  "version": "0.10.5",
   "description": "A JavaScript library for the Qieyun phonological system",
   "main": "index.js",
   "types": "index.d.ts",
-  "module": "module/index.js",
-  "exports": {
-    "require": "./index.js",
-    "import": "./module/index.js"
-  },
   "scripts": {
     "build": "run-p build:*",
     "build:rollup": "rollup -c",
@@ -39,7 +34,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/nk2028/qieyun.git"
+    "url": "git+https://github.com/nk2028/qieyun-js.git"
   },
   "keywords": [
     "Qieyun",
@@ -52,7 +47,7 @@
   "bugs": {
     "url": "https://github.com/nk2028/qieyun-js/issues"
   },
-  "homepage": "https://github.com/nk2028/qieyun#readme",
+  "homepage": "https://github.com/nk2028/qieyun-js#readme",
   "dependencies": {},
   "devDependencies": {
     "@ava/typescript": "^1.1.1",
@@ -79,7 +74,6 @@
     "index.js",
     "index.js.map",
     "index.d.ts",
-    "module",
     "LICENSE",
     "README.md"
   ],

@@ -2,7 +2,7 @@
   "compilerOptions": {
     "incremental": true,
     "target": "es2017",
-    "outDir": "build/main",
+    "outDir": "build/esnext",
     "rootDir": "src",
     "moduleResolution": "node",
     "module": "esnext",

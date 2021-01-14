@@ -18,8 +18,6 @@ jobs:
       run: npm install
     - name: Prepare
       run: prepare/main.sh
-    - name: Build
-      run: npm run build
     - name: Test
       run: npm test
     - name: Publish to npm

@@ -4,13 +4,15 @@
   "description": "A JavaScript library for the Qieyun phonological system",
   "main": "index.js",
   "types": "index.d.ts",
-  "module": "build/module/index.js",
+  "module": "module/index.js",
   "exports": {
     "require": "./index.js",
-    "import": "./build/module/index.js"
+    "import": "./module/index.js"
   },
   "scripts": {
-    "build": "rollup -c",
+    "build": "run-p build:*",
+    "build:rollup": "rollup -c",
+    "build:test": "tsc -p tsconfig.test.json",
     "fix": "run-s fix:*",
     "fix:lint": "eslint src --ext .ts --fix",
     "test": "run-s build test:*",
@@ -29,9 +31,9 @@
     "doc": "run-s doc:html && open-cli build/docs/index.html",
     "doc:html": "typedoc src/index.ts --out build/docs",
     "doc:json": "typedoc src/index.ts --json build/docs/typedoc.json",
-    "doc:publish": "gh-pages -m \"[ci skip] Publish `TZ='Asia/Hong_Kong' date`\" -d build/docs",
+    "doc:publish": "gh-pages -m \"[ci skip] Publish `TZ='Asia/Hong_Kong' date`\" -d build/docs -u \"github-actions-bot <support+actions@github.com>\"",
     "reset-hard": "git clean -dfx && git reset --hard && npm i",
-    "prepare-release": "run-s reset-hard test cov:check doc:html version doc:publish"
+    "prepare-release": "run-s reset-hard test cov:check doc:html"
   },
   "engines": {
     "node": ">=10"
@@ -88,11 +90,12 @@
     "timeout": "60s",
     "typescript": {
       "rewritePaths": {
-        "src/": "build/main/"
+        "src/": "build/test/"
       }
     },
     "files": [
-      "!build/module/**"
+      "!build/module/**",
+      "!build/esnext/**"
     ]
   },
   "config": {

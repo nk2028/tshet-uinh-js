@@ -30,9 +30,7 @@ jobs:
       run: npm install
     - name: Prepare
       run: prepare/main.sh
-    - name: Build
-      run: npm run build
-    - name: Build documentation
-      run: npm run doc
     - name: Test
       run: npm test
+    - name: Build documentation
+      run: npm run doc

@@ -8,7 +8,7 @@ export default {
     sourcemap: true,
     name: 'Qieyun',
   }, {
-    file: 'build/module/index.js',
+    file: 'module/index.js',
     format: 'esm',
     sourcemap: true,
   }],

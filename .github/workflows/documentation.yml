@@ -22,4 +22,7 @@ jobs:
     - name: Build documentation
       run: npm run doc
     - name: Publish documentation
-      run: npm run doc:publish
+      run: |
+        git config user.email "sgalal.me@outlook.com"
+        git config user.name "sgalal"
+        npm run doc:publish

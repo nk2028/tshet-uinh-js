@@ -4,14 +4,14 @@
 
 A JavaScript library for the Qieyun phonological system
 
-![](https://raw.githubusercontent.com/nk2028/qieyun/670190f/demo/qieyun.png)
+![library overview](https://raw.githubusercontent.com/nk2028/qieyun/41e5669/demo/qieyun.png)
 
 ## Usage
 
 Browser:
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/qieyun@0.10.0/bundle-umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/qieyun@0.10.1/bundle-umd.min.js"></script>
 ```
 
 Node.js:

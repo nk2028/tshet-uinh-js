@@ -10,9 +10,7 @@
     "import": "./build/module/index.js"
   },
   "scripts": {
-    "build": "run-p build:*",
-    "build:main": "tsc -p tsconfig.json",
-    "build:module": "tsc -p tsconfig.module.json",
+    "build": "rollup -c",
     "fix": "run-s fix:*",
     "fix:lint": "eslint src --ext .ts --fix",
     "test": "run-s build test:*",

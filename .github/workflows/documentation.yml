@@ -15,8 +15,10 @@ jobs:
         node-version: '14'
     - name: Install dependencies
       run: npm install
+    - name: Prepare
+      run: prepare/main.sh
     - name: Build
-      run: build/main.sh
+      run: npm run build
     - name: Build documentation
       run: npm run doc
     - name: Publish documentation

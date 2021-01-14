@@ -14,12 +14,12 @@ jobs:
       with:
         node-version: '14'
         registry-url: https://registry.npmjs.org/
-    - name: Install bundler
+    - name: Install dependencies
       run: npm install
+    - name: Prepare
+      run: prepare/main.sh
     - name: Build
-      run: build/main.sh
-    - name: Bundle
-      run: npm run bundle
+      run: npm run build
     - name: Test
       run: npm test
     - name: Publish to npm

@@ -8,6 +8,10 @@ coverage
 *.log
 yarn.lock
 
+/index.js
+/index.d.ts
+/index.js.map
+
 /docs
 
 /prepare/字頭表.csv

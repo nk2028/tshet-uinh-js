@@ -11,7 +11,7 @@ A JavaScript library for the Qieyun phonological system
 Browser:
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/qieyun@0.10.2"></script>
+<script src="https://cdn.jsdelivr.net/npm/qieyun@0.10.3"></script>
 ```
 
 Node.js:
@@ -27,7 +27,3 @@ $ npm install qieyun
 ## Documentation 
 
 See [here](https://nk2028.shn.hk/qieyun-js/).
-
-## Note for developers
-
-See [.github/CONTRIBUTING.md](.github/CONTRIBUTING.md).

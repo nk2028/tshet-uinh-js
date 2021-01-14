@@ -13,15 +13,44 @@ jobs:
       uses: actions/setup-node@v2
       with:
         node-version: '14'
+    - name: Install documentation generator
+      run: npm install -g documentation
     - name: Install dependencies
       run: npm install
-    - name: Prepare
-      run: prepare/main.sh
     - name: Build
-      run: npm run build
+      run: build/main.sh
     - name: Build documentation
-      run: npm run doc
-    - name: Publish documentation
+      run: npm run docs
+    - name: Publish
       run: |
-        git remote set-url origin https://git:${GITHUB_TOKEN}@github.com/nk2028/qieyun-js.git
-        npm run doc:publish
+        # Create a temporary directory
+        export temp_dir=`mktemp -d -p ~`
+
+        (
+        # Preserve .git
+        mv .git $temp_dir
+        cd $temp_dir
+
+        # Switch branch
+        git fetch
+        git checkout gh-pages
+        )
+
+        (
+        # Go to docs directory
+        cd docs
+
+        # Move .git
+        mv $temp_dir/.git .
+
+        # Set commit identity
+        git config user.email "support+actions@github.com"
+        git config user.name "github-actions-bot"
+
+        # Publish
+        git add .
+        if [ -n "$(git status --porcelain)" ]; then
+          git commit -m "[ci skip] Publish `TZ='Asia/Hong_Kong' date`"
+          git push -f origin gh-pages
+        fi
+        )

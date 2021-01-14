@@ -18,37 +18,6 @@ jobs:
     - name: Build
       run: build/main.sh
     - name: Build documentation
-      run: npm run docs
-    - name: Publish
-      run: |
-        # Create a temporary directory
-        export temp_dir=`mktemp -d -p ~`
-
-        (
-        # Preserve .git
-        mv .git $temp_dir
-        cd $temp_dir
-
-        # Switch branch
-        git fetch
-        git checkout gh-pages
-        )
-
-        (
-        # Go to docs directory
-        cd docs
-
-        # Move .git
-        mv $temp_dir/.git .
-
-        # Set commit identity
-        git config user.email "sgalal.me@outlook.com"
-        git config user.name "sgalal"
-
-        # Publish
-        git add .
-        if [ -n "$(git status --porcelain)" ]; then
-          git commit -m "Publish `TZ='Asia/Hong_Kong' date`"
-          git push -f origin gh-pages
-        fi
-        )
+      run: npm run doc
+    - name: Publish documentation
+      run: npm run doc:publish

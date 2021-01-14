@@ -4,15 +4,6 @@
 
 A detailed description is not available yet.
 
-## Prerequisites
-
-You need to install two packages globally:
-
-```sh
-npm install -g rollup
-npm install -g documentation
-```
-
 ## Build
 
 See the [build script](.github/workflows/build.yml) for details.

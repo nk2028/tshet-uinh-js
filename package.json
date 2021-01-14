@@ -27,7 +27,7 @@
     "doc": "run-s doc:html && open-cli build/docs/index.html",
     "doc:html": "typedoc src/index.ts --out build/docs",
     "doc:json": "typedoc src/index.ts --json build/docs/typedoc.json",
-    "doc:publish": "gh-pages -m \"[ci skip] Updates\" -d build/docs",
+    "doc:publish": "gh-pages -m \"[ci skip] Publish `TZ='Asia/Hong_Kong' date`\" -d build/docs",
     "reset-hard": "git clean -dfx && git reset --hard && npm i",
     "prepare-release": "run-s reset-hard test cov:check doc:html version doc:publish"
   },

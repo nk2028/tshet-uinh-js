@@ -33,6 +33,6 @@ jobs:
     - name: Build
       run: npm run build
     - name: Build documentation
-      run: npm run docs
+      run: npm run doc
     - name: Test
       run: npm test

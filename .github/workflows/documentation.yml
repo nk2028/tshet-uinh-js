@@ -13,8 +13,6 @@ jobs:
       uses: actions/setup-node@v2
       with:
         node-version: '14'
-    - name: Install documentation generator
-      run: npm install -g documentation
     - name: Install dependencies
       run: npm install
     - name: Build

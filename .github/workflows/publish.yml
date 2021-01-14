@@ -15,8 +15,6 @@ jobs:
         node-version: '14'
         registry-url: https://registry.npmjs.org/
     - name: Install bundler
-      run: npm install -g rollup
-    - name: Install dependencies
       run: npm install
     - name: Build
       run: build/main.sh

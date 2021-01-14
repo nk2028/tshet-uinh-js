@@ -1,42 +1,5 @@
 /**
- * <style>
- *   th, td { border: 1px solid; }
- *   h3#qieyun, div#split-right > section:first-child > div.pre.p1.fill-light.mt0 { display: none; }
- *   p > img { max-width: 100%; }
- * </style>
- * <script>
- *   window.addEventListener("load", function(event) {
- *     document.documentElement.lang = 'zh-Hant';
- *     var xs = document.querySelectorAll('div.clearfix.small.pointer.toggle-sibling');  // Right
- *     for (const x of xs)
- *       x.click();
- *     xs = document.querySelectorAll('li > a.toggle-sibling');  // Left
- *     for (const x of xs) {
- *       var href = x.href;
- *       x.href = 'javascript:void(0)';
- *       x.click();
- *       x.href = href;
- *     }
- *   });
- * </script>
- *
  * # 《切韻》音系 JavaScript 函式庫
- *
- * Browser:
- *
- * ```html
- * <script src="https://cdn.jsdelivr.net/npm/qieyun@0.9.1/bundle-umd.min.js"></script>
- * ```
- *
- * Node.js:
- *
- * ```sh
- * $ npm install qieyun
- * ```
- *
- * ```javascript
- * > import Qieyun from 'qieyun';
- * ```
  *
  * ![如圖為《切韻》音系 JavaScript 函式庫的工作流](https://raw.githubusercontent.com/nk2028/qieyun-js/670190f/demo/qieyun-js.png)
  *
@@ -65,12 +28,8 @@
  * * 母 群 -> 羣
  * * 韻 餚 -> 肴
  * * 韻 真 -> 眞
- *
- * [GitHub](https://github.com/nk2028/qieyun-js) - [npm](https://www.npmjs.com/package/qieyun) - [JSDelivr](https://www.jsdelivr.com/package/npm/qieyun)
- * @module Qieyun
  */
 
-import { query字頭, iter音韻地位, 音韻地位 } from './音韻地位';
-import { validate, encode, decode } from './音韻編碼';
+import { decode, encode, iter音韻地位, query字頭, validate, 音韻地位 } from './lib/音韻地位';
 
-export { query字頭, iter音韻地位, 音韻地位, validate, encode, decode };
+export { decode, encode, iter音韻地位, query字頭, validate, 音韻地位 };

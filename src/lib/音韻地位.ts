@@ -1,6 +1,6 @@
 import { 母到清濁, 母到音, 組到母, 韻到攝 } from './拓展音韻屬性';
 import 特殊反切 from './特殊反切';
-import { m字頭2音韻編碼解釋, m音韻編碼2反切, m音韻編碼2字頭解釋 } from './資料';
+import { m字頭2音韻編碼解釋, m音韻編碼2反切, m音韻編碼2字頭解釋 } from './解析資料';
 
 /**
  * 由字頭查出相應的音韻地位和解釋。
@@ -171,6 +171,7 @@ export class 音韻地位 {
    * ```
    */
   constructor(母: string, 呼: string, 等: string, 重紐: string, 韻: string, 聲: string) {
+    validate(母, 呼, 等, 重紐, 韻, 聲);
     this.母 = 母;
     this.呼 = 呼;
     this.等 = 等;
@@ -393,7 +394,7 @@ export class 音韻地位 {
     const 脣音合口韻 = '微虞灰廢文元魂寒歌陽凡';
     const is開口 = 呼 == null ? ![...脣音合口韻].includes(韻) : 呼 === '開';
 
-    function equal組(i: string | number) {
+    function equal組(i: string) {
       const vs = 組到母[i];
       if (vs == null) return false; // No such 組
       return vs.some((v: string) => 母 === v);

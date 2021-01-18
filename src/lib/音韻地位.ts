@@ -43,8 +43,8 @@ function assert(b: boolean, s: string) {
  */
 export function query字頭(字頭: string): Array<{音韻地位: 音韻地位, 解釋: string}> {
   const res = m字頭2音韻編碼解釋.get(字頭);
-  return res == null ? [] : res.map(({ 音韻編碼, 解釋 }) => {
-    return { 音韻地位: 音韻地位.from編碼(音韻編碼), 解釋 };
+  return res == null ? [] : res.map(({ 編碼, 解釋 }) => {
+    return { 音韻地位: 音韻地位.from編碼(編碼), 解釋 };
   });
 }
 

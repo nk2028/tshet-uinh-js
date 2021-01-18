@@ -14,8 +14,7 @@ yarn.lock
 
 /docs
 
-/prepare/字頭表.csv
-/prepare/小韻表.csv
+/prepare/data.csv
 
-/src/lib/字頭資料.ts
-/src/lib/小韻資料.ts
+/src/lib/資料.ts
+/src/lib/特殊反切.ts

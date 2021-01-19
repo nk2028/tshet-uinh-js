@@ -1,11 +1,13 @@
+import { readFileSync } from 'fs';
+
 import test from 'ava';
 
-import { decode, iter音韻地位, 音韻地位 } from './音韻地位';
+import { iter音韻地位, query字頭, 音韻地位 } from './音韻地位';
 
 // 由音韻地位得出各項音韻屬性
 
 test('測試「法」字對應的音韻地位的各項音韻屬性', (t) => {
-  const 當前音韻地位 = new 音韻地位('幫', null, '三', null, '凡', '入');
+  const 當前音韻地位 = 音韻地位.from描述('幫三凡入');
 
   // 基本音韻屬性（六個）
   t.is(當前音韻地位.母, '幫');
@@ -28,7 +30,7 @@ test('測試「法」字對應的音韻地位的各項音韻屬性', (t) => {
 });
 
 test('測試「祇」字對應的音韻地位的各項音韻屬性', (t) => {
-  const 當前音韻地位 = new 音韻地位('羣', '開', '三', 'A', '支', '平');
+  const 當前音韻地位 = 音韻地位.from描述('羣開三A支平');
 
   // 基本音韻屬性（六個）
   t.is(當前音韻地位.母, '羣');
@@ -51,7 +53,7 @@ test('測試「祇」字對應的音韻地位的各項音韻屬性', (t) => {
 });
 
 test('查詢有音無字的音韻地位', (t) => {
-  const 當前音韻地位 = new 音韻地位('從', '合', '三', null, '歌', '平');
+  const 當前音韻地位 = 音韻地位.from描述('從合三歌平');
 
   t.is(當前音韻地位.代表字, null);
   t.is(當前音韻地位.反切(null), null);
@@ -60,7 +62,7 @@ test('查詢有音無字的音韻地位', (t) => {
 // 屬於
 
 test('測試「法」字對應的音韻地位的屬於函式', (t) => {
-  const 當前音韻地位 = new 音韻地位('幫', null, '三', null, '凡', '入');
+  const 當前音韻地位 = 音韻地位.from描述('幫三凡入');
   t.true(當前音韻地位.屬於('幫母'));
   t.true(當前音韻地位.屬於('幫精組'));
   t.false(當前音韻地位.屬於('精組'));
@@ -68,20 +70,37 @@ test('測試「法」字對應的音韻地位的屬於函式', (t) => {
   t.false(當前音韻地位.屬於('喉音'));
   t.true(當前音韻地位.屬於('仄聲'));
   t.false(當前音韻地位.屬於('舒聲'));
+  t.false(當前音韻地位.屬於('全濁'));
   t.false(當前音韻地位.屬於('次濁'));
 });
 
 // 遍歷所有音韻地位
 
-test('遍歷所有音韻地位', (t) => {
+test('使用「iter音韻地位」函式遍歷所有音韻地位', (t) => {
   for (const 當前音韻地位 of iter音韻地位()) {
-    t.true(decode(當前音韻地位.編碼).等於(當前音韻地位));
+    t.true(音韻地位.from編碼(當前音韻地位.編碼).等於(當前音韻地位));
     t.true(當前音韻地位.屬於(當前音韻地位.表達式));
+  }
+});
+
+test('根據原資料檔遍歷所有音韻地位2', (t) => {
+  for (const line of readFileSync('prepare/data.csv', { encoding: 'utf8' }).split('\n').slice(1, -1)) {
+    const [描述1, 原反切1, 字頭1, 解釋1] = line.split(',');
+    const 反切1 = 原反切1.length === 0 ? null : 原反切1;
+
+    // patch
+    if (['姊規', '扶來', '昨閑', '莫亥', '莫代', '乙白'].includes(反切1)) continue; // strange 反切, and only corresponds to rare characters
+    if (反切1 === '去其' && 字頭1 === '抾') continue; // 抾，去其切，又丘之切, but the two fanqie imply the same phonological position
+
+    const 音韻地位1 = 音韻地位.from描述(描述1);
+    t.true(query字頭(字頭1).some(({ 音韻地位: 音韻地位2, 解釋: 解釋2 }) => {
+      return 音韻地位1.等於(音韻地位2) && 音韻地位1.反切(字頭1) === 反切1 && 解釋1 === 解釋2;
+    }), line);
   }
 });
 
 // 音韻編碼
 
 test('測試不合法音韻地位', (t) => {
-  t.throws(() => new 音韻地位('從', '合', '三', 'A', '歌', '平'));
+  t.throws(() => 音韻地位.from描述('從合三A歌平'));
 });

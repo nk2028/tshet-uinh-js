@@ -48,6 +48,9 @@ jobs:
         # Go to docs directory
         cd docs
 
+        # Set no Jekyll
+        touch .nojekyll
+
         # Move .git
         mv $temp_dir/.git .
 

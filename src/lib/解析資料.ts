@@ -5,7 +5,7 @@ export const m音韻編碼2字頭解釋 = new Map();
 export const m音韻編碼2反切 = new Map();
 
 (function 解析資料() {
-  const patternOuter = /([A-Za-z0-9+-]{3})(..)([^A-Za-z0-9+-]+)/gu;
+  const patternOuter = /([A-Za-z0-9]{3})(..)([^A-Za-z0-9]+)/gu;
   let matchOuter;
   while ((matchOuter = patternOuter.exec(資料)) != null) {
     const { 1: 編碼, 2: 反切, 3: 條目 } = matchOuter;

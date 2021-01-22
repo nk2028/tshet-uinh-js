@@ -28,7 +28,7 @@ jobs:
     - name: Build
       run: npm run build
     - name: Build documentation
-      run: npm run doc
+      run: npm run doc:html
     - name: Publish
       run: |
         # Create a temporary directory

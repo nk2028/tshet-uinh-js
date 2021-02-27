@@ -2,7 +2,7 @@ import os
 from QieyunEncoder import from描述, to編碼
 
 if not os.path.exists('prepare/data.csv'):
-	os.system('curl -LsSo prepare/data.csv https://raw.githubusercontent.com/nk2028/qieyun-data/f187326/data.csv')
+	os.system('curl -LsSo prepare/data.csv https://raw.githubusercontent.com/nk2028/qieyun-data/ca19a8d/data.csv')
 
 d = {}
 特殊反切 = []

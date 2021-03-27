@@ -30,7 +30,7 @@ const 四等韻 = '齊先蕭青添';
 const 一三等韻 = '東歌';
 const 二三等韻 = '麻庚';
 
-const pattern = new RegExp(`^([${所有母}])([${所有呼}]?)([${所有等}])([${所有重紐}]?)([${所有韻}])([${所有聲}])$`, 'u');
+const pattern = new RegExp(`^([${所有母}])([${所有呼}]?)([${所有等}]?)([${所有重紐}]?)([${所有韻}])([${所有聲}])$`, 'u');
 
 function assert(b: boolean, s: string) {
   if (!b) {
@@ -639,9 +639,9 @@ export class 音韻地位 {
   }
 
   /**
-   * 將音韻描述轉換為音韻地位。
-   * @param 音韻描述 音韻地位的描述
-   * @returns 給定的音韻描述對應的音韻地位。
+   * 將音韻描述或最簡音韻描述轉換為音韻地位。
+   * @param 音韻描述 音韻地位的描述或最簡描述
+   * @returns 給定的音韻描述或最簡描述對應的音韻地位。
    * @example
    * ```typescript
    * > Qieyun.音韻地位.from描述('幫三凡入');
@@ -654,11 +654,23 @@ export class 音韻地位 {
     const match = pattern.exec(音韻描述);
 
     const 母 = match[1];
-    const 呼 = match[2] || null;
-    const 等 = match[3];
+    let 呼 = match[2] || null;
+    let 等 = match[3] || null;
     const 重紐 = match[4] || null;
     const 韻 = match[5];
     const 聲 = match[6];
+
+    if (呼 == null && ![...'幫滂並明'].includes(母)) {
+      if ([...必為開口的韻].includes(韻)) 呼 = '開';
+      else if ([...必為合口的韻].includes(韻)) 呼 = '合';
+    }
+
+    if (等 == null) {
+      if ([...一等韻].includes(韻)) 等 = '一';
+      else if ([...二等韻].includes(韻)) 等 = '二';
+      else if ([...三等韻].includes(韻)) 等 = '三';
+      else if ([...四等韻].includes(韻)) 等 = '四';
+    }
 
     音韻地位.驗證(母, 呼, 等, 重紐, 韻, 聲);
 

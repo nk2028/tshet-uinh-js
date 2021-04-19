@@ -459,6 +459,7 @@ export class 音韻地位 {
    * ```
    */
   屬於(s: string): boolean {
+    const _this = this;
     const { 母, 呼, 重紐, 聲, 清濁 } = this;
     const equal聲或組 = {
       聲: function(i: string) {
@@ -478,7 +479,7 @@ export class 音韻地位 {
       while ((expression = xs.match(/^(?:(.+?)(?:([母等韻音攝])|(聲|組))|(開|合)口|(開合中立)|重紐(A|B)類|([全次][清濁])|[ \u3000]+)/))) {
         xs.slice(expression[0].length);
         if (!(function() {
-          if (expression[2]) return [...expression[1]].includes(this[expression[2]]);
+          if (expression[2]) return [...expression[1]].includes(_this[expression[2]]);
           if (expression[3]) return [...expression[1]].some(equal聲或組[expression[3]]);
           if (expression[4]) return 呼 === expression[4];
           if (expression[5]) return 呼 === null;

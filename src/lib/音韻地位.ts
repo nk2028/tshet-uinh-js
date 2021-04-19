@@ -473,9 +473,9 @@ export class 音韻地位 {
         return vs.some((v: string) => 母 === v);
       }
     };
-    return s.split(/[ 　]*或[ 　]*/).some((xs: string) => {
+    return s.split(/[ \u3000]*或[ \u3000]*/).some((xs: string) => {
       let expression;
-      while (expression = xs.match(/^(?:(.+?)(?:([母等韻音攝])|(聲|組))|(開|合)口|(開合中立)|重紐(A|B)類|([全次][清濁])|[ 　]+)/)) {
+      while ((expression = xs.match(/^(?:(.+?)(?:([母等韻音攝])|(聲|組))|(開|合)口|(開合中立)|重紐(A|B)類|([全次][清濁])|[ \u3000]+)/))) {
         xs.slice(expression[0].length);
         if (!(function() {
           if (expression[2]) return [...expression[1]].includes(this[expression[2]]);
@@ -487,7 +487,7 @@ export class 音韻地位 {
           return true; // 空格
         })()) return false;
       }
-      if (xs) throw new Error(`No such 運算符: ${xs.split(/ |　/, 1)[0]}`);
+      if (xs) throw new Error(`No such 運算符: ${xs.split(/[ \u3000]/, 1)[0]}`);
       return true;
     });
   }

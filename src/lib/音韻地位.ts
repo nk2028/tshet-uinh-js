@@ -459,43 +459,37 @@ export class 音韻地位 {
    * ```
    */
   屬於(s: string): boolean {
-    const { 母, 呼, 等, 重紐, 韻, 聲, 清濁, 音, 攝 } = this;
-
-    function equal組(i: string) {
-      const vs = 組到母[i];
-      if (vs == null) return false; // No such 組
-      return vs.some((v: string) => 母 === v);
-    }
-
-    function equal聲(i: string) {
-      if (['平', '上', '去', '入'].includes(i)) return i === 聲;
-      if (i === '仄') return 聲 !== '平';
-      if (i === '舒') return 聲 !== '入';
-      return false; // No such 聲
-    }
-
-    return s.split(' 或 ').some((xs: string) => xs.split(' ').every((ys: string) => {
-      if (ys.endsWith('母')) return [...ys].slice(0, -1).includes(母);
-      if (ys.endsWith('等')) return [...ys].slice(0, -1).includes(等);
-      if (ys.endsWith('韻')) return [...ys].slice(0, -1).includes(韻);
-      if (ys.endsWith('聲')) return [...ys].slice(0, -1).some((i) => equal聲(i));
-
-      if (ys.endsWith('組')) return [...ys].slice(0, -1).some((i) => equal組(i));
-      if (ys.endsWith('音')) return [...ys].slice(0, -1).includes(音);
-      if (ys.endsWith('攝')) return [...ys].slice(0, -1).includes(攝);
-
-      if (ys === '開口') return 呼 === '開';
-      if (ys === '合口') return 呼 === '合';
-      if (ys === '開合中立') return 呼 === null;
-      if (ys === '重紐A類') return 重紐 === 'A';
-      if (ys === '重紐B類') return 重紐 === 'B';
-      if (ys === '全清') return 清濁 === '全清';
-      if (ys === '次清') return 清濁 === '次清';
-      if (ys === '全濁') return 清濁 === '全濁';
-      if (ys === '次濁') return 清濁 === '次濁';
-
-      throw new Error(`No such 運算符: ${ys}`);
-    }));
+    const { 母, 呼, 重紐, 聲, 清濁 } = this;
+    const equal聲或組 = {
+      聲: function(i: string) {
+        if (['平', '上', '去', '入'].includes(i)) return i === 聲;
+        if (i === '仄') return 聲 !== '平';
+        if (i === '舒') return 聲 !== '入';
+        return false; // No such 聲
+      },
+      組: function(i: string) {
+        const vs = 組到母[i];
+        if (vs == null) return false; // No such 組
+        return vs.some((v: string) => 母 === v);
+      }
+    };
+    return s.split(/[ 　]*或[ 　]*/).some((xs: string) => {
+      let expression;
+      while (expression = xs.match(/^(?:(.+?)(?:([母等韻音攝])|(聲|組))|(開|合)口|(開合中立)|重紐(A|B)類|([全次][清濁])|[ 　]+)/)) {
+        xs.slice(expression[0].length);
+        if (!(function() {
+          if (expression[2]) return [...expression[1]].includes(this[expression[2]]);
+          if (expression[3]) return [...expression[1]].some(equal聲或組[expression[3]]);
+          if (expression[4]) return 呼 === expression[4];
+          if (expression[5]) return 呼 === null;
+          if (expression[6]) return 重紐 === expression[6];
+          if (expression[7]) return 清濁 === expression[7];
+          return true; // 空格
+        })()) return false;
+      }
+      if (xs) throw new Error(`No such 運算符: ${xs.split(/ |　/, 1)[0]}`);
+      return true;
+    });
   }
 
   /**

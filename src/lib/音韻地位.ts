@@ -476,7 +476,7 @@ export class 音韻地位 {
     return s.split(/[ \u3000]*或[ \u3000]*/).some((xs: string) => {
       let expression;
       while ((expression = xs.match(/^(?:(.+?)(?:([母等韻音攝])|(聲|組))|(開|合)口|(開合中立)|重紐(A|B)類|([全次][清濁])|[ \u3000]+)/))) {
-        xs.slice(expression[0].length);
+        xs = xs.slice(expression[0].length);
         if (!(() => {
           if (expression[2]) return [...expression[1]].includes(this[expression[2]]);
           if (expression[3]) return [...expression[1]].some(equal聲或組[expression[3]]);

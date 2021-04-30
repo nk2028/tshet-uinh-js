@@ -458,38 +458,80 @@ export class 音韻地位 {
    * true
    * ```
    */
-  屬於(s: string): boolean {
+  屬於(表達式: string): boolean {
     const { 母, 呼, 重紐, 聲, 清濁 } = this;
-    const equal聲或組 = {
-      聲: function(i: string) {
-        if (['平', '上', '去', '入'].includes(i)) return i === 聲;
-        if (i === '仄') return 聲 !== '平';
-        if (i === '舒') return 聲 !== '入';
-        return false; // No such 聲
-      },
-      組: function(i: string) {
-        const vs = 組到母[i];
-        if (vs == null) return false; // No such 組
-        return vs.some((v: string) => 母 === v);
-      }
+    const like = {
+      聲: (i: string): boolean => 聲 === {仄: '平', 舒: '入', i}[i] !== '仄舒'.includes(i),
+      組: (i: string): boolean => !!組到母[i]?.includes(母)
     };
-    return s.split(/[ \u3000]*或[ \u3000]*/).some((xs: string) => {
-      let expression;
-      while ((expression = xs.match(/^(?:(.+?)(?:([母等韻音攝])|(聲|組))|(開|合)口|(開合中立)|重紐(A|B)類|([全次][清濁])|[ \u3000]+)/))) {
-        xs = xs.slice(expression[0].length);
-        if (!(() => {
-          if (expression[2]) return [...expression[1]].includes(this[expression[2]]);
-          if (expression[3]) return [...expression[1]].some(equal聲或組[expression[3]]);
-          if (expression[4]) return 呼 === expression[4];
-          if (expression[5]) return 呼 === null;
-          if (expression[6]) return 重紐 === expression[6];
-          if (expression[7]) return 清濁 === expression[7];
-          return true; // 空格
-        })()) return false;
+    let answer = (): boolean => {
+      let match;
+      let array = [[]];
+      let state: boolean = true;
+      let judge = (): boolean => {
+        assert(state, match[1] ? '非預期的運算子' : match[0] === '\0' ? '括號未匹配' : '非預期的閉括號');
+        return state = false;
+      };
+      let eat = (content: RegExp): boolean => {
+        if ((match = 表達式.match(content))) {
+          表達式 = 表達式.slice(match[0].length);
+          return true;
+        } else return false;
+      };
+      let parse = (): boolean => {
+        if (eat(/^(?:(.+?)(?:([母等韻音攝])|(聲|組))|(開|合)口|(開合中立)|重紐(A|B)類|([全次][清濁]))/)) {
+          if (match[2]) return [...match[1]].includes(this[match[2]]);
+          if (match[3]) return [...match[1]].some(like[match[3]]);
+          if (match[4]) return 呼 === match[4];
+          if (match[5]) return 呼 === null;
+          if (match[6]) return 重紐 === match[6];
+          if (match[7]) return 清濁 === match[7];
+        }
+        eat(/^(.*?)(?=[&|!^非或且和及()（） \u3000]|and|or|not|$)/);
+        throw new Error('無效的表達式：' + match[0]);
+      };
+      while (表達式.length) {
+        if (eat(/^[ \u3000]*/) && eat(/^[)）\0]/)) return judge() && array.some(y => y.every(x => x));
+        else if (eat(/^([|或 \u3000]|or)+/)) judge() && array.unshift([]);
+        else if (eat(/^([&且和及 \u3000]|and)+/)) judge();
+        else if (eat(/^([!^非 \u3000]|not)*([(（]?)/)) state = !!array[0].unshift(!(match[0].match(/[!^非]|not/g)?.length & 1) === (match[2] ? answer() : parse()));
       }
-      if (xs) throw new Error(`No such 運算符: ${xs.split(/[ \u3000]/, 1)[0]}`);
-      return true;
-    });
+      throw new Error('括號未匹配');
+    };
+    表達式 += '\0';
+    return answer();
+  }
+
+  /**
+   * 判斷某個小韻是否屬於給定的音韻地位，傳回用戶指定的值。
+   * @param s 描述音韻地位及返回值的鍵值對。
+   * @returns 用戶指定的值。
+   * @example
+   * ```typescript
+   * > 音韻地位 = Qieyun.音韻地位.from描述('幫三凡入');
+   * > 音韻地位.判斷({
+   *     '曉母': 'h',
+   *     '匣母': {
+   *       '合口 或 模韻': 'j',
+   *       '': 'h'
+   *     },
+   *     '影云以母': {
+   *       '三四等': 'j',
+   *       '': ''
+   *     }
+   *   })
+   * undefined
+   * ```
+   */
+  判斷(條件: object): any {
+    for (const condition of Object.keys(條件)) { // hasOwnProperty test included
+      if (condition && this.屬於(condition)) {
+        const 表達式 = 條件[condition];
+        const result = typeof 表達式 === 'object' ? this.判斷(表達式) : 表達式;
+        if (typeof result !== 'undefined') return result;
+      }
+    }
+    return 條件[''];
   }
 
   /**

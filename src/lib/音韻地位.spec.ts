@@ -94,7 +94,7 @@ test('使用「iter音韻地位」函式遍歷所有音韻地位', (t) => {
 test('根據原資料檔遍歷所有音韻地位2', (t) => {
   for (const line of readFileSync('prepare/data.csv', { encoding: 'utf8' }).split('\n').slice(1, -1)) {
     const [,,最簡描述1,反切覈校前1,原反切1,字頭覈校前1,原字頭1,原釋義1,釋義補充1,] = line.split(',');
-    const 反切1 = 原反切1.length === 0 ? 反切覈校前1 : 原反切1;
+    const 反切1 = 原反切1.length === 0 ? (反切覈校前1.length === 0 ? null : 反切覈校前1) : 原反切1;
     const 字頭1 = 原字頭1.length === 0 ? 字頭覈校前1 : 原字頭1;
     const 釋義1 = 釋義補充1.length === 0 ? 原釋義1 : `${原釋義1}（${釋義補充1}）`;
 

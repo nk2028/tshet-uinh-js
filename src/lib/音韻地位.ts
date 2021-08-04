@@ -59,7 +59,7 @@ function assert(b: boolean, s: string) {
   }
 }
 
-type RecursiveArray<T> = Array<[string | boolean, T | RecursiveArray<T>]>;
+type RecursiveArray<T> = Array<[string | boolean | null, T | RecursiveArray<T>]>;
 
 /**
  * 由字頭查出相應的音韻地位和解釋。
@@ -478,8 +478,8 @@ export class 音韻地位 {
    *
    * 字串中音韻地位的描述格式：
    *
-   * * 音韻地位六要素：`...母`, `...等`, `...韻`, `...聲`, `開口`, `合口`, `開合中立`, `重紐A類`, `重紐B類`, `不分重紐`
-   * * 拓展音韻地位：`...組`, `...音`, `...攝`, `全清`, `次清`, `全濁`, `次濁`, `清音`, `濁音`
+   * * 音韻地位六要素：`……母`, `……等`, `……韻`, `……聲`, `開口`, `合口`, `開合中立`, `重紐A類`, `重紐B類`, `不分重紐`
+   * * 拓展音韻地位：`……組`, `……音`, `……攝`, `全清`, `次清`, `全濁`, `次濁`, `清音`, `濁音`
    * * 其他表達式：`陰聲韻`, `陽聲韻`, `入聲韻`, `輕脣韻`, `次入韻`, `仄聲`, `舒聲`
    *
    * 支援的運算子：
@@ -495,7 +495,7 @@ export class 音韻地位 {
    *
    * 如 `(端精組 且 入聲) 或 (以母 且 四等 且 去聲)` 與 `端精組 入聲 或 以母 四等 去聲` 同義。
    * @returns 若描述音韻地位的字串符合該音韻地位，回傳 `true`；否則回傳 `false`。
-   * @throws `無效的表達式`, `非預期的運算子`, `非預期的閉括號`, `括號未匹配`
+   * @throws `無效的表達式`, `表達式為空`, `非預期的運算子`, `非預期的閉括號`, `括號未匹配`
    * @example
    * ```typescript
    * > 音韻地位 = Qieyun.音韻地位.from描述('幫三凡入');
@@ -509,7 +509,7 @@ export class 音韻地位 {
    */
   屬於(表達式: string): boolean {
     const tokens = 表達式.split(/(&+|\|+|[!~()（）])|\b(and|or|not)\b|\s+/).filter(i => i);
-    if (!tokens.length) throw new Error('表達式為空');
+    assert(!!tokens.length, '表達式為空');
     tokens.push('');
     const { 呼, 等, 重紐, 韻, 聲, 清濁, 韻別 } = this;
     const answer = (): boolean => {
@@ -564,11 +564,18 @@ export class 音韻地位 {
   }
 
   /**
-   * 判斷某個小韻是否屬於給定的音韻地位，傳回用戶指定的值。
-   * @param 規則 `Object.entries()` 形式的陣列。可在條件使用空字串或布林值作為後備規則。
+   * 判斷某個小韻是否屬於給定的音韻地位，傳回自訂值。
+   * @param 規則 `[表達式, 結果]` 形式的陣列。
+   *
+   * 表達式為描述音韻地位的字串，用於屬於函數。
+   *
+   * 使用空字串或 `None` 作表達式以指定後備結果。
+   *
+   * 結果為任意傳回值或遞迴規則。
    * @param error 若為 `true` 或非空字串，在未涵蓋所有條件時會拋出錯誤。
    * @param fallback 若為 `true`，在遞迴子陣列未涵蓋所有條件時會繼續嘗試母陣列的條件。
-   * @returns 用戶指定的值，在未涵蓋所有條件且不使用 `error` 時會回傳 `null`。
+   * @returns 自訂值，在未涵蓋所有條件且不使用 `error` 時會回傳 `null`。
+   * @throws `未涵蓋所有條件`, `無效的表達式`, `表達式為空`, `非預期的運算子`, `非預期的閉括號`, `括號未匹配`
    * @example
    * ```typescript
    * > 音韻地位 = Qieyun.音韻地位.from描述('幫三凡入');
@@ -577,16 +584,16 @@ export class 音韻地位 {
    * >   ['蟹攝 或 微韻', 'i'],
    * >   ['效流攝', 'u'],
    * >   ['深咸攝', [
-   * >     ['舒聲': 'm'],
-   * >     ['入聲': 'p']
+   * >     ['舒聲', 'm'],
+   * >     ['入聲', 'p']
    * >   ]],
    * >   ['臻山攝', [
-   * >     ['舒聲': 'n'],
-   * >     ['入聲': 't']
+   * >     ['舒聲', 'n'],
+   * >     ['入聲', 't']
    * >   ]],
    * >   ['通江宕梗曾攝', [
-   * >     ['舒聲': 'ng'],
-   * >     ['入聲': 'k']
+   * >     ['舒聲', 'ng'],
+   * >     ['入聲', 'k']
    * >   ]]
    * > ], '無韻尾規則')
    * 'p'
@@ -594,12 +601,12 @@ export class 音韻地位 {
    */
   判斷<T>(規則: RecursiveArray<T>, error?: string | boolean, fallback?: boolean): T | null {
     const loop = (規則: RecursiveArray<T>): T => {
-      for (const [條件, 表達式] of 規則) {
-        if (條件 === true || !條件 || this.屬於(條件)) {
-          if (!Array.isArray(表達式)) return 表達式;
-          if (!fallback) return loop(表達式);
+      for (const [表達式, 結果] of 規則) {
+        if (typeof 表達式 === 'string' && 表達式 ? this.屬於(表達式) : 表達式 !== false) {
+          if (!Array.isArray(結果)) return 結果;
+          if (!fallback) return loop(結果);
           try {
-            return loop(表達式);
+            return loop(結果);
           } catch (e) {
             continue;
           }

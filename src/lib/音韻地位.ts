@@ -541,8 +541,8 @@ export class 音韻地位 {
         if (eat(/^(.+?)([母等韻音攝組聲])$/)) {
           const values = [...match[1]];
           const check = 檢查[match[2]];
-          const invaild = values.filter(i => !check.includes(i)).join('');
-          assert(!invaild, invaild + match[2] + '不存在');
+          const invalid = values.filter(i => !check.includes(i)).join('');
+          assert(!invalid, invalid + match[2] + '不存在');
           return values.includes(this[match[2]]);
         }
         throw new Error('無效的表達式：' + tokens[0]);

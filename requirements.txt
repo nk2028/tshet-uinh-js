@@ -1,1 +1,1 @@
-qieyun-encoder>=0.3.0,<0.4
+qieyun-encoder==0.4.2

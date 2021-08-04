@@ -93,16 +93,18 @@ test('使用「iter音韻地位」函式遍歷所有音韻地位', (t) => {
 
 test('根據原資料檔遍歷所有音韻地位2', (t) => {
   for (const line of readFileSync('prepare/data.csv', { encoding: 'utf8' }).split('\n').slice(1, -1)) {
-    const [描述1, 原反切1, 字頭1, 解釋1] = line.split(',');
-    const 反切1 = 原反切1.length === 0 ? null : 原反切1;
+    const [,,最簡描述1,反切覈校前1,原反切1,字頭覈校前1,原字頭1,原釋義1,釋義補充1,] = line.split(',');
+    const 反切1 = 原反切1.length === 0 ? (反切覈校前1.length === 0 ? null : 反切覈校前1) : 原反切1;
+    const 字頭1 = 原字頭1.length === 0 ? 字頭覈校前1 : 原字頭1;
+    const 釋義1 = 釋義補充1.length === 0 ? 原釋義1 : `${原釋義1}（${釋義補充1}）`;
 
     // patch
     if (['姊規', '扶來', '昨閑', '莫亥', '莫代', '乙白'].includes(反切1)) continue; // strange 反切, and only corresponds to rare characters
     if (反切1 === '去其' && 字頭1 === '抾') continue; // 抾，去其切，又丘之切, but the two fanqie imply the same phonological position
 
-    const 音韻地位1 = 音韻地位.from描述(描述1);
+    const 音韻地位1 = 音韻地位.from描述(最簡描述1);
     t.true(query字頭(字頭1).some(({ 音韻地位: 音韻地位2, 解釋: 解釋2 }) => {
-      return 音韻地位1.等於(音韻地位2) && 音韻地位1.反切(字頭1) === 反切1 && 解釋1 === 解釋2;
+      return 音韻地位1.等於(音韻地位2) && 音韻地位1.反切(字頭1) === 反切1 && 釋義1 === 解釋2;
     }), line);
   }
 });

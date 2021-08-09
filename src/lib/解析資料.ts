@@ -15,7 +15,7 @@ export const m音韻編碼2反切 = new Map<string, string>();
       m音韻編碼2反切.set(編碼, 反切);
     }
 
-    const patternInner = /([^|])([^|]*)/gu;
+    const patternInner = /((?!\|).)((?:(?!\|).)*)/gu;
     let matchInner: RegExpExecArray;
     while ((matchInner = patternInner.exec(條目)) != null) {
       const [, 字頭, 解釋] = matchInner;

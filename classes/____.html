@@ -175,20 +175,23 @@
 								<li class="tsd-kind-get-signature tsd-parent-kind-class"><a href="____.html#____-1" class="tsd-kind-icon">最簡描述</a></li>
 								<li class="tsd-kind-get-signature tsd-parent-kind-class"><a href="____.html#__-2" class="tsd-kind-icon">條目</a></li>
 								<li class="tsd-kind-get-signature tsd-parent-kind-class"><a href="____.html#__-3" class="tsd-kind-icon">清濁</a></li>
+								<li class="tsd-kind-get-signature tsd-parent-kind-class"><a href="____.html#_-6" class="tsd-kind-icon">組</a></li>
 								<li class="tsd-kind-get-signature tsd-parent-kind-class"><a href="____.html#__-4" class="tsd-kind-icon">編碼</a></li>
 								<li class="tsd-kind-get-signature tsd-parent-kind-class"><a href="____.html#___-1" class="tsd-kind-icon">表達式</a></li>
-								<li class="tsd-kind-get-signature tsd-parent-kind-class"><a href="____.html#_-6" class="tsd-kind-icon">音</a></li>
+								<li class="tsd-kind-get-signature tsd-parent-kind-class"><a href="____.html#_-7" class="tsd-kind-icon">音</a></li>
+								<li class="tsd-kind-get-signature tsd-parent-kind-class"><a href="____.html#__-5" class="tsd-kind-icon">韻別</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
 							<h3>Methods</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="____.html#__-5" class="tsd-kind-icon">反切</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="____.html#__-6" class="tsd-kind-icon">屬於</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="____.html#__-7" class="tsd-kind-icon">等於</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter"><a href="____.html#__-6" class="tsd-kind-icon">判斷</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="____.html#__-7" class="tsd-kind-icon">反切</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="____.html#__-8" class="tsd-kind-icon">屬於</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="____.html#__-9" class="tsd-kind-icon">等於</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="____.html#from__" class="tsd-kind-icon">from描述</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="____.html#from__-1" class="tsd-kind-icon">from編碼</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="____.html#__-8" class="tsd-kind-icon">驗證</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="____.html#__-10" class="tsd-kind-icon">驗證</a></li>
 							</ul>
 						</section>
 					</div>
@@ -206,7 +209,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in 音韻地位.ts:197</li>
+									<li>Defined in lib/音韻地位.ts:236</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -215,9 +218,9 @@
 								</div>
 								<dl class="tsd-comment-tags">
 									<dt>example</dt>
-									<dd><pre><code class="language-typescript"><span style="color: #000000">&gt; </span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #267F99">Qieyun</span><span style="color: #000000">.</span><span style="color: #267F99">音韻地位</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;幫&#039;</span><span style="color: #000000">, </span><span style="color: #0000FF">null</span><span style="color: #000000">, </span><span style="color: #A31515">&#039;三&#039;</span><span style="color: #000000">, </span><span style="color: #0000FF">null</span><span style="color: #000000">, </span><span style="color: #A31515">&#039;凡&#039;</span><span style="color: #000000">, </span><span style="color: #A31515">&#039;入&#039;</span><span style="color: #000000">);</span>
+									<dd><pre><code class="language-typescript"><span style="color: #000000">&gt; </span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #001080">Qieyun</span><span style="color: #000000">.</span><span style="color: #795E26">音韻地位</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;幫&#039;</span><span style="color: #000000">, </span><span style="color: #0000FF">null</span><span style="color: #000000">, </span><span style="color: #A31515">&#039;三&#039;</span><span style="color: #000000">, </span><span style="color: #0000FF">null</span><span style="color: #000000">, </span><span style="color: #A31515">&#039;凡&#039;</span><span style="color: #000000">, </span><span style="color: #A31515">&#039;入&#039;</span><span style="color: #000000">);</span>
 <span style="color: #001080">音韻地位</span><span style="color: #000000"> { </span><span style="color: #A31515">&#039;幫三凡入&#039;</span><span style="color: #000000"> }</span>
-<span style="color: #000000">&gt; </span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #267F99">Qieyun</span><span style="color: #000000">.</span><span style="color: #267F99">音韻地位</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;羣&#039;</span><span style="color: #000000">, </span><span style="color: #A31515">&#039;開&#039;</span><span style="color: #000000">, </span><span style="color: #A31515">&#039;三&#039;</span><span style="color: #000000">, </span><span style="color: #A31515">&#039;A&#039;</span><span style="color: #000000">, </span><span style="color: #A31515">&#039;支&#039;</span><span style="color: #000000">, </span><span style="color: #A31515">&#039;平&#039;</span><span style="color: #000000">);</span>
+<span style="color: #000000">&gt; </span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #001080">Qieyun</span><span style="color: #000000">.</span><span style="color: #795E26">音韻地位</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;羣&#039;</span><span style="color: #000000">, </span><span style="color: #A31515">&#039;開&#039;</span><span style="color: #000000">, </span><span style="color: #A31515">&#039;三&#039;</span><span style="color: #000000">, </span><span style="color: #A31515">&#039;A&#039;</span><span style="color: #000000">, </span><span style="color: #A31515">&#039;支&#039;</span><span style="color: #000000">, </span><span style="color: #A31515">&#039;平&#039;</span><span style="color: #000000">);</span>
 <span style="color: #001080">音韻地位</span><span style="color: #000000"> { </span><span style="color: #A31515">&#039;羣開三A支平&#039;</span><span style="color: #000000"> }</span>
 </code></pre>
 									</dd>
@@ -228,37 +231,49 @@
 								<li>
 									<h5>母: <span class="tsd-signature-type">string</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>聲母：幫, 滂, 並, 明, …</p>
+										<div class="lead">
+											<p>聲母：幫, 滂, 並, 明, …</p>
+										</div>
 									</div>
 								</li>
 								<li>
 									<h5>呼: <span class="tsd-signature-type">string</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>呼：<code>null</code>, 開, 合</p>
+										<div class="lead">
+											<p>呼：<code>null</code>, 開, 合</p>
+										</div>
 									</div>
 								</li>
 								<li>
 									<h5>等: <span class="tsd-signature-type">string</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>等：一, 二, 三, 四</p>
+										<div class="lead">
+											<p>等：一, 二, 三, 四</p>
+										</div>
 									</div>
 								</li>
 								<li>
 									<h5>重紐: <span class="tsd-signature-type">string</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>重紐：<code>null</code>, A, B</p>
+										<div class="lead">
+											<p>重紐：<code>null</code>, A, B</p>
+										</div>
 									</div>
 								</li>
 								<li>
 									<h5>韻: <span class="tsd-signature-type">string</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>韻母（舉平以賅上去入）：東, 冬, 鍾, 江, …, 祭, 泰, 夬, 廢</p>
+										<div class="lead">
+											<p>韻母（舉平以賅上去入）：東, 冬, 鍾, 江, …, 祭, 泰, 夬, 廢</p>
+										</div>
 									</div>
 								</li>
 								<li>
 									<h5>聲: <span class="tsd-signature-type">string</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>聲調：平, 上, 去, 入</p>
+										<div class="lead">
+											<p>聲調：平, 上, 去, 入</p>
+										</div>
 									</div>
 								</li>
 							</ul>
@@ -276,7 +291,7 @@
 					<div class="tsd-signature tsd-kind-icon">呼<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in 音韻地位.ts:141</li>
+							<li>Defined in lib/音韻地位.ts:161</li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -302,7 +317,7 @@
 					<div class="tsd-signature tsd-kind-icon">母<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in 音韻地位.ts:127</li>
+							<li>Defined in lib/音韻地位.ts:147</li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -328,7 +343,7 @@
 					<div class="tsd-signature tsd-kind-icon">等<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in 音韻地位.ts:155</li>
+							<li>Defined in lib/音韻地位.ts:175</li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -354,7 +369,7 @@
 					<div class="tsd-signature tsd-kind-icon">聲<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in 音韻地位.ts:197</li>
+							<li>Defined in lib/音韻地位.ts:217</li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -380,7 +395,7 @@
 					<div class="tsd-signature tsd-kind-icon">重紐<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in 音韻地位.ts:169</li>
+							<li>Defined in lib/音韻地位.ts:189</li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -406,7 +421,7 @@
 					<div class="tsd-signature tsd-kind-icon">韻<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in 音韻地位.ts:183</li>
+							<li>Defined in lib/音韻地位.ts:203</li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -439,7 +454,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in 音韻地位.ts:374</li>
+									<li>Defined in lib/音韻地位.ts:422</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -473,7 +488,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in 音韻地位.ts:289</li>
+									<li>Defined in lib/音韻地位.ts:343</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -506,7 +521,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in 音韻地位.ts:272</li>
+									<li>Defined in lib/音韻地位.ts:292</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -539,7 +554,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in 音韻地位.ts:306</li>
+									<li>Defined in lib/音韻地位.ts:360</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -572,7 +587,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in 音韻地位.ts:391</li>
+									<li>Defined in lib/音韻地位.ts:438</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -603,7 +618,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in 音韻地位.ts:238</li>
+									<li>Defined in lib/音韻地位.ts:258</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -627,6 +642,39 @@
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-get-signature tsd-parent-kind-class">
+					<a name="_-6" class="tsd-anchor"></a>
+					<h3>組</h3>
+					<ul class="tsd-signatures tsd-kind-get-signature tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">get</span> 組<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in lib/音韻地位.ts:326</li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>組</p>
+								</div>
+								<dl class="tsd-comment-tags">
+									<dt>example</dt>
+									<dd><pre><code class="language-typescript"><span style="color: #000000">&gt; </span><span style="color: #001080">音韻地位</span><span style="color: #000000"> = </span><span style="color: #001080">Qieyun</span><span style="color: #000000">.</span><span style="color: #001080">音韻地位</span><span style="color: #000000">.</span><span style="color: #795E26">from描述</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;幫三凡入&#039;</span><span style="color: #000000">);</span>
+<span style="color: #000000">&gt; </span><span style="color: #001080">音韻地位</span><span style="color: #000000">.</span><span style="color: #001080">組</span><span style="color: #000000">;</span>
+<span style="color: #A31515">&#039;幫&#039;</span>
+<span style="color: #000000">&gt; </span><span style="color: #001080">音韻地位</span><span style="color: #000000"> = </span><span style="color: #001080">Qieyun</span><span style="color: #000000">.</span><span style="color: #001080">音韻地位</span><span style="color: #000000">.</span><span style="color: #795E26">from描述</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;羣開三A支平&#039;</span><span style="color: #000000">);</span>
+<span style="color: #000000">&gt; </span><span style="color: #001080">音韻地位</span><span style="color: #000000">.</span><span style="color: #001080">組</span><span style="color: #000000">;</span>
+<span style="color: #A31515">&#039;見&#039;</span>
+</code></pre>
+									</dd>
+								</dl>
+							</div>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-get-signature tsd-parent-kind-class">
 					<a name="__-4" class="tsd-anchor"></a>
 					<h3>編碼</h3>
 					<ul class="tsd-signatures tsd-kind-get-signature tsd-parent-kind-class">
@@ -636,7 +684,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in 音韻地位.ts:345</li>
+									<li>Defined in lib/音韻地位.ts:399</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -669,7 +717,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in 音韻地位.ts:326</li>
+									<li>Defined in lib/音韻地位.ts:380</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -693,7 +741,7 @@
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-get-signature tsd-parent-kind-class">
-					<a name="_-6" class="tsd-anchor"></a>
+					<a name="_-7" class="tsd-anchor"></a>
 					<h3>音</h3>
 					<ul class="tsd-signatures tsd-kind-get-signature tsd-parent-kind-class">
 						<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">get</span> 音<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
@@ -702,7 +750,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in 音韻地位.ts:255</li>
+									<li>Defined in lib/音韻地位.ts:275</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -725,11 +773,124 @@
 						</li>
 					</ul>
 				</section>
+				<section class="tsd-panel tsd-member tsd-kind-get-signature tsd-parent-kind-class">
+					<a name="__-5" class="tsd-anchor"></a>
+					<h3>韻別</h3>
+					<ul class="tsd-signatures tsd-kind-get-signature tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">get</span> 韻別<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in lib/音韻地位.ts:309</li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>韻別（陰聲韻、陽聲韻、入聲韻）</p>
+								</div>
+								<dl class="tsd-comment-tags">
+									<dt>example</dt>
+									<dd><pre><code class="language-typescript"><span style="color: #000000">&gt; </span><span style="color: #001080">音韻地位</span><span style="color: #000000"> = </span><span style="color: #001080">Qieyun</span><span style="color: #000000">.</span><span style="color: #001080">音韻地位</span><span style="color: #000000">.</span><span style="color: #795E26">from描述</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;幫三凡入&#039;</span><span style="color: #000000">);</span>
+<span style="color: #000000">&gt; </span><span style="color: #001080">音韻地位</span><span style="color: #000000">.</span><span style="color: #001080">韻別</span><span style="color: #000000">;</span>
+<span style="color: #A31515">&#039;入&#039;</span>
+<span style="color: #000000">&gt; </span><span style="color: #001080">音韻地位</span><span style="color: #000000"> = </span><span style="color: #001080">Qieyun</span><span style="color: #000000">.</span><span style="color: #001080">音韻地位</span><span style="color: #000000">.</span><span style="color: #795E26">from描述</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;羣開三A支平&#039;</span><span style="color: #000000">);</span>
+<span style="color: #000000">&gt; </span><span style="color: #001080">音韻地位</span><span style="color: #000000">.</span><span style="color: #001080">韻別</span><span style="color: #000000">;</span>
+<span style="color: #A31515">&#039;陰&#039;</span>
+</code></pre>
+									</dd>
+								</dl>
+							</div>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
+						</li>
+					</ul>
+				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Methods</h2>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter">
+					<a name="__-6" class="tsd-anchor"></a>
+					<h3>判斷</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter">
+						<li class="tsd-signature tsd-kind-icon">判斷&lt;T&gt;<span class="tsd-signature-symbol">(</span>規則<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">RecursiveArray</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">&gt;</span>, error<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">boolean</span>, fallback<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">T</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in lib/音韻地位.ts:602</li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>判斷某個小韻是否屬於給定的音韻地位，傳回自訂值。</p>
+								</div>
+								<dl class="tsd-comment-tags">
+									<dt>throws</dt>
+									<dd><p><code>未涵蓋所有條件</code>, <code>無效的表達式</code>, <code>表達式為空</code>, <code>非預期的運算子</code>, <code>非預期的閉括號</code>, <code>括號未匹配</code></p>
+									</dd>
+									<dt>example</dt>
+									<dd><pre><code class="language-typescript"><span style="color: #000000">&gt; </span><span style="color: #001080">音韻地位</span><span style="color: #000000"> = </span><span style="color: #001080">Qieyun</span><span style="color: #000000">.</span><span style="color: #001080">音韻地位</span><span style="color: #000000">.</span><span style="color: #795E26">from描述</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;幫三凡入&#039;</span><span style="color: #000000">);</span>
+<span style="color: #000000">&gt; </span><span style="color: #001080">音韻地位</span><span style="color: #000000">.</span><span style="color: #795E26">判斷</span><span style="color: #000000">([</span>
+<span style="color: #000000">&gt;   [</span><span style="color: #A31515">&#039;遇果假攝 或 支脂之佳韻&#039;</span><span style="color: #000000">, </span><span style="color: #A31515">&#039;&#039;</span><span style="color: #000000">],</span>
+<span style="color: #000000">&gt;   [</span><span style="color: #A31515">&#039;蟹攝 或 微韻&#039;</span><span style="color: #000000">, </span><span style="color: #A31515">&#039;i&#039;</span><span style="color: #000000">],</span>
+<span style="color: #000000">&gt;   [</span><span style="color: #A31515">&#039;效流攝&#039;</span><span style="color: #000000">, </span><span style="color: #A31515">&#039;u&#039;</span><span style="color: #000000">],</span>
+<span style="color: #000000">&gt;   [</span><span style="color: #A31515">&#039;深咸攝&#039;</span><span style="color: #000000">, [</span>
+<span style="color: #000000">&gt;     [</span><span style="color: #A31515">&#039;舒聲&#039;</span><span style="color: #000000">, </span><span style="color: #A31515">&#039;m&#039;</span><span style="color: #000000">],</span>
+<span style="color: #000000">&gt;     [</span><span style="color: #A31515">&#039;入聲&#039;</span><span style="color: #000000">, </span><span style="color: #A31515">&#039;p&#039;</span><span style="color: #000000">]</span>
+<span style="color: #000000">&gt;   ]],</span>
+<span style="color: #000000">&gt;   [</span><span style="color: #A31515">&#039;臻山攝&#039;</span><span style="color: #000000">, [</span>
+<span style="color: #000000">&gt;     [</span><span style="color: #A31515">&#039;舒聲&#039;</span><span style="color: #000000">, </span><span style="color: #A31515">&#039;n&#039;</span><span style="color: #000000">],</span>
+<span style="color: #000000">&gt;     [</span><span style="color: #A31515">&#039;入聲&#039;</span><span style="color: #000000">, </span><span style="color: #A31515">&#039;t&#039;</span><span style="color: #000000">]</span>
+<span style="color: #000000">&gt;   ]],</span>
+<span style="color: #000000">&gt;   [</span><span style="color: #A31515">&#039;通江宕梗曾攝&#039;</span><span style="color: #000000">, [</span>
+<span style="color: #000000">&gt;     [</span><span style="color: #A31515">&#039;舒聲&#039;</span><span style="color: #000000">, </span><span style="color: #A31515">&#039;ng&#039;</span><span style="color: #000000">],</span>
+<span style="color: #000000">&gt;     [</span><span style="color: #A31515">&#039;入聲&#039;</span><span style="color: #000000">, </span><span style="color: #A31515">&#039;k&#039;</span><span style="color: #000000">]</span>
+<span style="color: #000000">&gt;   ]]</span>
+<span style="color: #000000">&gt; ], </span><span style="color: #A31515">&#039;無韻尾規則&#039;</span><span style="color: #000000">)</span>
+<span style="color: #A31515">&#039;p&#039;</span>
+</code></pre>
+									</dd>
+								</dl>
+							</div>
+							<h4 class="tsd-type-parameters-title">Type parameters</h4>
+							<ul class="tsd-type-parameters">
+								<li>
+									<h4>T</h4>
+								</li>
+							</ul>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>規則: <span class="tsd-signature-type">RecursiveArray</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">&gt;</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p><code>[表達式, 結果]</code> 形式的陣列。</p>
+										<p>表達式為描述音韻地位的字串，用於屬於函數。</p>
+										<p>使用空字串或 <code>None</code> 作表達式以指定後備結果。</p>
+										<p>結果為任意傳回值或遞迴規則。</p>
+									</div>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> error: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">boolean</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>若為 <code>true</code> 或非空字串，在未涵蓋所有條件時會拋出錯誤。</p>
+									</div>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> fallback: <span class="tsd-signature-type">boolean</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>若為 <code>true</code>，在遞迴子陣列未涵蓋所有條件時會繼續嘗試母陣列的條件。</p>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">T</span></h4>
+							<p>自訂值，在未涵蓋所有條件且不使用 <code>error</code> 時會回傳 <code>null</code>。</p>
+						</li>
+					</ul>
+				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="__-5" class="tsd-anchor"></a>
+					<a name="__-7" class="tsd-anchor"></a>
 					<h3>反切</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
 						<li class="tsd-signature tsd-kind-icon">反切<span class="tsd-signature-symbol">(</span>字頭<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
@@ -738,7 +899,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in 音韻地位.ts:424</li>
+									<li>Defined in lib/音韻地位.ts:470</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -784,16 +945,16 @@
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="__-6" class="tsd-anchor"></a>
+					<a name="__-8" class="tsd-anchor"></a>
 					<h3>屬於</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">屬於<span class="tsd-signature-symbol">(</span>s<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
+						<li class="tsd-signature tsd-kind-icon">屬於<span class="tsd-signature-symbol">(</span>表達式<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in 音韻地位.ts:461</li>
+									<li>Defined in lib/音韻地位.ts:510</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -801,6 +962,9 @@
 									<p>判斷某個小韻是否屬於給定的音韻地位。</p>
 								</div>
 								<dl class="tsd-comment-tags">
+									<dt>throws</dt>
+									<dd><p><code>無效的表達式</code>, <code>表達式為空</code>, <code>非預期的運算子</code>, <code>非預期的閉括號</code>, <code>括號未匹配</code></p>
+									</dd>
 									<dt>example</dt>
 									<dd><pre><code class="language-typescript"><span style="color: #000000">&gt; </span><span style="color: #001080">音韻地位</span><span style="color: #000000"> = </span><span style="color: #001080">Qieyun</span><span style="color: #000000">.</span><span style="color: #001080">音韻地位</span><span style="color: #000000">.</span><span style="color: #795E26">from描述</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;幫三凡入&#039;</span><span style="color: #000000">);</span>
 <span style="color: #000000">&gt; </span><span style="color: #001080">音韻地位</span><span style="color: #000000">.</span><span style="color: #795E26">屬於</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;章母&#039;</span><span style="color: #000000">);</span>
@@ -816,16 +980,25 @@
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>s: <span class="tsd-signature-type">string</span></h5>
+									<h5>表達式: <span class="tsd-signature-type">string</span></h5>
 									<div class="tsd-comment tsd-typography">
 										<p>描述音韻地位的字串</p>
 										<p>字串中音韻地位的描述格式：</p>
 										<ul>
-											<li>音韻地位六要素：<code>...母</code>, <code>...等</code>, <code>...韻</code>, <code>...聲</code>, <code>開口</code>, <code>合口</code>, <code>開合中立</code>, <code>重紐A類</code>, <code>重紐B類</code></li>
-											<li>拓展音韻地位：<code>...組</code>, <code>...音</code>, <code>...攝</code>, <code>全清</code>, <code>次清</code>, <code>全濁</code>, <code>次濁</code></li>
+											<li>音韻地位六要素：<code>……母</code>, <code>……等</code>, <code>……韻</code>, <code>……聲</code>, <code>開口</code>, <code>合口</code>, <code>開合中立</code>, <code>重紐A類</code>, <code>重紐B類</code>, <code>不分重紐</code></li>
+											<li>拓展音韻地位：<code>……組</code>, <code>……音</code>, <code>……攝</code>, <code>全清</code>, <code>次清</code>, <code>全濁</code>, <code>次濁</code>, <code>清音</code>, <code>濁音</code></li>
+											<li>其他表達式：<code>陰聲韻</code>, <code>陽聲韻</code>, <code>入聲韻</code>, <code>輕脣韻</code>, <code>次入韻</code>, <code>仄聲</code>, <code>舒聲</code></li>
 										</ul>
-										<p>字串首先以「或」字分隔，再以空格分隔。不支援括號。</p>
-										<p>如「(端精組 且 入聲) 或 (以母 且 四等 且 去聲)」可以表示為 <code>端精組 入聲 或 以母 四等 去聲</code>。</p>
+										<p>支援的運算子：</p>
+										<ul>
+											<li>AND 運算子：<code>且</code>, <code>and</code>, <code>&amp;</code>, <code>&amp;&amp;</code></li>
+											<li>&ensp; OR 運算子：<code>或</code>, <code>or</code>, <code>|</code>, <code>||</code></li>
+											<li>NOT 運算子：<code>非</code>, <code>not</code>, <code>~</code>, <code>!</code></li>
+											<li>括號：<code>(……)</code>, <code>（……）</code></li>
+										</ul>
+										<p>各表達式及運算子之間以空格隔開。</p>
+										<p>AND 運算子可省略。</p>
+										<p>如 <code>(端精組 且 入聲) 或 (以母 且 四等 且 去聲)</code> 與 <code>端精組 入聲 或 以母 四等 去聲</code> 同義。</p>
 									</div>
 								</li>
 							</ul>
@@ -835,7 +1008,7 @@
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="__-7" class="tsd-anchor"></a>
+					<a name="__-9" class="tsd-anchor"></a>
 					<h3>等於</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
 						<li class="tsd-signature tsd-kind-icon">等於<span class="tsd-signature-symbol">(</span>other<span class="tsd-signature-symbol">: </span><a href="____.html" class="tsd-signature-type" data-tsd-kind="Class">音韻地位</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
@@ -844,7 +1017,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in 音韻地位.ts:515</li>
+									<li>Defined in lib/音韻地位.ts:639</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -887,7 +1060,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in 音韻地位.ts:653</li>
+									<li>Defined in lib/音韻地位.ts:769</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -928,7 +1101,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in 音韻地位.ts:592</li>
+									<li>Defined in lib/音韻地位.ts:716</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -960,7 +1133,7 @@
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-static">
-					<a name="__-8" class="tsd-anchor"></a>
+					<a name="__-10" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagStatic">Static</span> 驗證</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-static">
 						<li class="tsd-signature tsd-kind-icon">驗證<span class="tsd-signature-symbol">(</span>母<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, 呼<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, 等<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, 重紐<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, 韻<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, 聲<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
@@ -969,7 +1142,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in 音韻地位.ts:543</li>
+									<li>Defined in lib/音韻地位.ts:667</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1091,22 +1264,31 @@
 								<a href="____.html#__-3" class="tsd-kind-icon">清濁</a>
 							</li>
 							<li class=" tsd-kind-get-signature tsd-parent-kind-class">
+								<a href="____.html#_-6" class="tsd-kind-icon">組</a>
+							</li>
+							<li class=" tsd-kind-get-signature tsd-parent-kind-class">
 								<a href="____.html#__-4" class="tsd-kind-icon">編碼</a>
 							</li>
 							<li class=" tsd-kind-get-signature tsd-parent-kind-class">
 								<a href="____.html#___-1" class="tsd-kind-icon">表達式</a>
 							</li>
 							<li class=" tsd-kind-get-signature tsd-parent-kind-class">
-								<a href="____.html#_-6" class="tsd-kind-icon">音</a>
+								<a href="____.html#_-7" class="tsd-kind-icon">音</a>
+							</li>
+							<li class=" tsd-kind-get-signature tsd-parent-kind-class">
+								<a href="____.html#__-5" class="tsd-kind-icon">韻別</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter">
+								<a href="____.html#__-6" class="tsd-kind-icon">判斷</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="____.html#__-5" class="tsd-kind-icon">反切</a>
+								<a href="____.html#__-7" class="tsd-kind-icon">反切</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="____.html#__-6" class="tsd-kind-icon">屬於</a>
+								<a href="____.html#__-8" class="tsd-kind-icon">屬於</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="____.html#__-7" class="tsd-kind-icon">等於</a>
+								<a href="____.html#__-9" class="tsd-kind-icon">等於</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-static">
 								<a href="____.html#from__" class="tsd-kind-icon">from描述</a>
@@ -1115,7 +1297,7 @@
 								<a href="____.html#from__-1" class="tsd-kind-icon">from編碼</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-static">
-								<a href="____.html#__-8" class="tsd-kind-icon">驗證</a>
+								<a href="____.html#__-10" class="tsd-kind-icon">驗證</a>
 							</li>
 						</ul>
 					</li>

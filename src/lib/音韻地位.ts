@@ -513,7 +513,7 @@ export class 音韻地位 {
    * @param 表達式 描述音韻地位的模板字串列表。
    * @param 參數 要嵌入模板的參數列表。
    * @returns 若描述音韻地位的字串符合該音韻地位，回傳 `true`；否則回傳 `false`。
-   * @throws `無效的表達式`, `表達式為空`, `非預期的運算子`, `非預期的閉括號`, `括號未匹配`, `非預期的參數`
+   * @throws `無效的表達式`, `表達式為空`, `非預期的運算子`, `非預期的閉括號`, `括號未匹配`
    * @example
    * ```typescript
    * > 音韻地位 = Qieyun.音韻地位.from描述('幫三凡入');
@@ -572,16 +572,12 @@ export class 音韻地位 {
         throw new Error('無效的表達式：' + tokens[index]);
       };
       while (index < tokens.length) {
-        assert(typeof tokens[index] === 'string', '非預期的參數');
         if (eat(/^[)）]?$/)) return judge(), array.some(y => y.every(x => x));
         else if (eat(/^(\|+|或|or)$/)) judge(), array.push((current = []));
         else if (eat(/^(&+|且|and)$/)) judge();
         else {
           let negate = false;
-          while (eat(/^([!~非]|not)$/)) {
-            negate = !negate;
-            assert(typeof tokens[index] === 'string', '非預期的參數');
-          }
+          while (eat(/^([!~非]|not)$/)) negate = !negate;
           current.push((eat(/^[(（]$/) ? answer() : parse()) !== negate);
           state = true;
         }

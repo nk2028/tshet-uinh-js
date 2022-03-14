@@ -550,7 +550,7 @@ export class 音韻地位 {
         } else return false;
       };
       const parse = (): boolean => {
-        if (typeof tokens[index] !== 'string') return !!tokens[index];
+        if (typeof tokens[index] !== 'string') return !!tokens[index++];
         if (eat(/^(陰|陽|入)聲韻$/)) return 韻別 === match[1];
         if (eat(/^輕脣韻$/)) return 輕脣韻.includes(韻) && 等 === '三';
         if (eat(/^次入韻$/)) return 次入韻.includes(韻);
@@ -572,13 +572,21 @@ export class 音韻地位 {
         throw new Error('無效的表達式：' + tokens[index]);
       };
       while (index < tokens.length) {
+        if (typeof tokens[index] !== 'string') {
+          current.push(!!tokens[index++]);
+          state = true;
+          continue;
+        }
         if (eat(/^[)）]?$/)) return judge(), array.some(y => y.every(x => x));
         else if (eat(/^(\|+|或|or)$/)) judge(), array.push((current = []));
         else if (eat(/^(&+|且|and)$/)) judge();
         else {
           let negate = false;
-          while (eat(/^([!~非]|not)$/)) negate = !negate;
-          current.push((eat(/^[(（]$/) ? answer() : parse()) !== negate);
+          while (eat(/^([!~非]|not)$/)) {
+            negate = !negate;
+            if (typeof tokens[index] !== 'string') break;
+          }
+          current.push((typeof tokens[index] === 'string' && eat(/^[(（]$/) ? answer() : parse()) !== negate);
           state = true;
         }
       }

@@ -529,7 +529,11 @@ export class 音韻地位 {
     const isParameter: Record<number, true> = {};
     表達式.forEach((token, index) => {
       tokens = tokens.concat(token.split(/(&+|\|+|[!~()（）])|\b(and|or|not)\b|\s+/i).filter(i => i));
-      if (index < 參數.length) isParameter[tokens.push(!!參數[index]) - 1] = true;
+      if (index < 參數.length) {
+        const parameter = 參數[index];
+        if (typeof parameter === 'string') tokens.push(parameter);
+        else isParameter[tokens.push(!!parameter) - 1] = true;
+      }
     });
     assert(!!tokens.length, '表達式為空');
     tokens.push('');

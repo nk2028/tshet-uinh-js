@@ -525,10 +525,11 @@ export class 音韻地位 {
 
   屬於(表達式: string | readonly string[], ...參數: unknown[]): boolean {
     if (typeof 表達式 === 'string') 表達式 = [表達式];
-    let tokens: unknown[] = [];
+    let tokens: (string | boolean)[] = [];
+    const isParameter: Record<number, true> = {};
     表達式.forEach((token, index) => {
-      tokens = tokens.concat(token.split(/(&+|\|+|[!~()（）])|\b(and|or|not)\b|\s+/).filter(i => i));
-      if (index < 參數.length) tokens.push(參數[index]);
+      tokens = tokens.concat(token.split(/(&+|\|+|[!~()（）])|\b(and|or|not)\b|\s+/i).filter(i => i));
+      if (index < 參數.length) isParameter[tokens.push(!!參數[index]) - 1] = true;
     });
     assert(!!tokens.length, '表達式為空');
     tokens.push('');
@@ -550,7 +551,7 @@ export class 音韻地位 {
         } else return false;
       };
       const parse = (): boolean => {
-        if (typeof tokens[index] !== 'string') return !!tokens[index++];
+        if (isParameter[index]) return !!tokens[index++];
         if (eat(/^(陰|陽|入)聲韻$/)) return 韻別 === match[1];
         if (eat(/^輕脣韻$/)) return 輕脣韻.includes(韻) && 等 === '三';
         if (eat(/^次入韻$/)) return 次入韻.includes(韻);
@@ -572,21 +573,13 @@ export class 音韻地位 {
         throw new Error('無效的表達式：' + tokens[index]);
       };
       while (index < tokens.length) {
-        if (typeof tokens[index] !== 'string') {
-          current.push(!!tokens[index++]);
-          state = true;
-          continue;
-        }
         if (eat(/^[)）]?$/)) return judge(), array.some(y => y.every(x => x));
-        else if (eat(/^(\|+|或|or)$/)) judge(), array.push((current = []));
-        else if (eat(/^(&+|且|and)$/)) judge();
+        else if (eat(/^(\|+|或|or)$/i)) judge(), array.push((current = []));
+        else if (eat(/^(&+|且|and)$/i)) judge();
         else {
           let negate = false;
-          while (eat(/^([!~非]|not)$/)) {
-            negate = !negate;
-            if (typeof tokens[index] !== 'string') break;
-          }
-          current.push((typeof tokens[index] === 'string' && eat(/^[(（]$/) ? answer() : parse()) !== negate);
+          while (eat(/^([!~非]|not)$/i)) negate = !negate;
+          current.push((eat(/^[(（]$/) ? answer() : parse()) !== negate);
           state = true;
         }
       }

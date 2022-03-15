@@ -532,15 +532,11 @@ export class 音韻地位 {
 
   屬於(表達式: string | readonly string[], ...參數: unknown[]): boolean {
     if (typeof 表達式 === 'string') 表達式 = [表達式];
-    let tokens: (string | boolean)[] = [];
-    const isParameter: Record<number, true> = {};
+    let tokens: (string | boolean | LazyParameter)[] = [];
     表達式.forEach((token, index) => {
       tokens = tokens.concat(token.split(/(&+|\|+|[!~()（）])|\b(and|or|not)\b|\s+/i).filter(i => i));
       if (index < 參數.length) {
-        let parameter = 參數[index];
-        if (typeof parameter === 'function') parameter = parameter();
-        if (typeof parameter === 'string') parameter = this.屬於(parameter);
-        isParameter[tokens.push(!!parameter) - 1] = true;
+        tokens.push(LazyParameter.from(參數[index], this));
       }
     });
     assert(!!tokens.length, '表達式為空');
@@ -550,7 +546,7 @@ export class 音韻地位 {
     const answer = (): boolean => {
       let match: RegExpExecArray;
       let state = true;
-      let current: boolean[] = [];
+      let current: (boolean | LazyParameter)[] = [];
       const array = [current];
       const judge = (): void => {
         assert(state, match[1] ? '非預期的運算子' : match[0] ? '非預期的閉括號' : '括號未匹配');
@@ -562,8 +558,9 @@ export class 音韻地位 {
           return true;
         } else return false;
       };
-      const parse = (): boolean => {
-        if (isParameter[index]) return !!tokens[index++];
+      const parse = (): boolean | LazyParameter => {
+        const token = tokens[index];
+        if (typeof token !== 'string') return index++, token;
         if (eat(/^(陰|陽|入)聲韻$/)) return 韻別 === match[1];
         if (eat(/^輕脣韻$/)) return 輕脣韻.includes(韻) && 等 === '三';
         if (eat(/^次入韻$/)) return 次入韻.includes(韻);
@@ -585,13 +582,15 @@ export class 音韻地位 {
         throw new Error('無效的表達式：' + tokens[index]);
       };
       while (index < tokens.length) {
-        if (eat(/^[)）]?$/)) return judge(), array.some(y => y.every(x => x));
-        else if (eat(/^(\|+|或|or)$/i)) judge(), array.push((current = []));
+        if (eat(/^[)）]?$/)) {
+          return judge(), array.some(y => y.every(x => (x instanceof LazyParameter ? x.eval(this) : x)));
+        } else if (eat(/^(\|+|或|or)$/i)) judge(), array.push((current = []));
         else if (eat(/^(&+|且|and)$/i)) judge();
         else {
           let negate = false;
           while (eat(/^([!~非]|not)$/i)) negate = !negate;
-          current.push((eat(/^[(（]$/) ? answer() : parse()) !== negate);
+          const value = eat(/^[(（]$/) ? answer() : parse();
+          current.push(typeof value === 'boolean' ? value !== negate : value.withNegate(negate));
           state = true;
         }
       }
@@ -835,5 +834,41 @@ export class 音韻地位 {
     }
 
     return new 音韻地位(母, 呼, 等, 重紐, 韻, 聲);
+  }
+}
+
+/**
+ * 惰性求值參數，用於 `音韻地位.屬於` 標籤模板形式
+ */
+class LazyParameter {
+  inner: unknown;
+  negate: boolean;
+
+  constructor(param: unknown, negate = false) {
+    this.inner = param;
+    this.negate = negate;
+  }
+  static from(param: unknown, 地位: 音韻地位): LazyParameter | boolean {
+    switch (typeof param) {
+      case 'string':
+        return 地位.屬於(param);
+      case 'function':
+        return new LazyParameter(param);
+      default:
+        return !!param;
+    }
+  }
+
+  withNegate(negate: boolean): LazyParameter {
+    return new LazyParameter(this.inner, negate);
+  }
+  eval(地位: 音韻地位): boolean {
+    if (typeof this.inner === 'function') {
+      this.inner = this.inner.call(undefined);
+      if (typeof this.inner === 'string') {
+        this.inner = 地位.屬於(this.inner);
+      }
+    }
+    return !this.inner === this.negate;
   }
 }

@@ -40,7 +40,7 @@ const 輕脣韻 = '東鍾微虞廢文元陽尤凡';
 const 次入韻 = '祭泰夬廢';
 const 陰聲韻 = '支脂之微魚虞模齊祭泰佳皆夬灰咍廢蕭宵肴豪歌麻侯尤幽';
 
-const 特別編碼: { [key: number]: [string, string] } = {
+const 特別編碼: Record<number, [string, string]> = {
   0: ['東', '一'],
   1: ['東', '三'],
   37: ['歌', '一'],
@@ -53,13 +53,12 @@ const 特別編碼: { [key: number]: [string, string] } = {
 
 const pattern = new RegExp(`^([${所有母}])([${所有呼}]?)([${所有等}]?)([${所有重紐}]?)([${所有韻}])([${所有聲}])$`, 'u');
 
-function assert(b: boolean, s: string) {
-  if (!b) {
-    throw new Error(s);
-  }
+function assert(value: unknown, error: string): asserts value {
+  if (!value) throw new Error(error);
 }
 
-type RecursiveArray<T> = Array<[string | boolean | null, T | RecursiveArray<T>]>;
+type Falsy = '' | 0 | false | null | undefined;
+type Rules<T> = [unknown, T | Rules<T>][];
 
 /**
  * 由字頭查出相應的音韻地位和解釋。
@@ -79,7 +78,7 @@ type RecursiveArray<T> = Array<[string | boolean | null, T | RecursiveArray<T>]>
  * ]
  * ```
  */
-export function query字頭(字頭: string): Array<{ 音韻地位: 音韻地位; 解釋: string }> {
+export function query字頭(字頭: string): { 音韻地位: 音韻地位; 解釋: string }[] {
   return m字頭2音韻編碼解釋.get(字頭)?.map(({ 編碼, 解釋 }) => ({ 音韻地位: 音韻地位.from編碼(編碼), 解釋 })) || [];
 }
 
@@ -435,7 +434,7 @@ export class 音韻地位 {
    * [ { 字頭: '𪒠', 解釋: '叫呼仿佛𪒠然自得音黯去聲一' } ]
    * ```
    */
-  get 條目(): Array<{ 字頭: string; 解釋: string }> {
+  get 條目(): { 字頭: string; 解釋: string }[] {
     const { 編碼 } = this;
     return m音韻編碼2字頭解釋.get(編碼) || [];
   }
@@ -507,26 +506,64 @@ export class 音韻地位 {
    * true
    * ```
    */
-  屬於(表達式: string): boolean {
-    const tokens = 表達式.split(/(&+|\|+|[!~()（）])|\b(and|or|not)\b|\s+/).filter(i => i);
+  屬於(表達式: string): boolean;
+
+  /**
+   * 判斷某個小韻是否屬於給定的音韻地位（標籤模板形式）。
+   *
+   * 嵌入的參數可以是：
+   *
+   * * 函數：會被執行；若其傳回值為字串，會遞迴套用至 `音韻地位.屬於` 函數，否則會檢測其真值
+   * * 字串：會遞迴套用至 `音韻地位.屬於` 函數
+   * * 其他：會檢測其真值
+   *
+   * @param 表達式 描述音韻地位的模板字串列表。
+   * @param 參數 要嵌入模板的參數列表。
+   * @returns 若描述音韻地位的字串符合該音韻地位，回傳 `true`；否則回傳 `false`。
+   * @throws `無效的表達式`, `表達式為空`, `非預期的運算子`, `非預期的閉括號`, `括號未匹配`
+   * @example
+   * ```typescript
+   * > 音韻地位 = Qieyun.音韻地位.from描述('幫三凡入');
+   * > 音韻地位.屬於`一四等 或 ${音韻地位.描述 === '幫三凡入'}`;
+   * true
+   * ```
+   */
+  屬於(表達式: readonly string[], ...參數: unknown[]): boolean;
+
+  屬於(表達式: string | readonly string[], ...參數: unknown[]): boolean {
+    if (typeof 表達式 === 'string') 表達式 = [表達式];
+    let tokens: (string | boolean)[] = [];
+    const isParameter: Record<number, true> = {};
+    表達式.forEach((token, index) => {
+      tokens = tokens.concat(token.split(/(&+|\|+|[!~()（）])|\b(and|or|not)\b|\s+/i).filter(i => i));
+      if (index < 參數.length) {
+        let parameter = 參數[index];
+        if (typeof parameter === 'function') parameter = parameter();
+        if (typeof parameter === 'string') parameter = this.屬於(parameter);
+        isParameter[tokens.push(!!parameter) - 1] = true;
+      }
+    });
     assert(!!tokens.length, '表達式為空');
     tokens.push('');
+    let index = 0;
     const { 呼, 等, 重紐, 韻, 聲, 清濁, 韻別 } = this;
     const answer = (): boolean => {
       let match: RegExpExecArray;
       let state = true;
-      const array: boolean[][] = [[]];
+      let current: boolean[] = [];
+      const array = [current];
       const judge = (): void => {
         assert(state, match[1] ? '非預期的運算子' : match[0] ? '非預期的閉括號' : '括號未匹配');
         state = false;
       };
       const eat = (content: RegExp): boolean => {
-        if ((match = content.exec(tokens[0]))) {
-          tokens.shift();
+        if ((match = content.exec(tokens[index] + ''))) {
+          index++;
           return true;
         } else return false;
       };
       const parse = (): boolean => {
+        if (isParameter[index]) return !!tokens[index++];
         if (eat(/^(陰|陽|入)聲韻$/)) return 韻別 === match[1];
         if (eat(/^輕脣韻$/)) return 輕脣韻.includes(韻) && 等 === '三';
         if (eat(/^次入韻$/)) return 次入韻.includes(韻);
@@ -545,16 +582,16 @@ export class 音韻地位 {
           assert(!invalid, invalid + match[2] + '不存在');
           return values.includes(this[match[2]]);
         }
-        throw new Error('無效的表達式：' + tokens[0]);
+        throw new Error('無效的表達式：' + tokens[index]);
       };
-      while (tokens.length) {
+      while (index < tokens.length) {
         if (eat(/^[)）]?$/)) return judge(), array.some(y => y.every(x => x));
-        else if (eat(/^(\|+|或|or)$/)) judge(), array.unshift([]);
-        else if (eat(/^(&+|且|and)$/)) judge();
+        else if (eat(/^(\|+|或|or)$/i)) judge(), array.push((current = []));
+        else if (eat(/^(&+|且|and)$/i)) judge();
         else {
           let negate = false;
-          while (eat(/^([!~非]|not)$/)) negate = !negate;
-          array[0].unshift((eat(/^[(（]$/) ? answer() : parse()) !== negate);
+          while (eat(/^([!~非]|not)$/i)) negate = !negate;
+          current.push((eat(/^[(（]$/) ? answer() : parse()) !== negate);
           state = true;
         }
       }
@@ -565,17 +602,22 @@ export class 音韻地位 {
 
   /**
    * 判斷某個小韻是否屬於給定的音韻地位，傳回自訂值。
-   * @param 規則 `[表達式, 結果]` 形式的陣列。
+   * @param 規則 `[判斷式, 結果][]` 形式的陣列。
    *
-   * 表達式為描述音韻地位的字串，用於屬於函數。
+   * 判斷式可以是：
    *
-   * 使用空字串或 `None` 作表達式以指定後備結果。
+   * * &#x3000;&#x3000;函數：會被執行；若其傳回值為非空字串，會套用至 `音韻地位.屬於` 函數，若為布林值則直接決定是否跳過本規則，否則規則永遠不會被跳過
+   * * 非空字串：描述音韻地位的表達式，會套用至 `音韻地位.屬於` 函數
+   * * &#x3000;布林值：直接決定是否跳過本規則
+   * * &#x3000;&#x3000;其他：規則永遠不會被跳過（可用作指定後備結果）
    *
-   * 結果為任意傳回值或遞迴規則。
+   * 建議使用空字串、`null` 或 `true` 作判斷式以指定後備結果。
+   *
+   * 結果可以是任意傳回值或遞迴規則。
    * @param error 若為 `true` 或非空字串，在未涵蓋所有條件時會拋出錯誤。
    * @param fallback 若為 `true`，在遞迴子陣列未涵蓋所有條件時會繼續嘗試母陣列的條件。
    * @returns 自訂值，在未涵蓋所有條件且不使用 `error` 時會回傳 `null`。
-   * @throws `未涵蓋所有條件`, `無效的表達式`, `表達式為空`, `非預期的運算子`, `非預期的閉括號`, `括號未匹配`
+   * @throws `未涵蓋所有條件`（或 `error` 參數）, `規則需符合格式`, `無效的表達式`, `表達式為空`, `非預期的運算子`, `非預期的閉括號`, `括號未匹配`
    * @example
    * ```typescript
    * > 音韻地位 = Qieyun.音韻地位.from描述('幫三凡入');
@@ -599,25 +641,29 @@ export class 音韻地位 {
    * 'p'
    * ```
    */
-  判斷<T>(規則: RecursiveArray<T>, error?: string | boolean, fallback?: boolean): T | null {
-    const loop = (規則: RecursiveArray<T>): T => {
-      for (const [表達式, 結果] of 規則) {
+  判斷<T, E = undefined>(規則: Rules<T>, error?: E, fallback?: boolean): E extends Falsy ? T | null : T {
+    const loop = (所有規則: Rules<T>): T => {
+      for (const 規則 of 所有規則) {
+        assert(Array.isArray(規則) && 規則.length === 2, '規則需符合格式');
+        let 表達式 = 規則[0];
+        const 結果 = 規則[1];
+        if (typeof 表達式 === 'function') 表達式 = 表達式();
         if (typeof 表達式 === 'string' && 表達式 ? this.屬於(表達式) : 表達式 !== false) {
           if (!Array.isArray(結果)) return 結果;
           if (!fallback) return loop(結果);
           try {
             return loop(結果);
-          } catch (e) {
+          } catch {
             continue;
           }
         }
       }
-      throw new Error(typeof error === 'string' ? error : '未涵蓋所有條件');
+      throw typeof error === 'string' ? new Error(error) : typeof error === 'boolean' ? new Error('未涵蓋所有條件') : error;
     };
     if (error) return loop(規則);
     try {
       return loop(規則);
-    } catch (e) {
+    } catch {
       return null;
     }
   }

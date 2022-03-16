@@ -949,11 +949,9 @@ export class 音韻地位 {
  */
 class LazyParameter {
   inner: unknown;
-  negate: boolean;
 
-  constructor(param: unknown, negate = false) {
+  constructor(param: unknown) {
     this.inner = param;
-    this.negate = negate;
   }
   static from(param: unknown, 地位: 音韻地位): LazyParameter | boolean {
     switch (typeof param) {
@@ -966,9 +964,6 @@ class LazyParameter {
     }
   }
 
-  withNegate(negate: boolean): LazyParameter {
-    return new LazyParameter(this.inner, negate);
-  }
   eval(地位: 音韻地位): boolean {
     if (typeof this.inner === 'function') {
       this.inner = this.inner.call(undefined);
@@ -976,6 +971,6 @@ class LazyParameter {
         this.inner = 地位.屬於(this.inner);
       }
     }
-    return !this.inner === this.negate;
+    return !!this.inner;
   }
 }

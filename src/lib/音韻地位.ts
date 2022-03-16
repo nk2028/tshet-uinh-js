@@ -701,7 +701,7 @@ export class 音韻地位 {
       }
     };
     const evalOperand = (operand: Operand): boolean =>
-      typeof operand === 'boolean' ? operand : operand instanceof Array ? evalExpr(operand) : operand.eval(this);
+      typeof operand === 'boolean' ? operand : Array.isArray(operand) ? evalExpr(operand) : operand.eval(this);
 
     return evalExpr(expr);
   }

@@ -534,8 +534,8 @@ export class 音韻地位 {
     if (typeof 表達式 === 'string') 表達式 = [表達式];
 
     /** 普通字串 token 求值 */
+    const { 呼, 等, 重紐, 韻, 聲, 清濁, 韻別 } = this;
     const evalToken = (token: string): boolean => {
-      const { 呼, 等, 重紐, 韻, 聲, 清濁, 韻別 } = this;
       let match: RegExpExecArray = null;
       const tryMatch = (pat: RegExp) => !!(match = pat.exec(token));
       if (tryMatch(/^(陰|陽|入)聲韻$/)) return 韻別 === match[1];
@@ -561,13 +561,15 @@ export class 音韻地位 {
 
     // 詞法分析，同時給普通運算元求值（惟函數型運算元留待後面惰性求值）
     type Keyword = '(' | ')' | 'not' | 'and' | 'or' | 'end';
+    type Token = Keyword | boolean | LazyParameter;
     const KEYWORDS: Keyword[] = ['(', ')', 'not', 'and', 'or'];
-    const tokens: [Keyword | boolean | LazyParameter, string][] = [];
+    const PATTERNS: RegExp[] = [/^\($/, /^\)$/, /^([!~非]|not)/i, /^(&+|且|and)/i, /^(\|+|或|or)/i];
+    const tokens: [Token, string][] = [];
     for (let i = 0; i < 表達式.length; i++) {
-      for (const rawToken of 表達式[i].split(/(&+|\|+|[!~()（）])|\b(and|or|not)\b|\s+/i).filter(i => i)) {
-        const match = /^(?:([(（])|([)）])|([!~非]|not)|(&+|且|and)|(\|+|或|or))$/.exec(rawToken);
-        if (match) {
-          tokens.push([KEYWORDS[match.findIndex((x, i) => x && i !== 0) - 1] as Keyword, rawToken]);
+      for (const rawToken of 表達式[i].split(/(&+|\|+|[!~()])|\b(and|or|not)\b|\s+/i).filter(i => i)) {
+        const match = PATTERNS.findIndex(pat => pat.test(rawToken));
+        if (match !== -1) {
+          tokens.push([KEYWORDS[match], rawToken]);
         } else {
           tokens.push([evalToken(rawToken), rawToken]);
         }
@@ -588,7 +590,7 @@ export class 音韻地位 {
     // - 或項：且項 ( 或 且項 )*
     // - 括號項：'(' 或項 ')'
     let cursor = 0;
-    const END: typeof tokens[0] = ['end', 'end of expression'];
+    const END: [Token, string] = ['end', 'end of expression'];
     const peek = () => (cursor < tokens.length ? tokens[cursor] : END);
     const read = () => (cursor < tokens.length ? tokens[cursor++] : END);
 
@@ -602,10 +604,9 @@ export class 音韻地位 {
         return null;
       }
       const orExpr: SExpr = ['or', firstAndExpr];
-      // eslint-disable-next-line no-constant-condition
-      while (true) {
-        // 或 且項  | END | else
-        const token = peek()[0];
+      for (;;) {
+        // 或 且項 | END | else
+        const [token] = peek();
         if (token === 'or') {
           cursor++;
           orExpr.push(parseAndExpr(true));
@@ -614,16 +615,16 @@ export class 音韻地位 {
         }
       }
     };
+
     const parseAndExpr = (required: boolean): SExpr => {
       const firstNotExpr = parseNotExpr(required);
       if (!firstNotExpr) {
         return null;
       }
       const andExpr: SExpr = ['and', firstNotExpr];
-      // eslint-disable-next-line no-constant-condition
-      while (true) {
+      for (;;) {
         // 且? 非項 | END | else
-        const token = peek()[0];
+        const [token] = peek();
         if (token === 'and') {
           cursor++;
           andExpr.push(parseNotExpr(true));
@@ -637,13 +638,13 @@ export class 音韻地位 {
         }
       }
     };
+
     const parseNotExpr = (required: boolean): SExpr => {
       // 非*
       let seenNotOperator = false;
       let negate = false;
-      // eslint-disable-next-line no-constant-condition
-      while (true) {
-        const token = peek()[0];
+      for (;;) {
+        const [token] = peek();
         if (token === 'not') {
           seenNotOperator = true;
           negate = !negate;
@@ -700,8 +701,9 @@ export class 音韻地位 {
           return args.some(evalOperand);
       }
     };
+
     const evalOperand = (operand: Operand): boolean =>
-      typeof operand === 'boolean' ? operand : Array.isArray(operand) ? evalExpr(operand) : operand.eval(this);
+      typeof operand === 'boolean' ? operand : operand instanceof LazyParameter ? operand.eval() : evalExpr(operand);
 
     return evalExpr(expr);
   }
@@ -948,29 +950,30 @@ export class 音韻地位 {
  * 惰性求值參數，用於 `音韻地位.屬於` 標籤模板形式
  */
 class LazyParameter {
-  inner: unknown;
+  constructor(private inner: unknown, private 地位: 音韻地位) {}
 
-  constructor(param: unknown) {
-    this.inner = param;
-  }
   static from(param: unknown, 地位: 音韻地位): LazyParameter | boolean {
     switch (typeof param) {
       case 'string':
         return 地位.屬於(param);
       case 'function':
-        return new LazyParameter(param);
+        return new LazyParameter(param, 地位);
       default:
         return !!param;
     }
   }
 
-  eval(地位: 音韻地位): boolean {
+  eval(): boolean {
     if (typeof this.inner === 'function') {
       this.inner = this.inner.call(undefined);
       if (typeof this.inner === 'string') {
-        this.inner = 地位.屬於(this.inner);
+        return this.地位.屬於(this.inner);
       }
     }
     return !!this.inner;
+  }
+
+  toString(): string {
+    return String(this.inner);
   }
 }

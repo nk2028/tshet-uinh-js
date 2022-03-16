@@ -580,7 +580,7 @@ export class 音韻地位 {
     assert(tokens.length, 'empty expression');
 
     // 句法分析
-    // 由於是 LL(0) 文法，可用遞迴下降法
+    // 由於是 LL(1) 文法，可用遞迴下降法
     // 基本成分：元（boolean | LazyParameter）、非、且、或、'('、')'
     // 文法：
     // - 非項：非* ( 元 | 括號項 )

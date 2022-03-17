@@ -532,71 +532,180 @@ export class 音韻地位 {
 
   屬於(表達式: string | readonly string[], ...參數: unknown[]): boolean {
     if (typeof 表達式 === 'string') 表達式 = [表達式];
-    let tokens: (string | boolean | LazyParameter)[] = [];
-    表達式.forEach((token, index) => {
-      tokens = tokens.concat(token.split(/(&+|\|+|[!~()（）])|\b(and|or|not)\b|\s+/i).filter(i => i));
-      if (index < 參數.length) {
-        tokens.push(LazyParameter.from(參數[index], this));
-      }
-    });
-    assert(!!tokens.length, '表達式為空');
-    tokens.push('');
-    let index = 0;
+
+    /** 普通字串 token 求值 */
     const { 呼, 等, 重紐, 韻, 聲, 清濁, 韻別 } = this;
-    const answer = (): boolean => {
-      let match: RegExpExecArray;
-      let state = true;
-      let current: (boolean | LazyParameter)[] = [];
-      const array = [current];
-      const judge = (): void => {
-        assert(state, match[1] ? '非預期的運算子' : match[0] ? '非預期的閉括號' : '括號未匹配');
-        state = false;
-      };
-      const eat = (content: RegExp): boolean => {
-        if ((match = content.exec(tokens[index] + ''))) {
-          index++;
-          return true;
-        } else return false;
-      };
-      const parse = (): boolean | LazyParameter => {
-        const token = tokens[index];
-        if (typeof token !== 'string') return index++, token;
-        if (eat(/^(陰|陽|入)聲韻$/)) return 韻別 === match[1];
-        if (eat(/^輕脣韻$/)) return 輕脣韻.includes(韻) && 等 === '三';
-        if (eat(/^次入韻$/)) return 次入韻.includes(韻);
-        if (eat(/^仄聲$/)) return 聲 !== '平';
-        if (eat(/^舒聲$/)) return 聲 !== '入';
-        if (eat(/^(開|合)口$/)) return 呼 === match[1];
-        if (eat(/^開合中立$/)) return 呼 === null;
-        if (eat(/^重紐(A|B)類$/)) return 重紐 === match[1];
-        if (eat(/^不分重紐$/)) return 重紐 === null;
-        if (eat(/^(清|濁)音$/)) return 清濁[1] === match[1];
-        if (eat(/^[全次][清濁]$/)) return 清濁 === match[0];
-        if (eat(/^(.+?)([母等韻音攝組聲])$/)) {
-          const values = [...match[1]];
-          const check = 檢查[match[2]];
-          const invalid = values.filter(i => !check.includes(i)).join('');
-          assert(!invalid, invalid + match[2] + '不存在');
-          return values.includes(this[match[2]]);
-        }
-        throw new Error('無效的表達式：' + tokens[index]);
-      };
-      while (index < tokens.length) {
-        if (eat(/^[)）]?$/)) {
-          return judge(), array.some(y => y.every(x => (x instanceof LazyParameter ? x.eval(this) : x)));
-        } else if (eat(/^(\|+|或|or)$/i)) judge(), array.push((current = []));
-        else if (eat(/^(&+|且|and)$/i)) judge();
-        else {
-          let negate = false;
-          while (eat(/^([!~非]|not)$/i)) negate = !negate;
-          const value = eat(/^[(（]$/) ? answer() : parse();
-          current.push(typeof value === 'boolean' ? value !== negate : value.withNegate(negate));
-          state = true;
+    const evalToken = (token: string): boolean => {
+      let match: RegExpExecArray = null;
+      const tryMatch = (pat: RegExp) => !!(match = pat.exec(token));
+      if (tryMatch(/^(陰|陽|入)聲韻$/)) return 韻別 === match[1];
+      if (tryMatch(/^輕脣韻$/)) return 輕脣韻.includes(韻) && 等 === '三';
+      if (tryMatch(/^次入韻$/)) return 次入韻.includes(韻);
+      if (tryMatch(/^仄聲$/)) return 聲 !== '平';
+      if (tryMatch(/^舒聲$/)) return 聲 !== '入';
+      if (tryMatch(/^(開|合)口$/)) return 呼 === match[1];
+      if (tryMatch(/^開合中立$/)) return 呼 === null;
+      if (tryMatch(/^重紐(A|B)類$/)) return 重紐 === match[1];
+      if (tryMatch(/^不分重紐$/)) return 重紐 === null;
+      if (tryMatch(/^(清|濁)音$/)) return 清濁[1] === match[1];
+      if (tryMatch(/^[全次][清濁]$/)) return 清濁 === match[0];
+      if (tryMatch(/^(.+?)([母等韻音攝組聲])$/)) {
+        const values = [...match[1]];
+        const check = 檢查[match[2]];
+        const invalid = values.filter(i => !check.includes(i)).join('');
+        assert(!invalid, invalid + match[2] + '不存在');
+        return values.includes(this[match[2]]);
+      }
+      throw new Error(`unreconized test condition: ${token}`);
+    };
+
+    // 詞法分析，同時給普通運算元求值（惟函數型運算元留待後面惰性求值）
+    type Keyword = '(' | ')' | 'not' | 'and' | 'or' | 'end';
+    type Token = Keyword | boolean | LazyParameter;
+    const KEYWORDS: Keyword[] = ['(', ')', 'not', 'and', 'or'];
+    const PATTERNS: RegExp[] = [/^\($/, /^\)$/, /^([!~非]|not)/i, /^(&+|且|and)/i, /^(\|+|或|or)/i];
+    const tokens: [Token, string][] = [];
+    for (let i = 0; i < 表達式.length; i++) {
+      for (const rawToken of 表達式[i].split(/(&+|\|+|[!~()])|\b(and|or|not)\b|\s+/i).filter(i => i)) {
+        const match = PATTERNS.findIndex(pat => pat.test(rawToken));
+        if (match !== -1) {
+          tokens.push([KEYWORDS[match], rawToken]);
+        } else {
+          tokens.push([evalToken(rawToken), rawToken]);
         }
       }
-      throw new Error('括號未匹配');
+      if (i < 參數.length) {
+        const arg = LazyParameter.from(參數[i], this);
+        tokens.push([arg, String(arg)]);
+      }
+    }
+    assert(tokens.length, 'empty expression');
+
+    // 句法分析
+    // 由於是 LL(1) 文法，可用遞迴下降法
+    // 基本成分：元（boolean | LazyParameter）、非、且、或、'('、')'
+    // 文法：
+    // - 非項：非* ( 元 | 括號項 )
+    // - 且項：非項 ( 且? 非項 )*
+    // - 或項：且項 ( 或 且項 )*
+    // - 括號項：'(' 或項 ')'
+    let cursor = 0;
+    const END: [Token, string] = ['end', 'end of expression'];
+    const peek = () => (cursor < tokens.length ? tokens[cursor] : END);
+    const read = () => (cursor < tokens.length ? tokens[cursor++] : END);
+
+    type Operand = boolean | LazyParameter | SExpr;
+    type Operator = 'value' | 'not' | 'and' | 'or';
+    type SExpr = [Operator, ...Operand[]];
+
+    const parseOrExpr = (required: boolean): SExpr => {
+      const firstAndExpr = parseAndExpr(required);
+      if (!firstAndExpr) {
+        return null;
+      }
+      const orExpr: SExpr = ['or', firstAndExpr];
+      for (;;) {
+        // 或 且項 | END | else
+        const [token] = peek();
+        if (token === 'or') {
+          cursor++;
+          orExpr.push(parseAndExpr(true));
+        } else {
+          return orExpr;
+        }
+      }
     };
-    return answer();
+
+    const parseAndExpr = (required: boolean): SExpr => {
+      const firstNotExpr = parseNotExpr(required);
+      if (!firstNotExpr) {
+        return null;
+      }
+      const andExpr: SExpr = ['and', firstNotExpr];
+      for (;;) {
+        // 且? 非項 | END | else
+        const [token] = peek();
+        if (token === 'and') {
+          cursor++;
+          andExpr.push(parseNotExpr(true));
+        } else {
+          const notExpr = parseNotExpr(false);
+          if (notExpr) {
+            andExpr.push(notExpr);
+          } else {
+            return andExpr;
+          }
+        }
+      }
+    };
+
+    const parseNotExpr = (required: boolean): SExpr => {
+      // 非*
+      let seenNotOperator = false;
+      let negate = false;
+      for (;;) {
+        const [token] = peek();
+        if (token === 'not') {
+          seenNotOperator = true;
+          negate = !negate;
+          cursor++;
+        } else {
+          break;
+        }
+      }
+      let valExpr: SExpr = [negate ? 'not' : 'value'];
+      // 元 | 括號項 | else
+      const [token, rawToken] = peek();
+      if (typeof token === 'boolean' || token instanceof LazyParameter) {
+        valExpr.push(token);
+        cursor++;
+        return valExpr;
+      } else if (token === '(') {
+        cursor++;
+        const parenExpr = parseOrExpr(true);
+        const [rightParen, rawRightParen] = read();
+        if (rightParen !== ')') {
+          throw new Error(`expect ')', got: ${rawRightParen}`);
+        }
+        if (negate) {
+          valExpr.push(parenExpr);
+        } else {
+          valExpr = parenExpr;
+        }
+        return valExpr;
+      } else if (seenNotOperator || required) {
+        const expected = seenNotOperator ? "operand or '('" : 'expression';
+        throw new Error(`expect ${expected}, got: ${rawToken}`);
+      } else {
+        return null;
+      }
+    };
+
+    const expr = parseOrExpr(true);
+    const [token, rawToken] = read();
+    if (token !== 'end') {
+      throw new Error(`unexpected token: ${rawToken}`);
+    }
+
+    // 求值
+    const evalExpr = (expr: SExpr): boolean => {
+      const [op, ...args] = expr;
+      switch (op) {
+        case 'value':
+          return evalOperand(args[0]);
+        case 'not':
+          return !evalOperand(args[0]);
+        case 'and':
+          return args.every(evalOperand);
+        case 'or':
+          return args.some(evalOperand);
+      }
+    };
+
+    const evalOperand = (operand: Operand): boolean =>
+      typeof operand === 'boolean' ? operand : operand instanceof LazyParameter ? operand.eval() : evalExpr(operand);
+
+    return evalExpr(expr);
   }
 
   /**
@@ -849,34 +958,30 @@ class ExhaustionError extends Error {}
  * 惰性求值參數，用於 `音韻地位.屬於` 標籤模板形式
  */
 class LazyParameter {
-  inner: unknown;
-  negate: boolean;
+  constructor(private inner: unknown, private 地位: 音韻地位) {}
 
-  constructor(param: unknown, negate = false) {
-    this.inner = param;
-    this.negate = negate;
-  }
   static from(param: unknown, 地位: 音韻地位): LazyParameter | boolean {
     switch (typeof param) {
       case 'string':
         return 地位.屬於(param);
       case 'function':
-        return new LazyParameter(param);
+        return new LazyParameter(param, 地位);
       default:
         return !!param;
     }
   }
 
-  withNegate(negate: boolean): LazyParameter {
-    return new LazyParameter(this.inner, negate);
-  }
-  eval(地位: 音韻地位): boolean {
+  eval(): boolean {
     if (typeof this.inner === 'function') {
       this.inner = this.inner.call(undefined);
       if (typeof this.inner === 'string') {
-        this.inner = 地位.屬於(this.inner);
+        return this.地位.屬於(this.inner);
       }
     }
-    return !this.inner === this.negate;
+    return !!this.inner;
+  }
+
+  toString(): string {
+    return String(this.inner);
   }
 }

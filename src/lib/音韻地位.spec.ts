@@ -87,12 +87,17 @@ test('測試「法」字對應的音韻地位的屬於函式（基本用法）',
 
 test('測試「法」字對應的音韻地位的屬於（複雜用法）及判斷函式', t => {
   const 當前音韻地位 = 音韻地位.from描述('幫三凡入');
+  t.true(當前音韻地位.屬於('非 一等'));
+  t.true(當前音韻地位.屬於('非 (一等)'));
+  t.true(當前音韻地位.屬於('非 ((一等))'));
+  t.true(當前音韻地位.屬於('非 (非 三等)'));
+  t.true(當前音韻地位.屬於('非 非 非 一等'));
   t.true(當前音韻地位.屬於('三等 或 一等 且 來母')); // 「且」優先於「或」
-  t.false(當前音韻地位.屬於('（三等 或 一等）且 來母'));
+  t.false(當前音韻地位.屬於('(三等 或 一等) 且 來母'));
   t.true(當前音韻地位.屬於`一四等 或 ${當前音韻地位.描述 === '幫三凡入'}`);
   t.true(當前音韻地位.屬於`${() => '三等'} 或 ${() => '短路〔或〕'}`);
   t.false(當前音韻地位.屬於`非 ${() => '三等'} 且 ${() => '短路〔且〕'}`);
-  t.throws(() => 當前音韻地位.屬於`${() => '三等'} 或 ${'立即求值'}`);
+  t.throws(() => 當前音韻地位.屬於`${() => '三等'} 或 ${'立即求值'}`, { message: 'unreconized test condition: 立即求值' });
   t.is(
     當前音韻地位.判斷(
       [
@@ -125,6 +130,20 @@ test('測試「法」字對應的音韻地位的屬於（複雜用法）及判�
     ),
     'p'
   );
+});
+
+test('測試不合法表達式', t => {
+  const 地位 = 音韻地位.from描述('幫三凡入');
+  const is = 地位.屬於.bind(地位);
+  t.throws(() => is``, { message: 'empty expression' });
+  t.throws(() => is`三等 且 ()`, { message: 'expect expression, got: )' });
+  t.throws(() => is`一等 或`, { message: 'expect expression, got: end of expression' });
+  t.throws(() => is`或 一等`, { message: 'expect expression, got: 或' });
+  t.throws(() => is`三等 且 (或 一等)`, { message: 'expect expression, got: 或' });
+  t.throws(() => is`三等 且 非`, { message: "expect operand or '(', got: end of expression" });
+  t.throws(() => is`桓韻`, { message: '桓韻不存在' });
+  t.throws(() => is`${'桓韻'}`, { message: '桓韻不存在' });
+  t.throws(() => is`三等 或 桓韻`, { message: '桓韻不存在' });
 });
 
 // 遍歷所有音韻地位

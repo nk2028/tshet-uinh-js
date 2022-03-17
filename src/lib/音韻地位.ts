@@ -761,18 +761,24 @@ export class 音韻地位 {
           if (!fallback) return loop(結果);
           try {
             return loop(結果);
-          } catch {
-            continue;
+          } catch (e) {
+            if (e instanceof ExhaustionError) continue;
+            else throw e;
           }
         }
       }
-      throw typeof error === 'string' ? new Error(error) : typeof error === 'boolean' ? new Error('未涵蓋所有條件') : error;
+      throw typeof error === 'string'
+        ? new ExhaustionError(error)
+        : typeof error === 'boolean'
+        ? new ExhaustionError('未涵蓋所有條件')
+        : error;
     };
     if (error) return loop(規則);
     try {
       return loop(規則);
-    } catch {
-      return null;
+    } catch (e) {
+      if (e instanceof ExhaustionError) return null;
+      else throw e;
     }
   }
 
@@ -945,6 +951,8 @@ export class 音韻地位 {
     return new 音韻地位(母, 呼, 等, 重紐, 韻, 聲);
   }
 }
+
+class ExhaustionError extends Error {}
 
 /**
  * 惰性求值參數，用於 `音韻地位.屬於` 標籤模板形式

@@ -563,7 +563,7 @@ export class 音韻地位 {
     type Keyword = '(' | ')' | 'not' | 'and' | 'or' | 'end';
     type Token = Keyword | boolean | LazyParameter;
     const KEYWORDS: Keyword[] = ['(', ')', 'not', 'and', 'or'];
-    const PATTERNS: RegExp[] = [/^\($/, /^\)$/, /^([!~非]|not)/i, /^(&+|且|and)/i, /^(\|+|或|or)/i];
+    const PATTERNS: RegExp[] = [/^\($/, /^\)$/, /^([!~非]|not)$/i, /^(&+|且|and)$/i, /^(\|+|或|or)$/i];
     const tokens: [Token, string][] = [];
     for (let i = 0; i < 表達式.length; i++) {
       for (const rawToken of 表達式[i].split(/(&+|\|+|[!~()])|\b(and|or|not)\b|\s+/i).filter(i => i)) {

@@ -40,6 +40,8 @@ const 輕脣韻 = '東鍾微虞廢文元陽尤凡';
 const 次入韻 = '祭泰夬廢';
 const 陰聲韻 = '支脂之微魚虞模齊祭泰佳皆夬灰咍廢蕭宵肴豪歌麻侯尤幽';
 
+const 鈍音組 = '幫見影';
+
 const 特別編碼: Record<number, [string, string]> = {
   0: ['東', '一'],
   1: ['東', '三'],
@@ -479,7 +481,7 @@ export class 音韻地位 {
    *
    * * 音韻地位六要素：`……母`, `……等`, `……韻`, `……聲`, `開口`, `合口`, `開合中立`, `重紐A類`, `重紐B類`, `不分重紐`
    * * 拓展音韻地位：`……組`, `……音`, `……攝`, `全清`, `次清`, `全濁`, `次濁`, `清音`, `濁音`
-   * * 其他表達式：`陰聲韻`, `陽聲韻`, `入聲韻`, `輕脣韻`, `次入韻`, `仄聲`, `舒聲`
+   * * 其他表達式：`陰聲韻`, `陽聲韻`, `入聲韻`, `輕脣韻`, `次入韻`, `仄聲`, `舒聲`, `鈍音`, `銳音`
    *
    * 支援的運算子：
    *
@@ -534,7 +536,7 @@ export class 音韻地位 {
     if (typeof 表達式 === 'string') 表達式 = [表達式];
 
     /** 普通字串 token 求值 */
-    const { 呼, 等, 重紐, 韻, 聲, 清濁, 韻別 } = this;
+    const { 呼, 等, 重紐, 韻, 聲, 清濁, 韻別, 組 } = this;
     const evalToken = (token: string): boolean => {
       let match: RegExpExecArray = null;
       const tryMatch = (pat: RegExp) => !!(match = pat.exec(token));
@@ -549,6 +551,8 @@ export class 音韻地位 {
       if (tryMatch(/^不分重紐$/)) return 重紐 === null;
       if (tryMatch(/^(清|濁)音$/)) return 清濁[1] === match[1];
       if (tryMatch(/^[全次][清濁]$/)) return 清濁 === match[0];
+      if (tryMatch(/^鈍音$/)) return 鈍音組.includes(組);
+      if (tryMatch(/^銳音$/)) return !鈍音組.includes(組);
       if (tryMatch(/^(.+?)([母等韻音攝組聲])$/)) {
         const values = [...match[1]];
         const check = 檢查[match[2]];

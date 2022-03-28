@@ -11,7 +11,7 @@ A JavaScript library for the Qieyun phonological system
 Browser:
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/qieyun@0.12.4"></script>
+<script src="https://cdn.jsdelivr.net/npm/qieyun@0.12.5"></script>
 ```
 
 Node.js:

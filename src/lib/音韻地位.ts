@@ -811,7 +811,8 @@ export class 音韻地位 {
    * ```
    */
   判斷<T, E = undefined>(規則: Rules<T>, error?: E, fallback?: boolean): E extends Falsy ? T | null : T {
-    const loop = (所有規則: Rules<T>): T => {
+    const Exhaustion = Symbol('Exhaustion');
+    const loop = (所有規則: Rules<T>): T | typeof Exhaustion => {
       for (const 規則 of 所有規則) {
         assert(Array.isArray(規則) && 規則.length === 2, '規則需符合格式');
         let 表達式 = 規則[0];
@@ -819,28 +820,20 @@ export class 音韻地位 {
         if (typeof 表達式 === 'function') 表達式 = 表達式();
         if (typeof 表達式 === 'string' && 表達式 ? this.屬於(表達式) : 表達式 !== false) {
           if (!Array.isArray(結果)) return 結果;
-          if (!fallback) return loop(結果);
-          try {
-            return loop(結果);
-          } catch (e) {
-            if (e instanceof ExhaustionError) continue;
-            else throw e;
-          }
+          const res = loop(結果);
+          if (res === Exhaustion && fallback) continue;
+          return res;
         }
       }
-      throw typeof error === 'string'
-        ? new ExhaustionError(error)
-        : typeof error === 'boolean'
-        ? new ExhaustionError('未涵蓋所有條件')
-        : error;
+      return Exhaustion;
     };
-    if (error) return loop(規則);
-    try {
-      return loop(規則);
-    } catch (e) {
-      if (e instanceof ExhaustionError) return null;
-      else throw e;
+
+    const res = loop(規則);
+    if (res === Exhaustion) {
+      if (!error) return null;
+      else throw new Error(typeof error === 'string' ? error : '未涵蓋所有條件');
     }
+    return res;
   }
 
   /**
@@ -1013,13 +1006,11 @@ export class 音韻地位 {
   }
 }
 
-class ExhaustionError extends Error {}
-
 /**
  * 惰性求值參數，用於 `音韻地位.屬於` 標籤模板形式
  */
 class LazyParameter {
-  constructor(private inner: unknown, private 地位: 音韻地位) {}
+  private constructor(private inner: unknown, private 地位: 音韻地位) {}
 
   static from(param: unknown, 地位: 音韻地位): LazyParameter | boolean {
     switch (typeof param) {
@@ -1036,10 +1027,10 @@ class LazyParameter {
     if (typeof this.inner === 'function') {
       this.inner = this.inner.call(undefined);
       if (typeof this.inner === 'string') {
-        return this.地位.屬於(this.inner);
+        this.inner = this.地位.屬於(this.inner);
       }
     }
-    return !!this.inner;
+    return (this.inner = !!this.inner);
   }
 
   toString(): string {

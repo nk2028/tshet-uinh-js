@@ -19,7 +19,7 @@ const 所有組 = '幫端知精莊章見影';
 
 const 檢查 = { 母: 所有母, 等: 所有等, 韻: 所有韻, 音: 所有音, 攝: 所有攝, 組: 所有組, 聲: 所有聲 };
 
-const 重紐母 = '幫滂並明見溪羣疑影曉';
+const 重紐母 = '幫滂並明見溪羣疑影曉匣';
 const 重紐韻 = '支脂祭眞仙宵清侵鹽';
 
 const 開合皆有的韻 = '支脂微齊祭泰佳皆夬廢眞元寒刪山仙先歌麻陽唐庚耕清青蒸登';
@@ -111,6 +111,8 @@ export function* iter音韻地位(): IterableIterator<音韻地位> {
  * 音韻地位六要素：母、呼、等、重紐、韻、聲。
  *
  * 「呼」和「重紐」可為 `null`，其餘四個屬性不可為 `null`。
+ * 
+ * TODO: 限制條件更新
  *
  * 當聲母為脣音，或韻母為「東冬鍾江虞模尤幽」（開合中立的韻）時，呼必須為 `null`。
  * 在其他情況下，呼必須取「開」或「合」。
@@ -409,9 +411,12 @@ export class 音韻地位 {
   get 編碼(): string {
     const { 母, 呼, 等, 重紐, 韻, 聲 } = this;
     const 母編碼 = 所有母.indexOf(母);
-
     const 韻編碼 = { 東三: 1, 歌三: 38, 麻三: 40, 庚三: 44 }[`${韻}${等}`] || 韻順序表.indexOf(韻);
-    const 其他編碼 = (+(呼 === '合') << 3) + (+(重紐 === 'B') << 2) + 所有聲.indexOf(聲);
+
+    const 有額外開合 = 呼 !== null && ([...'幫滂並明'].includes(母) || [...開合中立的韻].includes(韻));
+    const 有額外重紐 = 重紐 !== null && !([...重紐母].includes(母) && [...重紐韻].includes(韻));
+    const 其他編碼 = (+有額外開合 << 5) + (+有額外重紐 << 4) + (+(呼 === '合') << 3) + (+(重紐 === 'B') << 2) + 所有聲.indexOf(聲);
+
     return 編碼表[母編碼] + 編碼表[韻編碼] + 編碼表[其他編碼];
   }
 
@@ -884,7 +889,9 @@ export class 音韻地位 {
     assert(韻.length === 1 && [...所有韻].includes(韻), `Unexpected 韻: ${JSON.stringify(韻)}`);
     assert(聲.length === 1 && [...所有聲].includes(聲), `Unexpected 聲: ${JSON.stringify(聲)}`);
 
-    if ([...'幫滂並明'].includes(母) || [...開合中立的韻].includes(韻)) {
+    // TODO 指定/默認驗證體系
+
+    /*if ([...'幫滂並明'].includes(母) || [...開合中立的韻].includes(韻)) {
       assert(呼 == null, '呼 should be null');
     } else if ([...必為開口的韻].includes(韻)) {
       assert(呼 === '開', '呼 should be 開');
@@ -892,13 +899,21 @@ export class 音韻地位 {
       assert(呼 === '合', '呼 should be 合');
     } else {
       assert(呼 != null && 呼.length === 1 && [...所有呼].includes(呼), `Unexpected 呼: ${JSON.stringify(呼)}`);
-    }
+    }*/
+    assert(
+      [...所有呼].includes(呼) || (呼 === null && ([...'幫滂並明'].includes(母) || [...開合中立的韻].includes(韻))),
+      `Unexpected 呼: ${JSON.stringify(呼)}`
+    );
 
-    if ([...重紐母].includes(母) && [...重紐韻].includes(韻)) {
+    /*if ([...重紐母].includes(母) && [...重紐韻].includes(韻)) {
       assert(重紐 != null && 重紐.length === 1 && [...所有重紐].includes(重紐), `Unexpected 重紐: ${JSON.stringify(重紐)}`);
     } else {
       assert(重紐 == null, '重紐 should be null');
-    }
+    }*/
+    assert(
+      [...所有重紐].includes(重紐) || (重紐 === null && !([...重紐母].includes(母) && [...重紐韻].includes(韻))),
+      `Unexpected 重紐: ${JSON.stringify(重紐)}`
+    );
 
     if ([...一等韻].includes(韻)) {
       assert(等 === '一', `Unexpected 等: ${JSON.stringify(等)}`);
@@ -912,6 +927,10 @@ export class 音韻地位 {
       assert(['一', '三'].includes(等), `Unexpected 等: ${JSON.stringify(等)}`);
     } else if ([...二三等韻].includes(韻)) {
       assert(['二', '三'].includes(等), `Unexpected 等: ${JSON.stringify(等)}`);
+    }
+
+    if ([...陰聲韻].includes(韻)) {
+      assert(聲 !== '入', `unexpected 入聲 for ${韻}韻`);
     }
   }
 
@@ -934,7 +953,9 @@ export class 音韻地位 {
     const 韻編碼 = 編碼表.indexOf(音韻編碼[1]);
     const 其他編碼 = 編碼表.indexOf(音韻編碼[2]);
 
-    const 呼編碼 = 其他編碼 >> 3;
+    const 有額外開合 = (其他編碼 >> 5) & 0b1;
+    const 有額外重紐 = (其他編碼 >> 4) & 0b1;
+    const 呼編碼 = (其他編碼 >> 3) & 0b1;
     const 重紐編碼 = (其他編碼 >> 2) & 0b1;
     const 聲編碼 = 其他編碼 & 0b11;
 
@@ -958,11 +979,19 @@ export class 音韻地位 {
     }
 
     if ([...'幫滂並明'].includes(母) || [...開合中立的韻].includes(韻)) {
-      呼 = null;
+      if (!有額外開合) {
+        呼 = null;
+      }
+    } else if (有額外開合) {
+      throw new Error('Invalid code: 呼-flag should be 0');
     }
 
     if (![...重紐母].includes(母) || ![...重紐韻].includes(韻)) {
-      重紐 = null;
+      if (!有額外重紐) {
+        重紐 = null;
+      }
+    } else if (有額外重紐) {
+      throw new Error('Invalid code: 重紐-flag should be 0');
     }
 
     return new 音韻地位(母, 呼, 等, 重紐, 韻, 聲);

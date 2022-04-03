@@ -1,7 +1,7 @@
 import test from 'ava';
 
 import 適配分析體系 from './分析體系';
-import { 音韻地位 } from './音韻地位';
+import { iter音韻地位, 音韻地位 } from './音韻地位';
 
 const from = (x: string) => 音韻地位.from描述(x);
 
@@ -76,4 +76,10 @@ test('v2 & v2Strict', t => {
   // 莊組臻攝開口
   conv('崇開三臻上', '崇開三臻上');
   conv('莊開三欣上', '莊開三欣上');
+});
+
+test('v1', t => {
+  for (const 地位 of iter音韻地位()) {
+    t.is(適配分析體系.v1(地位).描述, 地位.描述);
+  }
 });

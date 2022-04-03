@@ -5,13 +5,13 @@ import { 音韻地位 } from './音韻地位';
 
 const from = (x: string) => 音韻地位.from描述(x);
 
-test('v2', t => {
-  const conv = (x: string, y: string) => {
-    const px = from(x);
-    const py = from(y);
-    t.is(適配分析體系.v2(px).描述, py.描述);
-    if (!px.等於(py)) {
-      t.throws(() => 適配分析體系.v2Strict(px), undefined, px.描述);
+test('v2 & v2Strict', t => {
+  const conv = (描述1: string, 描述2: string) => {
+    const 地位1 = from(描述1);
+    const 地位2 = from(描述2);
+    t.is(適配分析體系.v2(地位1).描述, 地位2.描述);
+    if (!地位1.等於(地位2)) {
+      t.throws(() => 適配分析體系.v2Strict(地位1), undefined, 地位1.描述);
     }
   };
   const rej = (x: string, msg?: string) => t.throws(() => 適配分析體系.v2(from(x)), msg ? { message: msg } : undefined);
@@ -37,9 +37,23 @@ test('v2', t => {
   rej('幫開凡入');
   rej('幫合嚴入');
 
+  // 重紐八韻非鈍音
+  conv('章開A仙平', '章開仙平');
+  conv('俟開B脂上', '俟開脂上');
+
   // 清
-  conv('幫A清入', '幫清入');
-  conv('幫B清入', '幫三庚入');
+  conv('幫開A清入', '幫清入');
+  conv('幫合B清入', '幫三庚入');
+
+  // 陽蒸幽
+  conv('並三A陽上', '並三A陽上');
+  conv('溪B幽平', '溪B幽平');
+  conv('影A幽平', '影幽平');
+  rej('並三B陽上');
+  rej('見開A蒸平');
+
+  // 其他重紐
+  rej('見開A之平');
 
   // 端知類隔
   conv('端開二庚上', '端開二庚上');
@@ -48,11 +62,9 @@ test('v2', t => {
   // 蟹三平上
   conv('昌咍上', '昌開廢上');
 
-  // 章組日以母其他類隔
+  // 齒音
   conv('昌開山平', '初開山平');
   rej('以開寒入');
-
-  // 精莊
   conv('清合夬去', '初合夬去');
   rej('崇開先平');
 

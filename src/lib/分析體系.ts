@@ -6,11 +6,11 @@ for (const pair of ['端知', '透徹', '定澄', '泥孃']) {
   端知組對應[t] = tr;
   端知組對應[tr] = t;
 }
-const 精章組日母到莊組孃母 = {};
+const 齒音二等到莊組孃母 = {};
 for (const triplet of ['精莊章', '清初昌', '從崇常', '心生書', '邪俟船', '日孃日']) {
   const [s, sr, sj] = [...triplet];
-  精章組日母到莊組孃母[s] = sr;
-  精章組日母到莊組孃母[sj] = sr;
+  齒音二等到莊組孃母[s] = sr;
+  齒音二等到莊組孃母[sj] = sr;
 }
 
 function 適配v2(地位: 音韻地位): 音韻地位 {
@@ -49,9 +49,9 @@ function 適配v2(地位: 音韻地位): 音韻地位 {
     地位 = 地位.調整(draft);
   }
 
-  // 精章二等
+  // 精章日二等
   if (is`(精章組 或 日母) 二等`) {
-    地位 = 地位.調整({ 母: 精章組日母到莊組孃母[地位.母] });
+    地位 = 地位.調整({ 母: 齒音二等到莊組孃母[地位.母] });
   }
 
   // 齒音及云母其他類隔
@@ -63,15 +63,16 @@ function 適配v2(地位: 音韻地位): 音韻地位 {
 }
 
 // TODO 暫未參數化
-export function 分析體系(preset: string): (x: 音韻地位) => 音韻地位 {
-  switch (preset) {
-    case 'none':
-      return x => x;
+export function 分析體系(config?: string): (x: 音韻地位) => 音韻地位 {
+  switch (config) {
+    case undefined:
     case 'v2':
       return 適配v2;
+    case 'none':
+      return x => x;
     // TODO pliaj
   }
-  throw new Error(`unknown preset: ${preset}`);
+  throw new Error(`unknown preset: ${config}`);
 }
 
 分析體系.none = 分析體系('none');

@@ -105,13 +105,11 @@ export function* iter音韻地位(): IterableIterator<音韻地位> {
  *
  * 「呼」和「重紐」可為 `null`，其餘四個屬性不可為 `null`。
  *
- * TODO: 限制條件更新
- *
- * 當聲母為脣音，或韻母為「東冬鍾江虞模尤幽」（開合中立的韻）時，呼必須為 `null`。
+ * 當聲母為脣音，或韻母為「東冬鍾江虞模尤幽」（開合中立的韻）時，呼可以（並最好）為 `null`。
  * 在其他情況下，呼必須取「開」或「合」。
  *
- * 當聲母為脣牙喉音（云以母除外），且韻母為「支脂祭眞仙宵清侵鹽」九韻之一時，重紐必須取 `A` 或 `B`。
- * 在其他情況下，重紐必須取 `null`。
+ * 當聲母為脣牙喉音（云以母除外），且韻母為「支脂祭眞仙宵侵鹽」八韻之一時，重紐必須取 `A` 或 `B`。
+ * 在其他情況下，重紐可以（並最好）取 `null`。
  *
  * **注意**：元韻置於臻攝而非山攝。
  *
@@ -853,7 +851,7 @@ export class 音韻地位 {
   }
 
   /**
-   * 驗證給定的音韻地位六要素是否合法。
+   * 驗證給定的音韻地位六要素是否合法。此為最小程度的驗證，想要更強限定請用 `適配分析體系`。
    *
    * 母必須為「幫滂並明端透定泥來知徹澄孃精清從心邪莊初崇生俟章昌常書船日
    * 見溪羣疑影曉匣云以」三十八聲類之一。
@@ -863,11 +861,11 @@ export class 音韻地位 {
    *
    * 注意：不設諄、桓、戈韻。分別併入眞、寒、歌韻。
    *
-   * 當聲母為脣音，或韻母為「東冬鍾江虞模尤幽」（開合中立的韻）時，呼必須為 `null`。
+   * 當聲母為脣音，或韻母為「東冬鍾江虞模尤幽」（開合中立的韻）時，呼可以為 `null`。
    * 在其他情況下，呼必須取「開」或「合」。
    *
-   * 當聲母為脣牙喉音，且韻母為「支脂祭眞仙宵清侵鹽」九韻之一時，重紐必須取 `A` 或 `B`。
-   * 在其他情況下，重紐必須取 `null`。
+   * 當聲母為脣牙喉音，且韻母為「支脂祭眞仙宵侵鹽」八韻之一時，重紐必須取 `A` 或 `B`。
+   * 在其他情況下，重紐可以取 `null`。
    * @param 母 聲母：幫, 滂, 並, 明, …
    * @param 呼 呼：`null`, 開, 合
    * @param 等 等：一, 二, 三, 四
@@ -877,32 +875,14 @@ export class 音韻地位 {
    * @throws 若給定的音韻地位六要素不合法，則拋出異常。
    */
   static 驗證(母: string, 呼: string | null, 等: string, 重紐: string | null, 韻: string, 聲: string): void {
-    assert(母.length === 1 && [...所有母].includes(母), `Unexpected 母: ${JSON.stringify(母)}`);
-    assert(等.length === 1 && [...所有等].includes(等), `Unexpected 等: ${JSON.stringify(等)}`);
-    assert(韻.length === 1 && [...所有韻].includes(韻), `Unexpected 韻: ${JSON.stringify(韻)}`);
-    assert(聲.length === 1 && [...所有聲].includes(聲), `Unexpected 聲: ${JSON.stringify(聲)}`);
-
-    // TODO 指定/默認驗證體系
-
-    /*if ([...'幫滂並明'].includes(母) || [...開合中立的韻].includes(韻)) {
-      assert(呼 == null, '呼 should be null');
-    } else if ([...必為開口的韻].includes(韻)) {
-      assert(呼 === '開', '呼 should be 開');
-    } else if ([...必為合口的韻].includes(韻)) {
-      assert(呼 === '合', '呼 should be 合');
-    } else {
-      assert(呼 != null && 呼.length === 1 && [...所有呼].includes(呼), `Unexpected 呼: ${JSON.stringify(呼)}`);
-    }*/
+    assert([...所有母].includes(母), `Unexpected 母: ${JSON.stringify(母)}`);
+    assert([...所有等].includes(等), `Unexpected 等: ${JSON.stringify(等)}`);
+    assert([...所有韻].includes(韻), `Unexpected 韻: ${JSON.stringify(韻)}`);
+    assert([...所有聲].includes(聲), `Unexpected 聲: ${JSON.stringify(聲)}`);
     assert(
       [...所有呼].includes(呼) || (呼 === null && ([...'幫滂並明'].includes(母) || 開合中立的韻.includes(韻))),
       `Unexpected 呼: ${JSON.stringify(呼)}`
     );
-
-    /*if ([...重紐母].includes(母) && [...重紐韻].includes(韻)) {
-      assert(重紐 != null && 重紐.length === 1 && [...所有重紐].includes(重紐), `Unexpected 重紐: ${JSON.stringify(重紐)}`);
-    } else {
-      assert(重紐 == null, '重紐 should be null');
-    }*/
     assert(
       [...所有重紐].includes(重紐) || (重紐 === null && !(重紐母.includes(母) && 重紐韻.includes(韻))),
       `Unexpected 重紐: ${JSON.stringify(重紐)}`

@@ -1,6 +1,6 @@
 import test from 'ava';
 
-import 分析體系 from './分析體系';
+import 適配分析體系 from './分析體系';
 import { 音韻地位 } from './音韻地位';
 
 const from = (x: string) => 音韻地位.from描述(x);
@@ -9,12 +9,12 @@ test('v2', t => {
   const conv = (x: string, y: string) => {
     const px = from(x);
     const py = from(y);
-    t.is(分析體系.v2(px).描述, py.描述);
+    t.is(適配分析體系.v2(px).描述, py.描述);
     if (!px.等於(py)) {
-      t.throws(() => 分析體系.v2Strict(px), undefined, px.描述);
+      t.throws(() => 適配分析體系.v2Strict(px), undefined, px.描述);
     }
   };
-  const rej = (x: string, msg?: string) => t.throws(() => 分析體系.v2(from(x)), msg ? { message: msg } : undefined);
+  const rej = (x: string, msg?: string) => t.throws(() => 適配分析體系.v2(from(x)), msg ? { message: msg } : undefined);
 
   conv('幫凡入', '幫凡入');
   conv('定開脂去', '定開脂去');

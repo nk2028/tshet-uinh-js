@@ -84,7 +84,7 @@ function 適配v2(strict = false): (地位: 音韻地位) => 音韻地位 {
 }
 
 // TODO 暫未參數化
-export function 分析體系(config?: string): (x: 音韻地位) => 音韻地位 {
+export function 適配分析體系(config?: string): (x: 音韻地位) => 音韻地位 {
   switch (config) {
     case undefined:
     case 'v2':
@@ -98,8 +98,8 @@ export function 分析體系(config?: string): (x: 音韻地位) => 音韻地位
   throw new Error(`unknown preset: ${config}`);
 }
 
-分析體系.raw = 分析體系('raw');
-分析體系.v2 = 分析體系('v2');
-分析體系.v2Strict = 分析體系('v2Strict');
+適配分析體系.raw = 適配分析體系('raw');
+適配分析體系.v2 = 適配分析體系('v2');
+適配分析體系.v2Strict = 適配分析體系('v2Strict');
 
-export default 分析體系;
+export default 適配分析體系;

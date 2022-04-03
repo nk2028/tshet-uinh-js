@@ -1,6 +1,7 @@
 import { 母到清濁, 母到組, 母到音, 韻到攝 } from './拓展音韻屬性';
 import 特殊反切 from './特殊反切';
 import { m字頭2音韻編碼解釋, m音韻編碼2反切, m音韻編碼2字頭解釋 } from './解析資料';
+import { v1重紐韻, 必為合口的韻, 必為開口的韻, 重紐母, 重紐韻, 開合中立的韻, 開合皆有的韻 } from './音韻屬性搭配';
 
 // For encoder
 
@@ -18,14 +19,6 @@ const 所有攝 = '通江止遇蟹臻山效果假宕梗曾流深咸';
 const 所有組 = '幫端知精莊章見影';
 
 const 檢查 = { 母: 所有母, 等: 所有等, 韻: 所有韻, 音: 所有音, 攝: 所有攝, 組: 所有組, 聲: 所有聲 };
-
-const 重紐母 = '幫滂並明見溪羣疑影曉匣';
-const 重紐韻 = '支脂祭眞仙宵侵鹽';
-
-const 開合皆有的韻 = '支脂微齊祭泰佳皆夬廢眞元寒刪山仙先歌麻陽唐庚耕清青蒸登';
-const 必為開口的韻 = '咍痕欣嚴之魚臻蕭宵肴豪侯侵覃談鹽添咸銜';
-const 必為合口的韻 = '灰魂文凡';
-const 開合中立的韻 = '東冬鍾江虞模尤幽';
 
 const 韻順序表 = '東_冬鍾江支脂之微魚虞模齊祭泰佳皆夬灰咍廢眞臻文欣元魂痕寒刪山仙先蕭宵肴豪歌_麻_陽唐庚_耕清青蒸登尤侯幽侵覃談鹽添咸銜嚴凡';
 
@@ -372,7 +365,7 @@ export class 音韻地位 {
   get 最簡描述(): string {
     const { 母, 重紐, 韻, 聲 } = this;
     let { 呼, 等 } = this;
-    if (![...開合皆有的韻].includes(韻)) 呼 = null;
+    if (!開合皆有的韻.includes(韻)) 呼 = null;
     if (![...一三等韻, ...二三等韻].includes(韻)) 等 = null;
     return 母 + (呼 || '') + (等 || '') + (重紐 || '') + 韻 + 聲;
   }
@@ -413,9 +406,9 @@ export class 音韻地位 {
     const 母編碼 = 所有母.indexOf(母);
     const 韻編碼 = { 東三: 1, 歌三: 38, 麻三: 40, 庚三: 44 }[`${韻}${等}`] || 韻順序表.indexOf(韻);
 
-    const 有額外開合 = 呼 !== null && ([...'幫滂並明'].includes(母) || [...開合中立的韻].includes(韻));
-    const 有額外重紐 = 重紐 !== null && !([...重紐母].includes(母) && [...重紐韻].includes(韻));
-    const 其他編碼 = (+有額外開合 << 5) + (+有額外重紐 << 4) + (+(呼 === '合') << 3) + (+(重紐 === 'B') << 2) + 所有聲.indexOf(聲);
+    const 有額外開合 = 呼 !== null && ([...'幫滂並明'].includes(母) || 開合中立的韻.includes(韻));
+    const 特殊重紐 = 重紐 !== null ? !(重紐母.includes(母) && v1重紐韻.includes(韻)) : 重紐母.includes(母) && 韻 === '清';
+    const 其他編碼 = (+有額外開合 << 5) + (+特殊重紐 << 4) + (+(呼 === '合') << 3) + (+(重紐 === 'B') << 2) + 所有聲.indexOf(聲);
 
     return 編碼表[母編碼] + 編碼表[韻編碼] + 編碼表[其他編碼];
   }
@@ -901,7 +894,7 @@ export class 音韻地位 {
       assert(呼 != null && 呼.length === 1 && [...所有呼].includes(呼), `Unexpected 呼: ${JSON.stringify(呼)}`);
     }*/
     assert(
-      [...所有呼].includes(呼) || (呼 === null && ([...'幫滂並明'].includes(母) || [...開合中立的韻].includes(韻))),
+      [...所有呼].includes(呼) || (呼 === null && ([...'幫滂並明'].includes(母) || 開合中立的韻.includes(韻))),
       `Unexpected 呼: ${JSON.stringify(呼)}`
     );
 
@@ -911,7 +904,7 @@ export class 音韻地位 {
       assert(重紐 == null, '重紐 should be null');
     }*/
     assert(
-      [...所有重紐].includes(重紐) || (重紐 === null && !([...重紐母].includes(母) && [...重紐韻].includes(韻))),
+      [...所有重紐].includes(重紐) || (重紐 === null && !(重紐母.includes(母) && 重紐韻.includes(韻))),
       `Unexpected 重紐: ${JSON.stringify(重紐)}`
     );
 
@@ -954,7 +947,7 @@ export class 音韻地位 {
     const 其他編碼 = 編碼表.indexOf(音韻編碼[2]);
 
     const 有額外開合 = (其他編碼 >> 5) & 0b1;
-    const 有額外重紐 = (其他編碼 >> 4) & 0b1;
+    const 特殊重紐 = (其他編碼 >> 4) & 0b1;
     const 呼編碼 = (其他編碼 >> 3) & 0b1;
     const 重紐編碼 = (其他編碼 >> 2) & 0b1;
     const 聲編碼 = 其他編碼 & 0b11;
@@ -978,7 +971,7 @@ export class 音韻地位 {
       if ([...四等韻].includes(韻)) 等 = '四';
     }
 
-    if ([...'幫滂並明'].includes(母) || [...開合中立的韻].includes(韻)) {
+    if ([...'幫滂並明'].includes(母) || 開合中立的韻.includes(韻)) {
       if (!有額外開合) {
         呼 = null;
       }
@@ -986,12 +979,21 @@ export class 音韻地位 {
       throw new Error('Invalid code: 呼-flag should be 0');
     }
 
-    if (![...重紐母].includes(母) || ![...重紐韻].includes(韻)) {
-      if (!有額外重紐) {
+    if (重紐母.includes(母) && v1重紐韻.includes(韻)) {
+      if (韻 === '清') {
+        // 清韻鈍音特殊（向上兼容）：flag 表示重紐為 null
+        if (特殊重紐) {
+          重紐 = null;
+        }
+      } else if (特殊重紐) {
+        // 重紐八韻鈍音不允許該 flag
+        throw new Error('Invalid code: 重紐-flag should be 0');
+      }
+    } else {
+      // 其餘情形 flag 表示重紐非 null
+      if (!特殊重紐) {
         重紐 = null;
       }
-    } else if (有額外重紐) {
-      throw new Error('Invalid code: 重紐-flag should be 0');
     }
 
     return new 音韻地位(母, 呼, 等, 重紐, 韻, 聲);
@@ -1020,8 +1022,8 @@ export class 音韻地位 {
     const 聲 = match[6];
 
     if (呼 == null && ![...'幫滂並明'].includes(母)) {
-      if ([...必為開口的韻].includes(韻)) 呼 = '開';
-      else if ([...必為合口的韻].includes(韻)) 呼 = '合';
+      if (必為開口的韻.includes(韻)) 呼 = '開';
+      else if (必為合口的韻.includes(韻)) 呼 = '合';
     }
 
     if (等 == null) {

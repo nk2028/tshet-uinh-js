@@ -91,14 +91,14 @@ export function 分析體系(config?: string): (x: 音韻地位) => 音韻地位
       return 適配v2();
     case 'v2Strict':
       return 適配v2(true);
-    case 'none':
+    case 'raw':
       return x => x;
     // TODO pliaj
   }
   throw new Error(`unknown preset: ${config}`);
 }
 
-分析體系.none = 分析體系('none');
+分析體系.raw = 分析體系('raw');
 分析體系.v2 = 分析體系('v2');
 分析體系.v2Strict = 分析體系('v2Strict');
 

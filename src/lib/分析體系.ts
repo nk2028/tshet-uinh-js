@@ -38,7 +38,9 @@ function 適配v2ext(地位: 音韻地位, 嚴格 = false, 原地位脣音寒歌
   if (地位.呼 && is`幫組 寒歌韻`) {
     if (!原地位脣音寒歌默認開合) {
       reject('呼 is ambiguous for 脣音寒歌韻, set 原地位脣音寒歌默認開合 to "開" or "合" to normalize it');
-    } else if (!(原地位脣音寒歌默認開合 === '開' && is`開口`)) {
+    } else if (原地位脣音寒歌默認開合 === '開' && is`合口`) {
+      reject(`unexpected 合口 for 脣音${地位.韻}韻`);
+    } else if (!(原地位脣音寒歌默認開合 === '合' && is`開口`)) {
       調整({ 呼: null }, 'unexpected 呼');
     }
   } else if (開合中立的韻.includes(地位.韻) || is`幫組`) {
@@ -60,7 +62,7 @@ function 適配v2ext(地位: 音韻地位, 嚴格 = false, 原地位脣音寒歌
     if (is`清幽韻`) {
       is`重紐A類` && 調整({ 重紐: null }, `${地位.韻}韻 does not need A類`);
     } else if (is`陽蒸韻`) {
-      if (地位.重紐 && 地位.重紐 !== (is`陽韻` ? 'A' : 'B')) {
+      if (地位.重紐 && !is`陽韻 脣音 重紐A類 或 蒸韻 重紐B類`) {
         reject(`unexpected ${地位.韻}韻${地位.重紐}類`);
       }
     } else if (地位.重紐 && !重紐韻.includes(地位.韻)) {
@@ -69,7 +71,7 @@ function 適配v2ext(地位: 音韻地位, 嚴格 = false, 原地位脣音寒歌
   } else if (重紐韻.includes(地位.韻) || is`清韻`) {
     // 銳音重紐韻（含清韻）
     地位.重紐 && 調整({ 重紐: null }, 'unexpected 重紐');
-  } else {
+  } else if (地位.重紐) {
     // 銳音其他
     reject('unexpected 重紐');
   }

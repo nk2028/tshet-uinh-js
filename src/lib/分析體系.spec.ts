@@ -1,20 +1,41 @@
-import test from 'ava';
+import test, { ExecutionContext } from 'ava';
 
 import 適配分析體系 from './分析體系';
 import { iter音韻地位, 音韻地位 } from './音韻地位';
 
 const from = (x: string) => 音韻地位.from描述(x);
 
+function createConvRej(t: ExecutionContext, 適配: (地位: 音韻地位) => 音韻地位, 適配Strict?: (地位: 音韻地位) => 音韻地位) {
+  return [
+    (描述1: string, 描述2?: string) => {
+      const 地位1 = from(描述1);
+      const 地位2 = from(描述2 ?? 描述1);
+      t.is(適配(地位1).描述, 地位2.描述, 地位1.描述);
+      if (適配Strict && !地位1.等於(地位2)) {
+        t.throws(() => 適配Strict(地位1), undefined, 地位1.描述);
+      }
+    },
+    (描述: string, msg?: string) => void t.throws(() => 適配(from(描述)), msg ? { message: msg } : undefined),
+  ];
+}
+
+test('v2ext', t => {
+  const [conv, rej] = createConvRej(t, 適配分析體系.v2ext);
+  //const [conv開] = createConvRej(t, 適配分析體系.v2extFromPoem);
+  //const [conv合] = createConvRej(t, 適配分析體系.v2extFromYtenx);
+
+  conv('幫凡入');
+  conv('定開脂去');
+
+  // 指定開合韻
+  rej('見開文平');
+  rej('見合欣平');
+  rej('幫開凡入');
+  rej('幫合嚴入');
+});
+
 test('v2 & v2Strict', t => {
-  const conv = (描述1: string, 描述2: string) => {
-    const 地位1 = from(描述1);
-    const 地位2 = from(描述2);
-    t.is(適配分析體系.v2(地位1).描述, 地位2.描述);
-    if (!地位1.等於(地位2)) {
-      t.throws(() => 適配分析體系.v2Strict(地位1), undefined, 地位1.描述);
-    }
-  };
-  const rej = (x: string, msg?: string) => t.throws(() => 適配分析體系.v2(from(x)), msg ? { message: msg } : undefined);
+  const [conv, rej] = createConvRej(t, 適配分析體系.v2, 適配分析體系.v2Strict);
 
   conv('幫凡入', '幫凡入');
   conv('定開脂去', '定開脂去');
@@ -30,12 +51,6 @@ test('v2 & v2Strict', t => {
   conv('並開咍上', '並灰上');
   conv('明嚴去', '明凡去');
   conv('見凡去', '見嚴去');
-
-  // 指定開合韻
-  rej('見開文平');
-  rej('見合欣平');
-  rej('幫開凡入');
-  rej('幫合嚴入');
 
   // 重紐八韻非鈍音
   conv('章開A仙平', '章開仙平');

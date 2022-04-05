@@ -14,6 +14,73 @@ for (const triplet of ['精莊章', '清初昌', '從崇常', '心生書', '邪�
   齒音二等到莊組孃母[sj] = sr;
 }
 
+function 適配v2ext(地位: 音韻地位, 嚴格 = false, 原地位脣音寒歌默認開合?: '開' | '合'): 音韻地位 {
+  const 原描述 = 地位.描述;
+
+  const is = (...xs: Parameters<音韻地位['屬於']>) => 地位.屬於(...xs);
+  const reject = (msg: string) => {
+    throw new Error(`rejected ${原描述}: ${msg}`);
+  };
+  const errors = [];
+  const 調整 = (x: Parameters<音韻地位['調整']>[0], msg: string | (() => string)) => {
+    if (嚴格) errors.push(typeof msg === 'function' ? msg() : msg);
+    return (地位 = 地位.調整(x));
+  };
+
+  // 呼：指定開合的韻
+  if (必為開口的韻.includes(地位.韻)) {
+    if (!is`開口 或 (脣音 開合中立)`) reject('呼 should be 開');
+  } else if (必為合口的韻.includes(地位.韻)) {
+    if (!is`合口 或 (脣音 開合中立)`) reject('呼 should be 合');
+  }
+
+  // 呼：脣音、中立韻
+  if (地位.呼 && is`幫組 寒歌韻`) {
+    if (!原地位脣音寒歌默認開合) {
+      reject('呼 is ambiguous for 脣音寒歌韻, set 原地位脣音寒歌默認開合 to "開" or "合" to normalize it');
+    } else if (!(原地位脣音寒歌默認開合 === '開' && is`開口`)) {
+      調整({ 呼: null }, 'unexpected 呼');
+    }
+  } else if (開合中立的韻.includes(地位.韻) || is`幫組`) {
+    地位.呼 && 調整({ 呼: null }, 'unexpected 呼');
+  }
+
+  // 呼：灰咍嚴凡（不限制）
+
+  // 類隔：云母A類（v2ext 惟一限制的組合）
+  // 置於重紐之前是因為可能影響其判定
+  if (is`云母 重紐A類`) {
+    調整({ 母: '匣' }, 'unexpected 云母A類');
+  }
+
+  // 重紐
+  if (重紐母.includes(地位.母)) {
+    // 鈍音
+    // 重紐八韻：不需處理
+    if (is`清幽韻`) {
+      is`重紐A類` && 調整({ 重紐: null }, `${地位.韻}韻 does not need A類`);
+    } else if (is`陽蒸韻`) {
+      if (地位.重紐 && 地位.重紐 !== (is`陽韻` ? 'A' : 'B')) {
+        reject(`unexpected ${地位.韻}韻${地位.重紐}類`);
+      }
+    } else if (地位.重紐 && !重紐韻.includes(地位.韻)) {
+      reject('unexpected 重紐');
+    }
+  } else if (重紐韻.includes(地位.韻) || is`清韻`) {
+    // 銳音重紐韻（含清韻）
+    地位.重紐 && 調整({ 重紐: null }, 'unexpected 重紐');
+  } else {
+    // 銳音其他
+    reject('unexpected 重紐');
+  }
+
+  if (errors.length) {
+    reject(`${errors.join('; ')} (try ${地位.描述} instead)`);
+  }
+
+  return 地位;
+}
+
 type 分析體系參數 = {
   重紐_清韻: boolean | 'require';
   重紐_陽蒸幽韻: boolean;
@@ -53,7 +120,7 @@ PRESETS.v2Nonstrict = Object.assign({}, PRESETS.v2, {
   類隔_其他: true,
 });
 
-type 指定分析體系 =
+export type 指定分析體系 =
   | string
   | {
       體系: string;
@@ -71,6 +138,9 @@ export function 適配分析體系(分析體系: 指定分析體系 = 'v2'): (�
   }
   if (分析體系.體系 === 'raw') {
     return x => x;
+  } else if (分析體系.體系 === 'v2ext') {
+    const { 嚴格, 原地位脣音寒歌默認開合 } = 分析體系;
+    return 地位 => 適配v2ext(地位, 嚴格, 原地位脣音寒歌默認開合);
   }
 
   const 參數 = PRESETS[分析體系.體系];
@@ -81,6 +151,8 @@ export function 適配分析體系(分析體系: 指定分析體系 = 'v2'): (�
   const { 嚴格: strict = false } = 分析體系;
 
   return function (地位) {
+    // TODO 先轉為 v2ext 以簡化邏輯
+
     const is = (...x: Parameters<音韻地位['屬於']>) => 地位.屬於(...x);
 
     const errors: string[] = [];
@@ -199,6 +271,11 @@ export function 適配分析體系(分析體系: 指定分析體系 = 'v2'): (�
 適配分析體系.v2 = 適配分析體系('v2');
 適配分析體系.v2Strict = 適配分析體系('v2Strict');
 適配分析體系.v2Nonstrict = 適配分析體系('v2Nonstrict');
+
+適配分析體系.v2ext = 適配分析體系('v2ext');
+適配分析體系.v2extFromYtenx = 適配分析體系({ 體系: 'v2ext', 原地位脣音寒歌默認開合: '合' });
+適配分析體系.v2extFromPoem = 適配分析體系({ 體系: 'v2ext', 原地位脣音寒歌默認開合: '開' });
+
 適配分析體系.v1 = 適配分析體系('v1');
 
 export default 適配分析體系;

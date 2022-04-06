@@ -117,7 +117,7 @@ const PRESETS: { [體系: string]: 分析體系參數 } = {
   },
 };
 
-PRESETS.v2Nonstrict = Object.assign({}, PRESETS.v2, {
+PRESETS.v2Lenient = Object.assign({}, PRESETS.v2, {
   類隔_云非三: true,
   類隔_其他: true,
 });
@@ -247,9 +247,10 @@ export function 適配分析體系(分析體系: 指定分析體系 = 'v2'): (�
 }
 
 適配分析體系.raw = 適配分析體系('raw');
+
 適配分析體系.v2 = 適配分析體系('v2');
 適配分析體系.v2Strict = 適配分析體系('v2Strict');
-適配分析體系.v2Nonstrict = 適配分析體系('v2Nonstrict');
+適配分析體系.v2Lenient = 適配分析體系('v2Lenient');
 
 適配分析體系.v2ext = 適配分析體系('v2ext');
 適配分析體系.v2extFromYtenx = 適配分析體系({ 體系: 'v2ext', 原地位脣音寒歌默認開合: '合' });

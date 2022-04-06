@@ -75,8 +75,9 @@ test('v2ext', t => {
   reject('影開A蒸入');
 });
 
-test('v2 & v2Strict', t => {
+test('v2', t => {
   const [conv, reject] = test適配(t, 適配分析體系.v2, 適配分析體系.v2Strict);
+  const [lenient] = test適配(t, 適配分析體系.v2Lenient);
 
   conv('幫凡入');
   conv('定開脂去');
@@ -121,14 +122,17 @@ test('v2 & v2Strict', t => {
   // 齒音
   conv('昌開山平', '初開山平');
   reject('以開寒入');
+  lenient('以開寒入');
   conv('清合夬去', '初合夬去');
   reject('崇開先平');
+  lenient('崇開先平');
 
   // 云匣
   conv('匣開A眞平');
   conv('云開A眞平', '匣開A眞平');
   conv('云灰上', '云合廢上');
   reject('云合山平');
+  lenient('云合山平');
 
   // 莊組臻攝開口
   conv('崇開臻上');
@@ -140,7 +144,7 @@ test('v1', t => {
     t.is(適配分析體系.v1(地位).描述, 地位.描述);
     let 地位2;
     try {
-      地位2 = 適配分析體系.v1(適配分析體系.v2Nonstrict(地位));
+      地位2 = 適配分析體系.v1(適配分析體系.v2Lenient(地位));
       if (!地位.屬於`二等 (章組 或 日母) 或 清韻 重紐B類`) {
         t.true(地位.等於(地位2), `${地位.描述} -> ${地位2.描述}`);
       }

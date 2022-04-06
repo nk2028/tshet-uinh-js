@@ -153,3 +153,17 @@ test('v1', t => {
     }
   }
 });
+
+test('poem', t => {
+  const [conv] = test適配(t, 適配分析體系('poem'), 適配分析體系('poem', { 嚴格: true }));
+
+  conv('幫凡入', '幫合凡入');
+  conv('定開脂去', '定開A脂去');
+});
+
+test('ytenx', t => {
+  const [conv] = test適配(t, 適配分析體系('ytenx'), 適配分析體系('ytenx', { 嚴格: true }));
+
+  conv('幫凡入', '幫合凡入');
+  conv('定開脂去', '定開A脂去');
+});

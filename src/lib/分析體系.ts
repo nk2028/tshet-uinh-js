@@ -1,4 +1,4 @@
-import { 必為合口的韻, 必為開口的韻, 重紐母, 重紐韻, 開合中立的韻 } from './聲韻搭配';
+import { 必為合口的韻, 必為開口的韻, 重紐母, 重紐韻, 開合中立的韻, 開合皆有的韻 } from './聲韻搭配';
 import { 音韻地位 } from './音韻地位';
 
 const 端知組對應 = {};
@@ -83,12 +83,16 @@ function 適配v2ext(地位: 音韻地位, 嚴格 = false, 原地位脣音寒歌
   return 地位;
 }
 
-// 暫時僅內部使用
+// 暫時僅內部使用，不開放給用戶微調
 type 分析體系參數 = {
+  呼_中立韻: false | 'requirePoem' | 'requireYtenx';
+  呼_脣音: false | '寒歌開' | 'require切韻' | 'require廣韻';
+  呼_輕脣均合口: boolean;
+  重紐_非重紐母: false | 'require';
   重紐_清韻: boolean | 'require';
   重紐_陽蒸幽韻: boolean;
   類隔_端知: boolean | '庚二麻三';
-  類隔_章云以日蟹攝平上: null | '三等' | '一四等';
+  類隔_章云以日蟹攝平上: true | '三等' | '一四等';
   類隔_精章日二等: boolean | '章組日母';
   類隔_匣三: boolean;
   類隔_云非三: 'reject' | boolean;
@@ -97,6 +101,10 @@ type 分析體系參數 = {
 
 const PRESETS: { [體系: string]: 分析體系參數 } = {
   v2: {
+    呼_中立韻: false,
+    呼_脣音: false,
+    呼_輕脣均合口: false,
+    重紐_非重紐母: false,
     重紐_清韻: false,
     重紐_陽蒸幽韻: true,
     類隔_端知: '庚二麻三',
@@ -107,16 +115,24 @@ const PRESETS: { [體系: string]: 分析體系參數 } = {
     類隔_其他: 'reject',
   },
   v2ext: {
+    呼_中立韻: false,
+    呼_脣音: '寒歌開',
+    呼_輕脣均合口: false,
+    重紐_非重紐母: false,
     重紐_清韻: true,
     重紐_陽蒸幽韻: true,
     類隔_端知: true,
-    類隔_章云以日蟹攝平上: null,
+    類隔_章云以日蟹攝平上: true,
     類隔_精章日二等: true,
     類隔_匣三: true,
     類隔_云非三: true,
     類隔_其他: true,
   },
-  v1: {
+  poem: {
+    呼_中立韻: 'requirePoem',
+    呼_脣音: 'require切韻',
+    呼_輕脣均合口: true,
+    重紐_非重紐母: 'require',
     重紐_清韻: 'require',
     重紐_陽蒸幽韻: false,
     類隔_端知: false,
@@ -126,12 +142,35 @@ const PRESETS: { [體系: string]: 分析體系參數 } = {
     類隔_云非三: false,
     類隔_其他: true,
   },
+  ytenx: {
+    呼_中立韻: 'requireYtenx',
+    呼_脣音: 'require廣韻',
+    呼_輕脣均合口: false,
+    重紐_非重紐母: 'require',
+    重紐_清韻: false,
+    重紐_陽蒸幽韻: false,
+    類隔_端知: true,
+    類隔_章云以日蟹攝平上: '一四等',
+    類隔_精章日二等: true,
+    類隔_匣三: false,
+    類隔_云非三: true,
+    類隔_其他: true,
+  },
 };
 
 PRESETS.v2lenient = Object.assign({}, PRESETS.v2, {
   類隔_云非三: true,
   類隔_其他: true,
 });
+PRESETS.v1 = Object.assign({}, PRESETS.poem, {
+  呼_中立韻: false,
+  呼_脣音: false,
+  重紐_非重紐母: false,
+});
+
+function isRequire(option: null | boolean | string): boolean | string {
+  return typeof option === 'string' && option.startsWith('require');
+}
 
 export type 分析體系選項 = {
   嚴格?: boolean;
@@ -295,10 +334,41 @@ export function 適配分析體系(分析體系 = 'v2', 選項?: 分析體系選
     ]);
     draft && 調整(draft, () => `unexpected ${地位.韻}韻 with ${地位.母}母`);
 
-    // 中立韻（v2、v1 暫不需要）
+    // 中立韻
+    if (isRequire(參數.呼_中立韻) && 開合中立的韻.includes(地位.韻)) {
+      let 呼;
+      if (isRequire(參數.呼_脣音) || !is`脣音`) {
+        if (參數.呼_中立韻 === 'requirePoem') {
+          呼 = is`冬虞韻` ? '合' : '開';
+        } else if (參數.呼_中立韻 === 'requireYtenx') {
+          呼 = is`虞韻` ? '合' : '開';
+        }
+      }
+      if (呼 && 參數.呼_輕脣均合口 && is`脣音 輕脣韻`) {
+        呼 = '合';
+      }
+      呼 && 調整({ 呼 }, `呼 should be ${呼}`);
+    }
 
-    // 脣音
-    if (is`脣音`) {
+    // 脣音（非中立韻
+    if (isRequire(參數.呼_脣音) && !地位.呼 && is`脣音`) {
+      // `!地位.呼` 用於排除中立韻（已處理過了）以及 v2ext 下已經是寒歌開的地位
+      let 呼;
+      if (必為開口的韻.includes(地位.韻)) {
+        呼 = '開';
+      } else if (必為合口的韻.includes(地位.韻)) {
+        呼 = '合';
+      } else if (開合皆有的韻.includes(地位.韻)) {
+        if (is`三等`) {
+          呼 = is`輕脣韻` ? '合' : '開';
+        } else if (is`二四等`) {
+          呼 = '開';
+        } else {
+          呼 = 參數.呼_脣音 === 'require廣韻' && is`寒歌韻` ? '合' : '開';
+        }
+      }
+      呼 && 調整({ 呼 }, `呼 should be ${呼}`);
+    } else if (!參數.呼_脣音 && is`脣音`) {
       地位.呼 && 調整({ 呼: null }, 'unexpected 呼');
     }
 
@@ -306,15 +376,19 @@ export function 適配分析體系(分析體系 = 'v2', 選項?: 分析體系選
 
     if (is`清韻`) {
       if (!地位.重紐) {
-        參數.重紐_清韻 === 'require' && 重紐母.includes(地位.母) && 調整({ 重紐: 'A' }, '清韻 needs 重紐');
+        if (參數.重紐_清韻 === 'require' && (參數.重紐_非重紐母 === 'require' || 重紐母.includes(地位.母))) {
+          調整({ 重紐: is`知莊組 或 云母` ? 'B' : 'A' }, '清韻 needs 重紐');
+        }
       } else {
         // B類
         !參數.重紐_清韻 && 調整({ 韻: '庚', 重紐: null }, '清韻B類 should be 庚韻三等');
       }
     } else if (is`陽蒸幽韻`) {
       !參數.重紐_陽蒸幽韻 && 調整({ 重紐: null }, '重紐 should be null');
+    } else if (參數.重紐_非重紐母 === 'require' && !地位.重紐 && 重紐韻.includes(地位.韻)) {
+      const 重紐 = is`知莊組 或 云母` ? 'B' : 'A';
+      調整({ 重紐 }, `重紐 should be ${重紐}`);
     }
-    // 重紐八韻非鈍音（v2、v1 暫不需要）
 
     if (嚴格 && !地位.等於(原地位)) {
       if (errors.length) {

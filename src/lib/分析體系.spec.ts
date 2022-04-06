@@ -20,7 +20,7 @@ function test適配(t: ExecutionContext, 適配: (地位: 音韻地位) => 音�
 }
 
 test('v2ext', t => {
-  const [conv, reject] = test適配(t, 適配分析體系.v2ext, 適配分析體系({ 體系: 'v2ext', 嚴格: true }));
+  const [conv, reject] = test適配(t, 適配分析體系.v2ext, 適配分析體系('v2ext', { 嚴格: true }));
   const [conv合] = test適配(t, 適配分析體系.v2extFromYtenx);
   const [conv開, reject開] = test適配(t, 適配分析體系.v2extFromPoem);
 
@@ -77,7 +77,7 @@ test('v2ext', t => {
 
 test('v2', t => {
   const [conv, reject] = test適配(t, 適配分析體系.v2, 適配分析體系.v2Strict);
-  const [lenient] = test適配(t, 適配分析體系.v2Lenient);
+  const [lenient] = test適配(t, 適配分析體系.v2lenient);
 
   conv('幫凡入');
   conv('定開脂去');
@@ -144,7 +144,7 @@ test('v1', t => {
     t.is(適配分析體系.v1(地位).描述, 地位.描述);
     let 地位2;
     try {
-      地位2 = 適配分析體系.v1(適配分析體系.v2Lenient(地位));
+      地位2 = 適配分析體系.v1(適配分析體系.v2lenient(地位));
       if (!地位.屬於`二等 (章組 或 日母) 或 清韻 重紐B類`) {
         t.true(地位.等於(地位2), `${地位.描述} -> ${地位2.描述}`);
       }

@@ -11,8 +11,9 @@ function test適配(t: ExecutionContext, 適配: (地位: 音韻地位) => 音�
       const 地位1 = from(描述1);
       const 地位2 = from(描述2 ?? 描述1);
       t.is(適配(地位1).描述, 地位2.描述, 地位1.描述);
-      if (適配Strict && !地位1.等於(地位2)) {
-        t.throws(() => 適配Strict(地位1), undefined, 地位1.描述);
+      if (!地位1.等於(地位2)) {
+        t.is(適配(地位2).描述, 地位2.描述, 地位2.描述);
+        適配Strict && t.throws(() => 適配Strict(地位1), undefined, 地位1.描述);
       }
     },
     (描述: string, msg?: string) => void t.throws(() => 適配(from(描述)), msg ? { message: msg } : undefined),
@@ -63,6 +64,7 @@ test('v2ext', t => {
   conv('幫開A清入', '幫清入'); // 辟（字音表）
   conv('幫B清入'); // 碧（v1）
   conv('幫三庚入'); // 碧（v2、韻典）
+  //conv('幫合清入')； // 碧（全字表）（暫緩支持）
 
   // 重紐：其他
   conv('溪B幽平'); // 𠁫/恘（v2）
@@ -140,6 +142,10 @@ test('v2', t => {
 });
 
 test('v1', t => {
+  const [conv] = test適配(t, 適配分析體系.v1);
+
+  conv('匣開A眞平', '云開眞平');
+
   for (const 地位 of iter音韻地位()) {
     t.is(適配分析體系.v1(地位).描述, 地位.描述);
     let 地位2;
@@ -154,16 +160,72 @@ test('v1', t => {
   }
 });
 
+function poemYtenxCommon(conv) {
+  conv('幫凡入', '幫合凡入');
+
+  // 呼
+  //中立韻
+  conv('疑魚平', '疑開魚平');
+  conv('以尤平', '以開尤平');
+
+  // 脣音
+  conv('幫先入', '幫開先入');
+  conv('幫山入', '幫開山入');
+  conv('明三庚平', '明開三庚平');
+  conv('明元去', '明合元去');
+  conv('幫魂上', '幫合魂上');
+
+  // 重紐：其他
+  conv('並A陽上', '並合陽上');
+  conv('影開B蒸入', '影開蒸入');
+  conv('溪B幽平', '溪開幽平');
+}
+
 test('poem', t => {
   const [conv] = test適配(t, 適配分析體系('poem'), 適配分析體系('poem', { 嚴格: true }));
 
-  conv('幫凡入', '幫合凡入');
+  poemYtenxCommon(conv);
+
   conv('定開脂去', '定開A脂去');
+
+  // 呼：中立韻
+  conv('幫三東平', '幫合三東平');
+  conv('心冬去', '心合冬去');
+  // 呼：灰咍嚴凡
+  conv('並咍上', '並合灰上');
+
+  // 重紐：重紐韻其他聲母
+  conv('知合仙上', '知合B仙上');
+  conv('來侵平', '來A侵平');
+
+  // 重紐：清韻
+  conv('知開清平', '知開B清平');
+  conv('幫B清入', '幫開B清入');
+
+  // 類隔：匣云
+  conv('匣開A眞平', '云開A眞平');
 });
 
 test('ytenx', t => {
   const [conv] = test適配(t, 適配分析體系('ytenx'), 適配分析體系('ytenx', { 嚴格: true }));
 
-  conv('幫凡入', '幫合凡入');
-  conv('定開脂去', '定開A脂去');
+  poemYtenxCommon(conv);
+
+  conv('定開脂去', '定開脂去');
+
+  // 呼：中立韻
+  conv('幫三東平', '幫開三東平');
+  conv('心冬去', '心開冬去');
+  // 呼：灰咍嚴凡
+  conv('並咍上', '並開咍上');
+
+  // 重紐：清
+  conv('知開B清平', '知開清平');
+  conv('幫開B清入', '幫開三庚入');
+
+  // 重紐
+  conv('來侵平');
+
+  // 類隔：匣云
+  conv('匣開A眞平', '云開眞平');
 });

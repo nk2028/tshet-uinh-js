@@ -88,13 +88,14 @@ type 分析體系參數 = {
   呼_中立韻: false | 'requirePoem' | 'requireYtenx';
   呼_脣音: false | '寒歌開' | 'require切韻' | 'require廣韻';
   呼_輕脣均合口: boolean;
+  呼_灰咍嚴凡對立: boolean;
   重紐_非重紐母: false | 'require';
   重紐_清韻: boolean | 'require';
   重紐_陽蒸幽韻: boolean;
   類隔_端知: boolean | '庚二麻三';
   類隔_章云以日蟹攝平上: true | '三等' | '一四等';
   類隔_精章日二等: boolean | '章組日母';
-  類隔_匣三: boolean;
+  類隔_匣三: boolean | '云A';
   類隔_云非三: 'reject' | boolean;
   類隔_其他: 'reject' | true;
 };
@@ -104,6 +105,7 @@ const PRESETS: { [體系: string]: 分析體系參數 } = {
     呼_中立韻: false,
     呼_脣音: false,
     呼_輕脣均合口: false,
+    呼_灰咍嚴凡對立: false,
     重紐_非重紐母: false,
     重紐_清韻: false,
     重紐_陽蒸幽韻: true,
@@ -118,6 +120,7 @@ const PRESETS: { [體系: string]: 分析體系參數 } = {
     呼_中立韻: false,
     呼_脣音: '寒歌開',
     呼_輕脣均合口: false,
+    呼_灰咍嚴凡對立: true,
     重紐_非重紐母: false,
     重紐_清韻: true,
     重紐_陽蒸幽韻: true,
@@ -132,13 +135,14 @@ const PRESETS: { [體系: string]: 分析體系參數 } = {
     呼_中立韻: 'requirePoem',
     呼_脣音: 'require切韻',
     呼_輕脣均合口: true,
+    呼_灰咍嚴凡對立: false,
     重紐_非重紐母: 'require',
     重紐_清韻: 'require',
     重紐_陽蒸幽韻: false,
     類隔_端知: false,
     類隔_章云以日蟹攝平上: '一四等',
     類隔_精章日二等: '章組日母',
-    類隔_匣三: false,
+    類隔_匣三: '云A',
     類隔_云非三: false,
     類隔_其他: true,
   },
@@ -146,7 +150,8 @@ const PRESETS: { [體系: string]: 分析體系參數 } = {
     呼_中立韻: 'requireYtenx',
     呼_脣音: 'require廣韻',
     呼_輕脣均合口: false,
-    重紐_非重紐母: 'require',
+    呼_灰咍嚴凡對立: true,
+    重紐_非重紐母: false,
     重紐_清韻: false,
     重紐_陽蒸幽韻: false,
     類隔_端知: true,
@@ -166,6 +171,7 @@ PRESETS.v1 = Object.assign({}, PRESETS.poem, {
   呼_中立韻: false,
   呼_脣音: false,
   重紐_非重紐母: false,
+  類隔_匣三: false,
 });
 
 function isRequire(option: null | boolean | string): boolean | string {
@@ -309,8 +315,8 @@ export function 適配分析體系(分析體系 = 'v2', 選項?: 分析體系選
       if (!參數.類隔_精章日二等 || (參數.類隔_精章日二等 === '章組日母' && is`精組`)) {
         調整({ 母: 齒音二等到莊組孃母[地位.母] }, '齒音類隔');
       }
-    } else if (is`匣母 三等`) {
-      !參數.類隔_匣三 && 調整({ 母: '云', 重紐: null }, 'unexpected 匣母三等');
+    } else if (參數.類隔_匣三 !== true && is`匣母 三等`) {
+      調整({ 母: '云', 重紐: 參數.類隔_匣三 === '云A' ? 'A' : null }, 'unexpected 匣母三等');
     }
     // 這裡前後分離，因為前面蟹攝調整可能會改變云母所在等
     if (is`云母 非 三等`) {
@@ -327,12 +333,14 @@ export function 適配分析體系(分析體系 = 'v2', 選項?: 分析體系選
     // 呼
 
     // 灰咍嚴凡
-    const draft: Parameters<音韻地位['調整']>[0] = 地位.判斷([
-      ['咍韻 脣音', { 韻: '灰' }],
-      ['凡韻 非 脣音', { 韻: '嚴', 呼: '開' }],
-      ['嚴韻 脣音', { 韻: '凡', 呼: null }],
-    ]);
-    draft && 調整(draft, () => `unexpected ${地位.韻}韻 with ${地位.母}母`);
+    if (!參數.呼_灰咍嚴凡對立) {
+      const draft: Parameters<音韻地位['調整']>[0] = 地位.判斷([
+        ['咍韻 脣音', { 韻: '灰' }],
+        ['凡韻 非 脣音', { 韻: '嚴', 呼: '開' }],
+        ['嚴韻 脣音', { 韻: '凡', 呼: null }],
+      ]);
+      draft && 調整(draft, () => `unexpected ${地位.韻}韻 with ${地位.母}母`);
+    }
 
     // 中立韻
     if (isRequire(參數.呼_中立韻) && 開合中立的韻.includes(地位.韻)) {

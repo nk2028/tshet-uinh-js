@@ -15,6 +15,6 @@ yarn.lock
 /docs
 
 /prepare/data.csv
+/prepare/v2.csv
 
-/src/lib/資料.ts
-/src/lib/特殊反切.ts
+/src/data/資料.ts

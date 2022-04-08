@@ -1,6 +1,6 @@
 import { 母到清濁, 母到組, 母到音, 韻到攝 } from './拓展音韻屬性';
 import 特殊反切 from './特殊反切';
-import { 必為合口的韻, 必為開口的韻, 重紐母, 重紐韻, 開合中立的韻, 開合皆有的韻 } from './聲韻搭配';
+import { 必為合口的韻, 必為開口的韻, 重紐母, 重紐韻, 開合中立的韻 } from './聲韻搭配';
 import { m字頭2音韻編碼解釋, m音韻編碼2反切, m音韻編碼2字頭解釋 } from './解析資料';
 
 // For encoder
@@ -366,7 +366,9 @@ export class 音韻地位 {
   get 最簡描述(): string {
     const { 母, 重紐, 韻, 聲 } = this;
     let { 呼, 等 } = this;
-    if (!開合皆有的韻.includes(韻)) 呼 = null;
+    if ((呼 === '開' && 必為開口的韻.includes(韻)) || (呼 === '合' && 必為合口的韻.includes(韻))) {
+      呼 = null;
+    }
     if (![...一三等韻, ...二三等韻].includes(韻)) 等 = null;
     return 母 + (呼 || '') + (等 || '') + (重紐 || '') + 韻 + 聲;
   }

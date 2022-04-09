@@ -21,7 +21,7 @@ export const 開合中立的韻 = [...'東冬鍾江虞模尤幽'];
  * @example
  * ```typescript
  * > const { 重紐母, 重紐韻, 分開合韻, 合口韻 } = Qieyun.表達式;
- * > const 地位 = Qieyun.音韻地位.from描述('群合文平');
+ * > const 地位 = Qieyun.音韻地位.from描述('羣合文平');
  * > 地位.屬於`${重紐母} ${分開合韻} 非 ${重紐韻} 非 ${開合中立韻}`
  * true
  * ```

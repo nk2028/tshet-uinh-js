@@ -1,6 +1,7 @@
 import csv
 import os
 import re
+import sys
 # import QieyunEncoder
 
 # NOTE QieyunEncoder 也需要大量工作以支持放寬了的音韻地位，在其準備好之前暫時造下輪子 XD
@@ -62,67 +63,47 @@ def 描述2編碼(描述: str) -> str:
     return 編碼表[母編碼] + 編碼表[韻編碼] + 編碼表[其他編碼]
 
 
-# TODO v2.csv 資料直接併入 data.csv（需在 qieyun-data 操作
 def fetch_data():
     if not os.path.exists('prepare/data.csv'):
         status = os.system(
-            'curl -LsSo prepare/data.csv https://raw.githubusercontent.com/nk2028/qieyun-data/9675d03/%E9%9F%BB%E6%9B%B8/%E5%BB%A3%E9%9F%BB.csv')
+            'curl -LsSo prepare/data.csv https://raw.githubusercontent.com/nk2028/qieyun-data/f42289f/%E9%9F%BB%E6%9B%B8/%E5%BB%A3%E9%9F%BB.csv')
         assert status == 0
-    if not os.path.exists('prepare/v2.csv'):
-        raise NotImplementedError('Bonvolu mane prepari: prepare/v2.csv')
 
 
+# debug 用
 def list_地位編碼():
     fetch_data()
-    with open('prepare/v2.csv') as fin, open('prepare/test.txt', 'w') as fout:
+    all_codes = {}
+    with open('prepare/data.csv') as fin:
         for row in csv.DictReader(fin):
-            描述s = row['最簡描述']
-            if 描述s == '(deleted)':
+            描述 = row['最簡描述']
+            if 描述 == '' or 描述 in all_codes:
                 continue
-            for 描述 in 描述s.split('/'):
-                編碼 = 描述2編碼(描述)
-                print(描述, 編碼, file=fout)
+            編碼 = 描述2編碼(描述)
+            all_codes[描述] = 編碼
+    with open('prepare/test.txt', 'w', newline='') as fout:
+        for 描述, 編碼 in all_codes.items():
+            print(描述, 編碼, file=fout)
 
 
 def main():
     fetch_data()
 
-    v2_dict = {}
-    with open('prepare/v2.csv') as fin:
-        next(fin)
-        for row in csv.reader(fin):
-            v2_dict[row[0]] = row[1:]
-
-    use第二地位 = set()
     d = {}
     with open('prepare/data.csv') as fin:
         next(fin)
         for row in csv.reader(fin):
-            小韻號, _, _, _, _, 字頭覈校前, 字頭, 釋義, 釋義補充, _ = row
-            最簡描述, v2字頭, 反切 = v2_dict[小韻號]
-            if 最簡描述 == '(deleted)':
+            小韻號, _, 最簡描述, 反切覈校前, 反切, 字頭覈校前, 字頭, 釋義, 釋義補充, _ = row
+            if 最簡描述 == '':
                 continue
+            反切 = 反切 or 反切覈校前 or '@@'  # placeholder
             字頭 = 字頭 or 字頭覈校前
             釋義 = 釋義 if not 釋義補充 else f'{釋義}（{釋義補充}）'
-            反切 = 反切 or '@@'  # placeholder
-
-            if '/' in v2字頭:
-                最簡描述 = 最簡描述.split('/')
-                if 小韻號 in use第二地位:
-                    最簡描述 = 最簡描述[1]
-                else:
-                    v2字頭 = v2字頭.split('/')
-                    if 字頭 == v2字頭[1]:
-                        use第二地位.add(小韻號)
-                        最簡描述 = 最簡描述[1]
-                    else:
-                        最簡描述 = 最簡描述[0]
-
             編碼 = 描述2編碼(最簡描述)
             d.setdefault(編碼, []).append((字頭, 反切, 釋義))
 
     os.makedirs('src/data', exist_ok=True)
-    with open('src/data/資料.ts', 'w') as fout:
+    with open('src/data/資料.ts', 'w', newline='') as fout:
         print("export default '\\", file=fout)
         for 編碼, 條目 in d.items():
             print(編碼,
@@ -132,55 +113,7 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
-
-
-def old():
-    if not os.path.exists('prepare/data.csv'):
-        os.system('curl -LsSo prepare/data.csv https://raw.githubusercontent.com/nk2028/qieyun-data/9675d03/%E9%9F%BB%E6%9B%B8/%E5%BB%A3%E9%9F%BB.csv')
-
-    d = {}
-    特殊反切 = []
-
-    with open('prepare/data.csv') as f:
-        next(f)  # skip header
-        for line in f:
-            _, _, 最簡描述, 反切覈校前, 反切, 字頭覈校前, 字頭, 釋義, 釋義補充, _ = line.rstrip(
-                '\n').split(',')
-
-            反切 = 反切 or 反切覈校前
-            字頭 = 字頭 or 字頭覈校前
-            釋義 = 釋義 if not 釋義補充 else f'{釋義}（{釋義補充}）'
-
-            # patch
-            if 反切 in ('姊規', '扶來', '昨閑', '莫亥', '莫代', '乙白'):
-                continue  # strange 反切, and only corresponds to rare characters
-            if 反切 == '去其' and 字頭 == '抾':
-                continue  # 抾，去其切，又丘之切, but the two fanqie imply the same phonological position
-
-            # 編碼 = QieyunEncoder.音韻地位.from描述(最簡描述).編碼
-            編碼 = ''
-
-            if 反切 == '':
-                反切 = '@@'  # placeholder
-
-            res = d.get(編碼)
-            if res is None:
-                d[編碼] = (反切, [(字頭, 釋義)])
-            else:
-                原反切, 字頭釋義 = res
-                if 反切 != 原反切:
-                    特殊反切.append((編碼, 字頭, 反切))
-                字頭釋義.append((字頭, 釋義))
-
-    with open('src/lib/資料.ts', 'w') as f:
-        print('export default \'\\', file=f)
-        for 編碼, (反切, 字頭釋義) in d.items():
-            print(編碼 + 反切 + '|'.join(字頭 + 釋義 for 字頭, 釋義 in 字頭釋義) + '\\', file=f)
-        print('\';', file=f)
-
-    with open('src/lib/特殊反切.ts', 'w') as f:
-        print('export default {', file=f)
-        for 編碼, 字頭, 反切 in 特殊反切:
-            print("  '%s': '%s'," % (編碼 + 字頭, 反切), file=f)
-        print('};', file=f)
+    if len(sys.argv) == 2 and sys.argv[1] == 'test':
+        list_地位編碼()
+    else:
+        main()

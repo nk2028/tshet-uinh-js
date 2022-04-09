@@ -93,21 +93,21 @@ def main():
     with open('prepare/data.csv') as fin:
         next(fin)
         for row in csv.reader(fin):
-            小韻號, _, 最簡描述, 反切覈校前, 反切, 字頭覈校前, 字頭, 釋義, 釋義補充, _ = row
+            _, 韻部原貌, 最簡描述, 反切覈校前, 反切, 字頭覈校前, 字頭, 釋義, 釋義補充, _ = row
             if 最簡描述 == '':
                 continue
             反切 = 反切 or 反切覈校前 or '@@'  # placeholder
             字頭 = 字頭 or 字頭覈校前
             釋義 = 釋義 if not 釋義補充 else f'{釋義}（{釋義補充}）'
             編碼 = 描述2編碼(最簡描述)
-            d.setdefault(編碼, []).append((字頭, 反切, 釋義))
+            d.setdefault(編碼 + 反切, []).append((字頭, 韻部原貌, 釋義))
 
     os.makedirs('src/data', exist_ok=True)
     with open('src/data/資料.ts', 'w', newline='') as fout:
         print("export default '\\", file=fout)
-        for 編碼, 條目 in d.items():
-            print(編碼,
-                  '|'.join(字頭 + 反切 + 釋義 for 字頭, 反切, 釋義 in 條目),
+        for 編碼反切, 條目 in d.items():
+            print(編碼反切,
+                  '|'.join(字頭 + 韻部原貌 + 釋義 for 字頭, 韻部原貌, 釋義 in 條目),
                   '\\', sep='', file=fout)
         print("';", file=fout)
 

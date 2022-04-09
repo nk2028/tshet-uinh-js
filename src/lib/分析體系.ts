@@ -172,12 +172,6 @@ PRESETS.v2lenient = Object.assign({}, PRESETS.v2, {
   類隔_云非三: true,
   類隔_其他: true,
 });
-PRESETS.v1 = Object.assign({}, PRESETS.poem, {
-  呼_中立韻: false,
-  呼_脣音: false,
-  重紐_非重紐母: false,
-  類隔_匣三: false,
-});
 
 function isRequire(option: null | boolean | string): boolean | string {
   return typeof option === 'string' && option.startsWith('require');

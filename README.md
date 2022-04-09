@@ -4,7 +4,7 @@
 
 A JavaScript library for the Qieyun phonological system
 
-![library overview](https://raw.githubusercontent.com/nk2028/qieyun-js/41e5669/demo/qieyun.png)
+![library overview](https://raw.githubusercontent.com/nk2028/qieyun-js/d769a3d/demo/qieyun.png)
 
 ## Usage
 

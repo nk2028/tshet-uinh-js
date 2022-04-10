@@ -17,6 +17,12 @@ export type 推導函數<T> = {
 
 const 適配poem = 適配分析體系('poem');
 
+/**
+ * 將原始推導方案函數包裝成易於使用的函數，並分析其所提供推導選項等。
+ *
+ * @param rawFunction 推導方案原始函數。
+ * @returns 包裝後的函數，並含有選項等信息。
+ */
 export function 建立<T>(rawFunction: 原始推導函數<T>): 推導函數<T> {
   let rawParameters: 選項列表;
   try {
@@ -61,14 +67,18 @@ function processParameters(parameters: 選項列表): [選項列表, 推導選�
     } else if (v === undefined || v === null) {
       continue;
     }
-    if (['boolean', 'number', 'string'].includes(typeof v)) {
+    if (!Array.isArray(v)) {
       opts[k] = v;
       params.push([k, v]);
-    } else if (Array.isArray(v) && v.length > 1) {
-      const idxRaw = Number(v[0]);
-      const idx = Math.min(v.length - 1, Math.max(1, Number.isInteger(idxRaw) ? idxRaw : 1));
-      opts[k] = v[idx];
-      params.push([k, [idx, ...v.slice(1)]]);
+    } else if (v.length > 1) {
+      if (v.slice(1).includes(v[0])) {
+        opts[k] = v[0];
+      } else if (typeof v[0] === 'number' && Number.isInteger(v[0]) && v[0] >= 1 && v[0] < v.length) {
+        opts[k] = v[v[0]];
+      } else {
+        opts[k] = v[1];
+      }
+      params.push([k, [opts[k], ...v.slice(1)]]);
     }
   }
   return [params, opts, isLegacy];

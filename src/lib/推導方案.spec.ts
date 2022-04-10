@@ -9,15 +9,20 @@ const mockParameters: 推導方案.選項列表 = [
   ['p2', false],
   ['p3', 'orz'],
   ['p4', 42],
-  ['p5', [1, 'haha', true, 'hehe']],
+  ['p5', [3, 'haha', true, 'hehe']],
+  ['p6', ['a2', 'a1', 'a2', 'a3']],
 ];
+
+const mockProcessed: 推導方案.選項列表 = mockParameters.slice(1);
+mockProcessed[4] = ['p5', ['hehe', 'haha', true, 'hehe']];
 
 const mockOptions = {
   p1: true,
   p2: false,
   p3: 'orz',
   p4: 42,
-  p5: 'haha',
+  p5: 'hehe',
+  p6: 'a2',
 };
 
 // XXX Ĉu estas pli bona maniero por difini tiajn funkciojn?
@@ -44,7 +49,7 @@ test('推導方案 API', t => {
 
   const runFor = (derive, isLegacy, expected地位) => {
     t.is(derive.isLegacy, isLegacy);
-    t.deepEqual(derive.parameters, mockParameters.slice(1));
+    t.deepEqual(derive.parameters, mockProcessed);
     t.deepEqual(derive.defaultOptions, mockOptions);
     t.deepEqual(JSON.parse(derive(辟小韻, '辟')), { 地位: expected地位, 字頭: '辟', 選項: mockOptions });
     t.like(JSON.parse(derive(辟小韻, '辟', { p5: -1 })), { 選項: { ...mockOptions, p5: -1 } });

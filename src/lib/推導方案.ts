@@ -68,7 +68,7 @@ function processParameters(parameters: 選項列表): [選項列表, 推導選�
       const idxRaw = Number(v[0]);
       const idx = Math.min(v.length - 1, Math.max(1, Number.isInteger(idxRaw) ? idxRaw : 1));
       opts[k] = v[idx];
-      params.push([idx, ...v.slice(1)]);
+      params.push([k, [idx, ...v.slice(1)]]);
     }
   }
   return [params, opts, isLegacy];

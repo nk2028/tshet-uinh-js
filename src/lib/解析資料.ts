@@ -54,9 +54,9 @@ export function* iter音韻地位(): IterableIterator<音韻地位> {
  * 若字頭不存在，則回傳空陣列。
  * @example
  * ```typescript
- * > Qieyun.defaultData.query字頭('結');
+ * > Qieyun.資料.query字頭('結');
  * [ { 音韻地位: 音韻地位 { '見開四先入' }, 韻部原貌: '屑', 反切: '古屑', 解釋: '締也古屑切十五' } ]
- * > Qieyun.defaultData.query字頭('冷');
+ * > Qieyun.資料.query字頭('冷');
  * [
  *   { 音韻地位: 音韻地位 { '來開四青平' }, 韻部原貌: '青', 反切: '郎丁', 解釋: '冷凙吳人云冰凌又力頂切' },
  *   { 音韻地位: 音韻地位 { '來開二庚上' }, 韻部原貌: '梗', 反切: '魯打', 解釋: '寒也魯打切又魯頂切一' },
@@ -75,7 +75,7 @@ export function query字頭(字頭: string): 字頭檢索結果[] {
  * @example
  * ```typescript
  * > 地位 = Qieyun.音韻地位.from描述('影開二銜去');
- * > Qieyun.defaultData.query音韻地位(地位);
+ * > Qieyun.資料.query音韻地位(地位);
  * [ { 字頭: '𪒠', 韻部原貌: '鑑', 反切: null, 解釋: '叫呼仿佛𪒠然自得音黯去聲一' } ]
  * ```
  */

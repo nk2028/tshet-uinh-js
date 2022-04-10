@@ -445,6 +445,7 @@ export function 適配分析體系(分析體系 = 'v2', 選項?: 適配分析體
 適配分析體系.v2lenient = 適配分析體系('v2lenient');
 
 適配分析體系.v2ext = 適配分析體系('v2ext');
+適配分析體系.v2extStrict = 適配分析體系('v2extStrict');
 適配分析體系.v2extFromYtenx = 適配分析體系('v2ext', { 原地位脣音寒歌默認開合: '合' });
 適配分析體系.v2extFromPoem = 適配分析體系('v2ext', { 原地位脣音寒歌默認開合: '開' });
 

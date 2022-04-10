@@ -1,5 +1,5 @@
 import 適配分析體系 from './分析體系';
-import { 表達式 } from './聲韻搭配';
+import * as 表達式 from './常用表達式';
 import { 音韻地位 } from './音韻地位';
 
 export type 選項列表 = [string, unknown][];

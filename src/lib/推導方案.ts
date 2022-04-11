@@ -8,10 +8,20 @@ export type 原始推導函數<T> = {
   (): 選項列表;
   (地位: 音韻地位, 字頭: string | null, 選項: 推導選項): T;
 };
+
+/**
+ * 推導函數，由 [[`建立`]] 產生。
+ *
+ * @param 地位 欲推導的地位，**必須為 v2ext 體系的地位**，若地位來自其他資料，可用 [[`適配分析體系`]] 預處理。
+ * @param 字頭 推導時可提供字頭作為輔助資訊
+ * @param 選項 推導選項，未指定的 field 會以預設值填充
+ */
 export type 推導函數<T> = {
   (地位: 音韻地位, 字頭?: string | null, 選項?: 推導選項): T;
   isLegacy: boolean;
+  /** 該推導方案支持的選項，格式詳見 qieyun-autoderiver 及 qieyun-examples 說明 */
   parameters: 選項列表;
+  /** 該推導方案預設選項 */
   defaultOptions: 推導選項;
 };
 
@@ -27,6 +37,9 @@ export function 建立<T>(rawFunction: 原始推導函數<T>): 推導函數<T> {
   let rawParameters: 選項列表;
   try {
     rawParameters = rawFunction();
+    if (!Array.isArray(rawParameters)) {
+      rawParameters = [];
+    }
   } catch {
     rawParameters = [];
   }

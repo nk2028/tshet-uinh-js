@@ -156,6 +156,7 @@ function poemYtenxCommon(conv) {
   conv('明三庚平', '明開三庚平');
   conv('明元去', '明合元去');
   conv('幫魂上', '幫合魂上');
+  conv('並三歌去', '並合三歌去');
 
   // 重紐：其他
   conv('並A陽上', '並合陽上');

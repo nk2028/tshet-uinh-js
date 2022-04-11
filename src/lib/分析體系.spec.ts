@@ -26,8 +26,9 @@ function test適配(t: ExecutionContext, 適配: (地位: 音韻地位) => 音�
 
 test('v2ext', t => {
   const [conv, reject] = test適配(t, 適配分析體系.v2ext, 適配分析體系('v2ext', { 嚴格: true }));
-  const [conv合] = test適配(t, 適配分析體系.v2extFromYtenx);
   const [conv開, reject開] = test適配(t, 適配分析體系.v2extFromPoem);
+
+  t.throws(() => 適配分析體系('v2ext', { 嚴格: true, 原地位脣音寒歌默認開合: '開' }));
 
   conv('幫凡入'); // 法
   conv('定開脂去'); // 地
@@ -44,10 +45,8 @@ test('v2ext', t => {
   conv('疑合虞平', '疑虞平'); // 虞（韻典、字音表）
   conv('幫合三東平', '幫三東平'); // 風（字音表）
   // 脣音寒歌韻
-  reject('明合寒入'); // 不指定轉換前體系時不可處理
-  reject('明開寒入');
-  conv合('明合寒入', '明寒入'); // 末（韻典）
-  conv合('明開寒入'); // 䔾（韻典）
+  conv('明合寒入', '明寒入'); // 末（韻典）
+  conv('明開寒入'); // 䔾（韻典）
   conv開('明開寒入', '明寒入'); // 末（字音表）【注意該項與前項轉換前均為「明開寒入」但須作區分
   reject開('明合寒入'); // 字音表無該類地位
 

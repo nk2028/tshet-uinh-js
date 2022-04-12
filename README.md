@@ -21,7 +21,7 @@ $ npm install qieyun
 ```
 
 ```javascript
-> import Qieyun from 'qieyun';
+> import * as Qieyun from 'qieyun';
 ```
 
 ## Documentation 

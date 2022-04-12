@@ -19,7 +19,7 @@ jobs:
         node-version: '14'
         registry-url: https://registry.npmjs.org/
     - name: Install dependencies
-      run: npm install
+      run: npm ci
     - name: Prepare
       run: python prepare/main.py
     - name: Test

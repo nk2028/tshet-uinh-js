@@ -1,6 +1,6 @@
 {
   "name": "qieyun",
-  "version": "0.13.0-beta.1",
+  "version": "0.13.0-beta.2",
   "description": "A JavaScript library for the Qieyun phonological system",
   "main": "index.js",
   "types": "index.d.ts",

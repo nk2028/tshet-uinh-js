@@ -62,11 +62,15 @@ function 適配v2ext(地位: 音韻地位, 嚴格: boolean, 原地位脣音寒�
   if (重紐母.includes(地位.母)) {
     // 鈍音
     // 重紐八韻：不需處理
-    if (is`清幽韻`) {
-      is`重紐A類` && 調整({ 重紐: null }, `${地位.韻}韻 does not need A類`);
-    } else if (is`陽蒸韻`) {
-      if (地位.重紐 && !is`陽韻 脣音 重紐A類 或 蒸韻 重紐B類`) {
-        reject(`unexpected ${地位.韻}韻${地位.重紐}類`);
+    if (is`陽韻`) {
+      if (地位.重紐 && !is`脣音 重紐A類`) {
+        reject(`unexpected 陽韻${地位.母}母${地位.重紐}類`);
+      }
+    } else if (is`清蒸幽韻`) {
+      if (is`重紐A類`) {
+        調整({ 重紐: null }, `${地位.韻}韻 does not need A類`);
+      } else if (is`重紐B類 蒸幽韻 (脣音 或 合口)`) {
+        調整({ 重紐: null }, `${地位.韻}韻 (脣音/合口) does not need B類`);
       }
     } else if (地位.重紐 && !重紐韻.includes(地位.韻)) {
       reject('unexpected 重紐');

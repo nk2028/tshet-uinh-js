@@ -49,6 +49,9 @@ test('v2ext', t => {
   conv('明開寒入'); // 䔾（韻典）
   conv開('明開寒入', '明寒入'); // 末（字音表）【注意該項與前項轉換前均為「明開寒入」但須作區分
   reject開('明合寒入'); // 字音表無該類地位
+  // 清韻合口脣音（全字表「清B」）
+  conv('幫開清入', '幫清入'); // 辟（韻典、字音表、全字表）
+  conv('幫合清入', '幫B清入'); // 碧（全字表）
 
   // 重紐：重紐韻其他聲母
   conv('以合A脂平', '以合脂平'); // 唯（字音表、全字表）
@@ -151,7 +154,7 @@ test('用內置資料測試適配分析體系', t => {
   }
 });
 
-function poemYtenxCommon(conv) {
+function poemYtenxKyonhCommon(conv) {
   conv('幫凡入', '幫合凡入');
 
   // 呼：中立韻
@@ -180,7 +183,7 @@ function poemYtenxCommon(conv) {
 test('poem', t => {
   const [conv] = test適配(t, 適配分析體系('poem'), 適配分析體系('poem', { 嚴格: true }));
 
-  poemYtenxCommon(conv);
+  poemYtenxKyonhCommon(conv);
 
   conv('定開脂去', '定開A脂去');
 
@@ -191,9 +194,12 @@ test('poem', t => {
   conv('並咍上', '並合灰上');
 
   // 重紐：重紐韻其他聲母
+  conv('知合眞平', '知合B眞平');
+  conv('云合眞平', '云合B眞平');
   conv('知合仙上', '知合B仙上');
   conv('來侵平', '來A侵平');
   // 重紐：清韻
+  conv('明清平', '明開A清平');
   conv('知開清平', '知開B清平');
   conv('幫B清入', '幫開B清入');
 
@@ -210,21 +216,13 @@ test('poem', t => {
   conv('莊開欣上');
 });
 
-test('ytenx', t => {
-  const [conv] = test適配(t, 適配分析體系('ytenx'), 適配分析體系('ytenx', { 嚴格: true }));
-
-  poemYtenxCommon(conv);
-
-  conv('定開脂去', '定開脂去');
-
+function ytenxKyonhCommon(conv) {
   // 呼：中立韻
   conv('幫三東平', '幫開三東平');
   conv('心冬去', '心開冬去');
   // 呼：灰咍嚴凡
   conv('並咍上', '並開咍上');
 
-  // 重紐：重紐韻其他聲母
-  conv('來侵平');
   // 重紐：清韻
   conv('知開B清平', '知開清平');
   conv('幫開B清入', '幫開三庚入');
@@ -236,8 +234,47 @@ test('ytenx', t => {
   // 齒音
   conv('清合夬去');
   // 匣云
-  conv('匣開A眞平', '云開眞平');
   conv('云灰上');
   // 莊組臻攝
   conv('莊開欣上', '莊開臻上');
+}
+
+test('ytenx', t => {
+  const [conv] = test適配(t, 適配分析體系('ytenx'), 適配分析體系('ytenx', { 嚴格: true }));
+
+  poemYtenxKyonhCommon(conv);
+  ytenxKyonhCommon(conv);
+
+  conv('定開脂去', '定開脂去');
+
+  // 重紐：重紐韻其他聲母
+  conv('知合眞平');
+  conv('云合眞平');
+  conv('知合仙上', '知合仙上');
+  conv('來侵平');
+  // 重紐：清韻
+  conv('明清平', '明開A清平');
+
+  // 類隔：匣云
+  conv('匣開A眞平', '云開眞平');
+});
+
+test('kyonh', t => {
+  const [conv] = test適配(t, 適配分析體系('kyonh'), 適配分析體系('kyonh', { 嚴格: true }));
+
+  poemYtenxKyonhCommon(conv);
+  ytenxKyonhCommon(conv);
+
+  conv('定開脂去', '定開A脂去');
+
+  // 重紐：重紐韻其他聲母
+  conv('知合眞平', '知合A眞平');
+  conv('云合眞平', '云合B眞平');
+  conv('知合仙上', '知合B仙上');
+  conv('來侵平', '來A侵平');
+  // 重紐：清韻
+  conv('明清平', '明開清平');
+
+  // 類隔：匣云
+  conv('匣開A眞平', '云開B眞平');
 });

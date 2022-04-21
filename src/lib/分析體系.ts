@@ -40,7 +40,10 @@ function 適配v2ext(地位: 音韻地位, 嚴格: boolean, 原地位脣音寒�
   }
 
   // 呼：脣音、中立韻
-  if (地位.呼 && is`幫組 寒歌韻`) {
+  if (!地位.重紐 && is`幫組 合口 清韻`) {
+    // 清韻合口脣音歸為B類
+    調整({ 呼: null, 重紐: 'B' }, '清韻合口脣音 should be B類');
+  } else if (地位.呼 && is`幫組 寒歌韻`) {
     if (地位.呼 === 原地位脣音寒歌默認開合) {
       調整({ 呼: null }, 'unexpected 呼');
     } else if (is`合口`) {
@@ -96,8 +99,8 @@ type 分析體系參數 = {
   呼_脣音: false | '寒歌開' | 'require切韻' | 'require廣韻';
   呼_輕脣均合口: boolean;
   呼_灰咍嚴凡對立: boolean;
-  重紐_非重紐母: false | 'require';
-  重紐_清韻: boolean | 'require';
+  重紐_非重紐母: false | 'require' | 'require諄A';
+  重紐_清韻: boolean | 'require僅A類' | 'require';
   重紐_陽蒸幽韻: boolean;
   類隔_端知: boolean | '個別';
   類隔_章云以日蟹攝平上: true | '三等' | '一四等';
@@ -163,7 +166,7 @@ const PRESETS: { [體系: string]: 分析體系參數 } = {
     呼_輕脣均合口: false,
     呼_灰咍嚴凡對立: true,
     重紐_非重紐母: false,
-    重紐_清韻: false,
+    重紐_清韻: 'require僅A類',
     重紐_陽蒸幽韻: false,
     類隔_端知: true,
     類隔_章云以日蟹攝平上: '一四等',
@@ -179,8 +182,12 @@ PRESETS.v2lenient = Object.assign({}, PRESETS.v2, {
   類隔_云非三: true,
   類隔_其他: true,
 });
+PRESETS.kyonh = Object.assign({}, PRESETS.ytenx, {
+  重紐_非重紐母: 'require諄A',
+  重紐_清韻: false,
+});
 
-function isRequire(option: null | boolean | string): boolean | string {
+function isRequire(option: null | boolean | string): boolean {
   return typeof option === 'string' && option.startsWith('require');
 }
 
@@ -230,7 +237,7 @@ export type 適配函數 = (地位: 音韻地位) => 音韻地位;
  * 除此以外亦支持以下外界體系（及衍生體系）：
  * * `poem`：poem《廣韻字音表》所用體系
  * * `ytenx`：韻典網所用體系
- *   * `kyonh`（暫緩支持）：早期韻典網所用體系
+ *   * `kyonh`：早期韻典網（及早年《廣韻》字表）所用體系
  * * `raw`：特殊「體系」，指不對音韻地位格式作限制，可用於表達韻書、韻圖資料的粗分析結果等
  *
  * 其中，`v2`、`v2ext`、`v2lenient`、`raw` 四種已經預先創建好，可用 `適配分析體系.v2`、`適配分析體系.v2ext` 等方法直接取得。
@@ -247,9 +254,12 @@ export type 適配函數 = (地位: 音韻地位) => 音韻地位;
  *     * 所有輕脣韻（包括開合中立韻）脣音 poem 均標為「合」
  * * 重紐：
  *   * v2、ytenx 僅對分重紐的聲母標 AB 類
+ *     * ytenx 額外給清韻分重紐聲母標 A 類
  *   * v2(ext) 允許幽、蒸韻 B 類及脣音陽韻 A 類
  *   * kyonh、poem 對重紐八韻所有聲母均標 AB 類
  *     * poem 額外給清韻標 AB 類
+ *     * 知莊組、云母標B，其餘標A，但 kyonh 眞韻合口知莊組例外（《廣韻》在諄韻）
+ *   * v2、kyonh 清韻無 B 類，歸為庚三
  * * 類隔：
  *   * 端知：
  *     * 所有體系均允許「地」
@@ -263,12 +273,12 @@ export type 適配函數 = (地位: 音韻地位) => 音韻地位;
  *   * 云匣母
  *     * v2 認可匣母三等，不認可云母非三等
  *     * ytenx 認可云母非三等，而匣母三等視為混切之云母
- *     * poem 兩者均視為混切，但允許以「云母A類」對立
+ *     * poem 兩者均視為混切，但三等重紐韻允許以「云母A類」對立
  *     * v2ext 則均允許，惟「云母A類」會被正則化為「匣母A類」
  *   * 齒音跨等搭配：
  *     * v2 對精章組、日母二等視為混切之莊組、孃母，不允許其他跨等搭配
  *       * v2lenient 同 v2 但允許其他跨等搭配
- *       * v2 不允許其他是因為該類小韻幾乎均為誤切或訛字，僅可個別考證處理，無法自動正則化；v2lenient 則將其保持原樣
+ *       * v2 不允許其他是因為該類小韻多為誤切、訛字或切語並非出自切韻音系，僅可個別考證處理，無法自動正則化；v2lenient 則將其保持原樣
  *     * poem 認可章組以日母非三等，視精組二等為混切之莊組
  *     * v2ext、ytenx 允許任意搭配
  *   * 莊組眞欣韻開口：
@@ -414,7 +424,7 @@ export function 適配分析體系(分析體系 = 'v2', 選項?: 適配分析體
     // 脣音（非中立韻
     if (isRequire(參數.呼_脣音) && !地位.呼 && is`脣音`) {
       // `!地位.呼` 用於排除中立韻（已處理過了）以及 v2ext 下已經是寒歌開的地位
-      let 呼;
+      let 呼: string;
       if (必為開口的韻.includes(地位.韻)) {
         呼 = '開';
       } else if (必為合口的韻.includes(地位.韻)) {
@@ -437,17 +447,17 @@ export function 適配分析體系(分析體系 = 'v2', 選項?: 適配分析體
 
     if (is`清韻`) {
       if (!地位.重紐) {
-        if (參數.重紐_清韻 === 'require' && (參數.重紐_非重紐母 === 'require' || 重紐母.includes(地位.母))) {
-          調整({ 重紐: is`知莊組 或 云母` ? 'B' : 'A' }, '清韻 needs 重紐');
+        if (isRequire(參數.重紐_清韻) && (isRequire(參數.重紐_非重紐母) || 重紐母.includes(地位.母))) {
+          調整({ 重紐: 參數.重紐_清韻 !== 'require僅A類' && is`知莊組 或 云母` ? 'B' : 'A' }, '清韻 needs 重紐');
         }
-      } else {
-        // B類
-        !參數.重紐_清韻 && 調整({ 韻: '庚', 重紐: null }, '清韻B類 should be 庚韻三等');
+      } else if (!參數.重紐_清韻 || 參數.重紐_清韻 === 'require僅A類') {
+        // v2ext 清韻重紐（若有）僅重紐母B類
+        調整({ 韻: '庚', 重紐: null }, '清韻B類 should be 庚韻三等');
       }
     } else if (is`陽蒸幽韻`) {
       !參數.重紐_陽蒸幽韻 && 調整({ 重紐: null }, '重紐 should be null');
-    } else if (參數.重紐_非重紐母 === 'require' && !地位.重紐 && 重紐韻.includes(地位.韻)) {
-      const 重紐 = is`知莊組 或 云母` ? 'B' : 'A';
+    } else if (isRequire(參數.重紐_非重紐母) && !地位.重紐 && 重紐韻.includes(地位.韻)) {
+      const 重紐 = is`云母` || (is`知莊組` && !(參數.重紐_非重紐母 === 'require諄A' && is`眞韻 合口`)) ? 'B' : 'A';
       調整({ 重紐 }, `重紐 should be ${重紐}`);
     }
 

@@ -1,4 +1,4 @@
-export const 母到清濁 = {
+export const 母到清濁: Record<string, string> = {
   幫: '全清',
   端: '全清', 知: '全清',
   精: '全清', 心: '全清', 莊: '全清', 生: '全清', 章: '全清', 書: '全清',
@@ -16,7 +16,7 @@ export const 母到清濁 = {
   疑: '次濁', 云: '次濁', 以: '次濁',
 };
 
-export const 母到組 = {
+export const 母到組: Record<string, string | null> = {
   幫: '幫', 滂: '幫', 並: '幫', 明: '幫',
   端: '端', 透: '端', 定: '端', 泥: '端',
   知: '知', 徹: '知', 澄: '知', 孃: '知',
@@ -28,7 +28,7 @@ export const 母到組 = {
   來: null, 日: null, 以: null,
 };
 
-export const 母到音 = {
+export const 母到音: Record<string, string> = {
   幫: '脣', 滂: '脣', 並: '脣', 明: '脣',
   端: '舌', 透: '舌', 定: '舌', 泥: '舌',
   知: '舌', 徹: '舌', 澄: '舌', 孃: '舌',
@@ -42,7 +42,7 @@ export const 母到音 = {
   以: '喉',
 };
 
-export const 韻到攝 = {
+export const 韻到攝: Record<string, string> = {
   東: '通', 冬: '通', 鍾: '通',
   江: '江',
   支: '止', 脂: '止', 之: '止', 微: '止',

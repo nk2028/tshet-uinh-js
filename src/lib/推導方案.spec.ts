@@ -28,7 +28,7 @@ const mockOptions = {
 // XXX Ĉu estas pli bona maniero por difini tiajn funkciojn?
 function mock(): 推導方案.選項列表;
 function mock(地位: 音韻地位, 字頭: string | null, 選項: 推導方案.推導選項): string;
-function mock(地位?, 字頭?, 選項?) {
+function mock(地位?: 音韻地位, 字頭?: string | null, 選項?: 推導方案.推導選項) {
   if (!地位) {
     return mockParameters.slice(1);
   }
@@ -37,7 +37,7 @@ function mock(地位?, 字頭?, 選項?) {
 
 function mockLegacy(): 推導方案.選項列表;
 function mockLegacy(地位: 音韻地位, 字頭: string | null, 選項: 推導方案.推導選項): string;
-function mockLegacy(地位?, 字頭?, 選項?) {
+function mockLegacy(地位?: 音韻地位, 字頭?: string | null, 選項?: 推導方案.推導選項) {
   if (!地位) {
     return mockParameters;
   }
@@ -47,7 +47,7 @@ function mockLegacy(地位?, 字頭?, 選項?) {
 test('推導方案 API', t => {
   const 辟小韻 = 音韻地位.from描述('幫清入');
 
-  const runFor = (derive, isLegacy, expected地位) => {
+  const runFor = (derive: 推導方案.推導函數<string>, isLegacy: boolean, expected地位: string) => {
     t.is(derive.isLegacy, isLegacy);
     t.deepEqual(derive.parameters, mockProcessed);
     t.deepEqual(derive.defaultOptions, mockOptions);

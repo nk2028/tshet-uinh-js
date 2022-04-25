@@ -54,7 +54,9 @@ function assert(value: unknown, error: string): asserts value {
 }
 
 type Falsy = '' | 0 | false | null | undefined;
-type Rules<T> = [unknown, T | Rules<T>][];
+export type 規則<T = unknown> = [unknown, T | 規則<T>][];
+
+export type 音韻屬性 = Partial<Pick<音韻地位, '母' | '呼' | '等' | '重紐' | '韻' | '聲'>>;
 
 /**
  * 《切韻》音系音韻地位。
@@ -107,7 +109,7 @@ export class 音韻地位 {
    * '羣'
    * ```
    */
-  母: string;
+  readonly 母: string;
 
   /**
    * 呼
@@ -121,7 +123,7 @@ export class 音韻地位 {
    * '開'
    * ```
    */
-  呼: string | null;
+  readonly 呼: string | null;
 
   /**
    * 等
@@ -135,7 +137,7 @@ export class 音韻地位 {
    * '三'
    * ```
    */
-  等: string;
+  readonly 等: string;
 
   /**
    * 重紐
@@ -149,7 +151,7 @@ export class 音韻地位 {
    * 'A'
    * ```
    */
-  重紐: string | null;
+  readonly 重紐: string | null;
 
   /**
    * 韻（舉平以賅上去入）
@@ -163,7 +165,7 @@ export class 音韻地位 {
    * '支'
    * ```
    */
-  韻: string;
+  readonly 韻: string;
 
   /**
    * 聲調
@@ -177,7 +179,7 @@ export class 音韻地位 {
    * '平'
    * ```
    */
-  聲: string;
+  readonly 聲: string;
 
   /**
    * 初始化音韻地位物件。
@@ -204,6 +206,9 @@ export class 音韻地位 {
     this.重紐 = 重紐;
     this.韻 = 韻;
     this.聲 = 聲;
+    Object.getOwnPropertyNames(Object.getPrototypeOf(this)).forEach(function (this: Record<string, CallableFunction>, key) {
+      typeof this[key] === 'function' && (this[key] = this[key].bind(this));
+    }, this);
   }
 
   /**
@@ -401,7 +406,7 @@ export class 音韻地位 {
    * '見合三元上'
    * ```
    */
-  調整(調整屬性: Partial<Pick<音韻地位, '母' | '呼' | '等' | '重紐' | '韻' | '聲'>>): 音韻地位 {
+  調整(調整屬性: 音韻屬性): 音韻地位 {
     const { 母 = this.母, 呼 = this.呼, 等 = this.等, 重紐 = this.重紐, 韻 = this.韻, 聲 = this.聲 } = 調整屬性;
     return new 音韻地位(母, 呼, 等, 重紐, 韻, 聲);
   }
@@ -512,10 +517,10 @@ export class 音韻地位 {
       if (tryMatch(/^銳音$/)) return !鈍音組.includes(組);
       if (tryMatch(/^(.+?)([母等韻音攝組聲])$/)) {
         const values = [...match[1]];
-        const check = 檢查[match[2]];
+        const check = 檢查[match[2] as keyof typeof 檢查];
         const invalid = values.filter(i => !check.includes(i)).join('');
         assert(!invalid, invalid + match[2] + '不存在');
-        return values.includes(this[match[2]]);
+        return values.includes(this[match[2] as keyof typeof 檢查]);
       }
       throw new Error(`unreconized test condition: ${token}`);
     };
@@ -710,9 +715,9 @@ export class 音韻地位 {
    * 'p'
    * ```
    */
-  判斷<T, E = undefined>(規則: Rules<T>, error?: E, fallback?: boolean): E extends Falsy ? T | null : T {
+  判斷<T, E = undefined>(規則: 規則<T>, error?: E, fallback?: boolean): E extends Falsy ? T | null : T {
     const Exhaustion = Symbol('Exhaustion');
-    const loop = (所有規則: Rules<T>): T | typeof Exhaustion => {
+    const loop = (所有規則: 規則<T>): T | typeof Exhaustion => {
       for (const 規則 of 所有規則) {
         assert(Array.isArray(規則) && 規則.length === 2, '規則需符合格式');
         let 表達式 = 規則[0];

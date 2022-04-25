@@ -3,7 +3,7 @@ import * as 表達式 from './常用表達式';
 import { 音韻地位 } from './音韻地位';
 
 export type 選項列表 = [string, unknown][];
-export type 推導選項 = { [x: string]: unknown };
+export type 推導選項 = Record<string, unknown>;
 export type 原始推導函數<T> = {
   (): 選項列表;
   (地位: 音韻地位, 字頭: string | null, 選項: 推導選項): T;
@@ -18,11 +18,11 @@ export type 原始推導函數<T> = {
  */
 export type 推導函數<T> = {
   (地位: 音韻地位, 字頭?: string | null, 選項?: 推導選項): T;
-  isLegacy: boolean;
+  readonly isLegacy: boolean;
   /** 該推導方案支持的選項，格式詳見 qieyun-autoderiver 及 qieyun-examples 說明 */
-  parameters: 選項列表;
+  readonly parameters: 選項列表;
   /** 該推導方案預設選項 */
-  defaultOptions: 推導選項;
+  readonly defaultOptions: 推導選項;
 };
 
 const 適配poem = 適配分析體系('poem');
@@ -44,11 +44,11 @@ export function 建立<T>(rawFunction: 原始推導函數<T>): 推導函數<T> {
     rawParameters = [];
   }
   const [parameters, defaultOptions, isLegacy] = processParameters(rawParameters);
-  const rt = (地位, 字頭?, 選項?) => {
+  const rt = (地位: 音韻地位, 字頭?: string | null, 選項?: 推導選項) => {
     if (!地位) {
       throw new Error(`expect 音韻地位`);
     }
-    字頭 = 字頭 ?? null;
+    字頭 ??= null;
     選項 = { ...defaultOptions, ...選項 };
     地位 = 適配分析體系.v2extStrict(地位);
     if (isLegacy) {
@@ -66,8 +66,8 @@ export function 建立<T>(rawFunction: 原始推導函數<T>): 推導函數<T> {
 
 function processParameters(parameters: 選項列表): [選項列表, 推導選項, boolean] {
   let isLegacy = false;
-  const params = [];
-  const opts = {};
+  const params: 選項列表 = [];
+  const opts: 推導選項 = {};
   for (const parameter of parameters) {
     if (!Array.isArray(parameter)) {
       continue;

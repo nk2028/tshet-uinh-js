@@ -3,7 +3,7 @@ import { readFileSync } from 'fs';
 import test from 'ava';
 
 import { iter音韻地位, query字頭 } from './解析資料';
-import { 音韻地位 } from './音韻地位';
+import { 規則, 音韻地位 } from './音韻地位';
 
 // 由音韻地位得出各項音韻屬性
 
@@ -174,7 +174,7 @@ test('判斷式 null 與 fallback', t => {
   t.is(地位.判斷([]), null);
   t.is(地位.判斷([['見母', 42]]), null);
 
-  const 規則: Parameters<音韻地位['判斷']>[0] = [
+  const 規則: 規則 = [
     ['幫組', []],
     ['幫母 凡韻', 43],
   ];

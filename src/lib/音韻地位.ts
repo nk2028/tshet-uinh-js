@@ -206,9 +206,6 @@ export class 音韻地位 {
     this.重紐 = 重紐;
     this.韻 = 韻;
     this.聲 = 聲;
-    Object.getOwnPropertyNames(Object.getPrototypeOf(this)).forEach(function (this: Record<string, CallableFunction>, key) {
-      typeof this[key] === 'function' && (this[key] = this[key].bind(this));
-    }, this);
   }
 
   /**

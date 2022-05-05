@@ -20,8 +20,8 @@ function test適配(t: ExecutionContext, 適配: (地位: 音韻地位) => 音�
         適配Strict && t.throws(() => 適配Strict(地位1), undefined, 地位1.描述);
       }
     },
-    (描述: string, msg?: string) => void t.throws(() => 適配(from(描述)), msg ? { message: msg } : undefined),
-  ];
+    (描述: string, msg?: string): void => void t.throws(() => 適配(from(描述)), msg ? { message: msg } : undefined),
+  ] as const;
 }
 
 test('v2ext', t => {
@@ -154,7 +154,7 @@ test('用內置資料測試適配分析體系', t => {
   }
 });
 
-function poemYtenxKyonhCommon(conv) {
+function poemYtenxKyonhCommon(conv: (描述1: string, 描述2?: string) => void) {
   conv('幫凡入', '幫合凡入');
 
   // 呼：中立韻
@@ -216,7 +216,7 @@ test('poem', t => {
   conv('莊開欣上');
 });
 
-function ytenxKyonhCommon(conv) {
+function ytenxKyonhCommon(conv: (描述1: string, 描述2?: string) => void) {
   // 呼：中立韻
   conv('幫三東平', '幫開三東平');
   conv('心冬去', '心開冬去');

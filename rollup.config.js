@@ -1,12 +1,13 @@
-import ts from "rollup-plugin-ts";
+import ts from 'rollup-plugin-ts';
 
 export default {
-  input: 'src/index.ts',
+  input: 'src/entry.ts',
   output: {
     file: 'index.js',
     format: 'umd',
     sourcemap: true,
     name: 'Qieyun',
+    exports: 'named',
   },
-  plugins: [ts()]
+  plugins: [ts()],
 };

@@ -30,6 +30,7 @@ const 適配poem = 適配分析體系('poem');
 /**
  * 將原始推導方案函數包裝成易於使用的函數，並分析其所提供推導選項等。
  *
+ * @deprecated 該部分功能將從 Qieyun.js 分離成為獨立模塊
  * @param rawFunction 推導方案原始函數。
  * @returns 包裝後的函數，並含有選項等信息。
  */

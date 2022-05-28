@@ -2,6 +2,7 @@ import 資料 from '../data/資料';
 
 import { 音韻地位 } from './音韻地位';
 
+// TODO 韻部原貌 → 韻目原貌
 type 字頭檢索內部結果 = { 編碼: string; 韻部原貌: string; 反切: string | null; 解釋: string };
 export type 字頭檢索結果 = { 音韻地位: 音韻地位; 韻部原貌: string; 反切: string | null; 解釋: string };
 export type 編碼檢索結果 = { 字頭: string; 韻部原貌: string; 反切: string | null; 解釋: string };

@@ -1,5 +1,5 @@
 import { 母到清濁, 母到組, 母到音, 韻到攝 } from './拓展音韻屬性';
-import { 必為合口的韻, 必為開口的韻, 重紐母, 重紐韻, 開合中立的韻 } from './聲韻搭配';
+import { 可靠重紐韻, 必為合口的韻, 必為開口的韻, 重紐母, 重紐韻, 開合中立的韻 } from './聲韻搭配';
 
 // For encoder
 
@@ -44,7 +44,7 @@ const 特別編碼: Record<number, [string, string]> = {
   44: ['庚', '三'],
 };
 
-const pattern = new RegExp(`^([${所有母}])([${所有呼}]?)([${所有等}]?)([${所有重紐}]?)([${所有韻}])([${所有聲}])$`, 'u');
+const pattern音韻地位 = new RegExp(`^([${所有母}])([${所有呼}]?)([${所有等}]?)([${所有重紐}]?)([${所有韻}])([${所有聲}])$`, 'u');
 
 function assert(value: unknown, error: string): asserts value {
   if (!value) throw new Error(error);
@@ -329,12 +329,13 @@ export class 音韻地位 {
    * ```
    */
   get 最簡描述(): string {
-    const { 母, 重紐, 韻, 聲 } = this;
-    let { 呼, 等 } = this;
+    const { 母, 韻, 聲 } = this;
+    let { 呼, 等, 重紐 } = this;
     if ((呼 === '開' && 必為開口的韻.includes(韻)) || (呼 === '合' && 必為合口的韻.includes(韻))) {
       呼 = null;
     }
     if (![...一三等韻, ...二三等韻].includes(韻)) 等 = null;
+    if (['清', '庚'].includes(韻) || (母 === '云' && 可靠重紐韻.includes(韻))) 重紐 = null;
     return 母 + (呼 || '') + (等 || '') + (重紐 || '') + 韻 + 聲;
   }
 
@@ -866,25 +867,30 @@ export class 音韻地位 {
    * ```
    */
   static from描述(音韻描述: string): 音韻地位 {
-    const match = pattern.exec(音韻描述);
+    const match = pattern音韻地位.exec(音韻描述);
 
     const 母 = match[1];
     let 呼 = match[2] || null;
     let 等 = match[3] || null;
-    const 重紐 = match[4] || null;
+    let 重紐 = match[4] || null;
     const 韻 = match[5];
     const 聲 = match[6];
 
-    if (呼 == null && ![...'幫滂並明'].includes(母)) {
+    if (呼 === null && ![...'幫滂並明'].includes(母)) {
       if (必為開口的韻.includes(韻)) 呼 = '開';
       else if (必為合口的韻.includes(韻)) 呼 = '合';
     }
 
-    if (等 == null) {
+    if (等 === null) {
       if ([...一等韻].includes(韻)) 等 = '一';
       else if ([...二等韻].includes(韻)) 等 = '二';
       else if ([...三等韻].includes(韻)) 等 = '三';
       else if ([...四等韻].includes(韻)) 等 = '四';
+    }
+
+    if (重紐 === null && 等 === '三' && 可靠重紐韻.includes(韻) && 重紐母.includes(母)) {
+      if (韻 === '清') 重紐 = 'A';
+      else if (韻 === '庚' || 母 === '云') 重紐 = 'B';
     }
 
     return new 音韻地位(母, 呼, 等, 重紐, 韻, 聲);

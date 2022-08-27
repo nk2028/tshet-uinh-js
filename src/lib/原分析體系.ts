@@ -1,5 +1,5 @@
-import { 必為合口的韻, 必為開口的韻, 重紐母, 重紐韻, 開合中立的韻, 開合皆有的韻 } from './聲韻搭配';
-import { 音韻地位, 音韻屬性 } from './音韻地位';
+import { 部分音韻屬性, 音韻地位 } from './音韻地位';
+import { 必為合口的韻, 必為開口的韻, 重紐母, 重紐韻, 開合中立的韻, 開合皆有的韻 } from './音韻屬性常量';
 
 const 端知組對應: Record<string, string> = {};
 for (const pair of ['端知', '透徹', '定澄', '泥孃']) {
@@ -27,7 +27,7 @@ function 適配v2ext(地位: 音韻地位, 嚴格: boolean, 原地位脣音寒�
     throw new Error(`rejected ${原描述}: ${msg}`);
   };
   const errors: string[] = [];
-  const 調整 = (x: 音韻屬性, msg: string | (() => string)) => {
+  const 調整 = (x: 部分音韻屬性, msg: string | (() => string)) => {
     if (嚴格) errors.push(typeof msg === 'function' ? msg() : msg);
     return (地位 = 地位.調整(x));
   };
@@ -347,7 +347,7 @@ export function 適配分析體系(分析體系 = 'v2', 選項?: 適配分析體
       throw new Error(`rejected ${原描述}${v2ext描述 === 原描述 ? '' : ` (original: ${v2ext描述})`}: ${msg}`);
     };
     const errors: string[] = [];
-    const 調整 = (x: 音韻屬性, msg: string | (() => string)) => {
+    const 調整 = (x: 部分音韻屬性, msg: string | (() => string)) => {
       if (嚴格) errors.push(typeof msg === 'function' ? msg() : msg);
       return (地位 = 地位.調整(x));
     };
@@ -361,7 +361,7 @@ export function 適配分析體系(分析體系 = 'v2', 選項?: 適配分析體
       }
     } else if (is`(章組 或 云以日母) 祭廢齊灰咍韻 平上聲`) {
       // 蟹三平上
-      let draft: 音韻屬性;
+      let draft: 部分音韻屬性;
       if (參數.類隔_章云以日蟹攝平上 === '三等' && is`一四等`) {
         draft = is`齊韻` ? { 韻: '祭', 等: '三' } : { 韻: '廢', 呼: is`灰韻` ? '合' : '開', 等: '三' };
       } else if (參數.類隔_章云以日蟹攝平上 === '一四等' && is`三等`) {
@@ -398,7 +398,7 @@ export function 適配分析體系(分析體系 = 'v2', 選項?: 適配分析體
 
     // 灰咍嚴凡
     if (!參數.呼_灰咍嚴凡對立) {
-      const draft: 音韻屬性 = 地位.判斷([
+      const draft: 部分音韻屬性 = 地位.判斷([
         ['咍韻 脣音', { 韻: '灰' }],
         ['凡韻 非 脣音', { 韻: '嚴', 呼: '開' }],
         ['嚴韻 脣音', { 韻: '凡', 呼: null }],

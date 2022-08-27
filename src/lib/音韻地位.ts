@@ -1,38 +1,9 @@
 import { 母到清濁, 母到組, 母到音, 韻到攝 } from './拓展音韻屬性';
-import { 可靠重紐韻, 必為合口的韻, 必為開口的韻, 重紐母, 重紐韻, 開合中立的韻 } from './聲韻搭配';
+import { 可靠重紐韻, 各等韻, 必為合口的韻, 必為開口的韻, 所有, 重紐母, 重紐韻, 開合中立的韻 } from './音韻屬性常量';
 
 // For encoder
-
 const 編碼表 = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789$_';
-
-const 所有母 = '幫滂並明端透定泥來知徹澄孃精清從心邪莊初崇生俟章昌常書船日見溪羣疑影曉匣云以';
-const 所有呼 = '開合';
-const 所有等 = '一二三四';
-const 所有重紐 = 'AB';
-const 所有韻 = '東冬鍾江支脂之微魚虞模齊祭泰佳皆夬灰咍廢真臻文殷元魂痕寒刪山仙先蕭宵肴豪歌麻陽唐庚耕清青蒸登尤侯幽侵覃談鹽添咸銜嚴凡';
-const 所有聲 = '平上去入';
-
-const 所有音 = '脣舌齒牙喉';
-const 所有攝 = '通江止遇蟹臻山效果假宕梗曾流深咸';
-const 所有組 = '幫端知精莊章見影';
-
-const 檢查 = { 母: 所有母, 等: 所有等, 韻: 所有韻, 音: 所有音, 攝: 所有攝, 組: 所有組, 聲: 所有聲 };
-
 const 韻順序表 = '東_冬鍾江支脂之微魚虞模齊祭泰佳皆夬灰咍廢真臻文殷元魂痕寒刪山仙先蕭宵肴豪歌_麻_陽唐庚_耕清青蒸登尤侯幽侵覃談鹽添咸銜嚴凡';
-
-const 一等韻 = '冬模泰咍灰痕魂寒豪唐登侯覃談';
-const 二等韻 = '江佳皆夬刪山肴耕咸銜';
-const 三等韻 = '鍾支脂之微魚虞祭廢真臻殷元文仙宵陽清蒸尤幽侵鹽嚴凡';
-const 四等韻 = '齊先蕭青添';
-const 一三等韻 = '東歌';
-const 二三等韻 = '麻庚';
-
-const 輕脣韻 = '東鍾微虞廢文元陽尤凡';
-const 次入韻 = '祭泰夬廢';
-const 陰聲韻 = '支脂之微魚虞模齊祭泰佳皆夬灰咍廢蕭宵肴豪歌麻侯尤幽';
-
-const 鈍音組 = '幫見影';
-
 const 特別編碼: Record<number, [string, string]> = {
   0: ['東', '一'],
   1: ['東', '三'],
@@ -44,7 +15,26 @@ const 特別編碼: Record<number, [string, string]> = {
   44: ['庚', '三'],
 };
 
-const pattern音韻地位 = new RegExp(`^([${所有母}])([${所有呼}]?)([${所有等}]?)([${所有重紐}]?)([${所有韻}])([${所有聲}])$`, 'u');
+// For 屬於
+const 檢查 = {
+  ...所有,
+  音: [...'脣舌齒牙喉'],
+  攝: [...'通江止遇蟹臻山效果假宕梗曾流深咸'],
+  組: [...'幫端知精莊章見影'],
+} as const;
+
+const 次入韻 = '祭泰夬廢';
+const 陰聲韻 = '支脂之微魚虞模齊祭泰佳皆夬灰咍廢蕭宵肴豪歌麻侯尤幽';
+// TODO 取消
+const 輕脣韻 = '東鍾微虞廢文元陽尤凡';
+// TODO 與「重紐母」合併
+const 鈍音組 = '幫見影';
+
+const pattern音韻地位 = new RegExp(
+  `^([${所有.母.join('')}])([${所有.呼.join('')}]?)([${所有.等.join('')}]?)` +
+    `([${所有.重紐.join('')}]?)([${所有.韻.join('')}])([${所有.聲.join('')}])$`,
+  'u'
+);
 
 function assert(value: unknown, error: string): asserts value {
   if (!value) throw new Error(error);
@@ -53,7 +43,8 @@ function assert(value: unknown, error: string): asserts value {
 type Falsy = '' | 0 | false | null | undefined;
 export type 規則<T = unknown> = [unknown, T | 規則<T>][];
 
-export type 音韻屬性 = Partial<Pick<音韻地位, '母' | '呼' | '等' | '重紐' | '韻' | '聲'>>;
+export type 任意音韻地位 = Pick<音韻地位, '母' | '呼' | '等' | '重紐' | '韻' | '聲'>;
+export type 部分音韻屬性 = Partial<任意音韻地位>;
 
 /**
  * 《切韻》音系音韻地位。
@@ -334,7 +325,7 @@ export class 音韻地位 {
     if ((呼 === '開' && 必為開口的韻.includes(韻)) || (呼 === '合' && 必為合口的韻.includes(韻))) {
       呼 = null;
     }
-    if (![...一三等韻, ...二三等韻].includes(韻)) 等 = null;
+    if (![...各等韻.一三, ...各等韻.二三].includes(韻)) 等 = null;
     if (['清', '庚'].includes(韻) || (母 === '云' && 可靠重紐韻.includes(韻))) 重紐 = null;
     return 母 + (呼 || '') + (等 || '') + (重紐 || '') + 韻 + 聲;
   }
@@ -372,11 +363,11 @@ export class 音韻地位 {
    */
   get 編碼(): string {
     const { 母, 呼, 等, 重紐, 韻, 聲 } = this;
-    const 母編碼 = 所有母.indexOf(母);
+    const 母編碼 = 所有.母.indexOf(母);
     const 韻編碼 = { 東三: 1, 歌三: 38, 麻三: 40, 庚三: 44 }[`${韻}${等}`] || 韻順序表.indexOf(韻);
-    const 呼編碼 = 所有呼.indexOf(呼) + 1;
-    const 重紐編碼 = 所有重紐.indexOf(重紐) + 1;
-    const 其他編碼 = (呼編碼 << 4) | (重紐編碼 << 2) | 所有聲.indexOf(聲);
+    const 呼編碼 = 所有.呼.indexOf(呼) + 1;
+    const 重紐編碼 = 所有.重紐.indexOf(重紐) + 1;
+    const 其他編碼 = (呼編碼 << 4) | (重紐編碼 << 2) | 所有.聲.indexOf(聲);
     return 編碼表[母編碼] + 編碼表[韻編碼] + 編碼表[其他編碼];
   }
 
@@ -399,7 +390,7 @@ export class 音韻地位 {
    * '見合三元上'
    * ```
    */
-  調整(調整屬性: 音韻屬性): 音韻地位 {
+  調整(調整屬性: 部分音韻屬性): 音韻地位 {
     const { 母 = this.母, 呼 = this.呼, 等 = this.等, 重紐 = this.重紐, 韻 = this.韻, 聲 = this.聲 } = 調整屬性;
     return new 音韻地位(母, 呼, 等, 重紐, 韻, 聲);
   }
@@ -782,30 +773,30 @@ export class 音韻地位 {
    */
   static 驗證(母: string, 呼: string | null, 等: string, 重紐: string | null, 韻: string, 聲: string): void {
     // TODO 此為簡易驗證，待升級為強驗證
-    assert([...所有母].includes(母), `Unexpected 母: ${JSON.stringify(母)}`);
-    assert([...所有等].includes(等), `Unexpected 等: ${JSON.stringify(等)}`);
-    assert([...所有韻].includes(韻), `Unexpected 韻: ${JSON.stringify(韻)}`);
-    assert([...所有聲].includes(聲), `Unexpected 聲: ${JSON.stringify(聲)}`);
+    assert([...所有.母].includes(母), `Unexpected 母: ${JSON.stringify(母)}`);
+    assert([...所有.等].includes(等), `Unexpected 等: ${JSON.stringify(等)}`);
+    assert([...所有.韻].includes(韻), `Unexpected 韻: ${JSON.stringify(韻)}`);
+    assert([...所有.聲].includes(聲), `Unexpected 聲: ${JSON.stringify(聲)}`);
     assert(
-      [...所有呼].includes(呼) || (呼 === null && ([...'幫滂並明'].includes(母) || 開合中立的韻.includes(韻))),
+      [...所有.呼].includes(呼) || (呼 === null && ([...'幫滂並明'].includes(母) || 開合中立的韻.includes(韻))),
       `Unexpected 呼: ${JSON.stringify(呼)}`
     );
     assert(
-      [...所有重紐].includes(重紐) || (重紐 === null && !(重紐母.includes(母) && 重紐韻.includes(韻))),
+      [...所有.重紐].includes(重紐) || (重紐 === null && !(重紐母.includes(母) && 重紐韻.includes(韻))),
       `Unexpected 重紐: ${JSON.stringify(重紐)}`
     );
 
-    if ([...一等韻].includes(韻)) {
+    if ([...各等韻.一].includes(韻)) {
       assert(等 === '一', `Unexpected 等: ${JSON.stringify(等)}`);
-    } else if ([...二等韻].includes(韻)) {
+    } else if ([...各等韻.二].includes(韻)) {
       assert(等 === '二', `Unexpected 等: ${JSON.stringify(等)}`);
-    } else if ([...三等韻].includes(韻)) {
+    } else if ([...各等韻.三].includes(韻)) {
       assert(等 === '三', `Unexpected 等: ${JSON.stringify(等)}`);
-    } else if ([...四等韻].includes(韻)) {
+    } else if ([...各等韻.四].includes(韻)) {
       assert(等 === '四', `Unexpected 等: ${JSON.stringify(等)}`);
-    } else if ([...一三等韻].includes(韻)) {
+    } else if ([...各等韻.一三].includes(韻)) {
       assert(['一', '三'].includes(等), `Unexpected 等: ${JSON.stringify(等)}`);
-    } else if ([...二三等韻].includes(韻)) {
+    } else if ([...各等韻.二三].includes(韻)) {
       assert(['二', '三'].includes(等), `Unexpected 等: ${JSON.stringify(等)}`);
     }
 
@@ -839,10 +830,10 @@ export class 音韻地位 {
     const 重紐編碼 = (其他編碼 >> 2) & 0b11;
     const 聲編碼 = 其他編碼 & 0b11;
 
-    const 母 = 所有母[母編碼];
-    const 聲 = 所有聲[聲編碼];
-    const 呼 = 呼編碼 ? 所有呼[呼編碼 - 1] : null;
-    const 重紐 = 重紐編碼 ? 所有重紐[重紐編碼 - 1] : null;
+    const 母 = 所有.母[母編碼];
+    const 聲 = 所有.聲[聲編碼];
+    const 呼 = 呼編碼 ? 所有.呼[呼編碼 - 1] : null;
+    const 重紐 = 重紐編碼 ? 所有.重紐[重紐編碼 - 1] : null;
 
     let 韻: string;
     let 等: string;
@@ -850,10 +841,10 @@ export class 音韻地位 {
       [韻, 等] = 特別編碼[韻編碼];
     } else {
       韻 = 韻順序表[韻編碼];
-      if ([...一等韻].includes(韻)) 等 = '一';
-      if ([...二等韻].includes(韻)) 等 = '二';
-      if ([...三等韻].includes(韻)) 等 = '三';
-      if ([...四等韻].includes(韻)) 等 = '四';
+      if ([...各等韻.一].includes(韻)) 等 = '一';
+      if ([...各等韻.二].includes(韻)) 等 = '二';
+      if ([...各等韻.三].includes(韻)) 等 = '三';
+      if ([...各等韻.四].includes(韻)) 等 = '四';
     }
 
     return new 音韻地位(母, 呼, 等, 重紐, 韻, 聲);
@@ -890,10 +881,10 @@ export class 音韻地位 {
     }
 
     if (等 === null) {
-      if ([...一等韻].includes(韻)) 等 = '一';
-      else if ([...二等韻].includes(韻)) 等 = '二';
-      else if ([...三等韻].includes(韻)) 等 = '三';
-      else if ([...四等韻].includes(韻)) 等 = '四';
+      if ([...各等韻.一].includes(韻)) 等 = '一';
+      else if ([...各等韻.二].includes(韻)) 等 = '二';
+      else if ([...各等韻.三].includes(韻)) 等 = '三';
+      else if ([...各等韻.四].includes(韻)) 等 = '四';
     }
 
     if (重紐 === null && 等 === '三' && 可靠重紐韻.includes(韻) && 重紐母.includes(母)) {

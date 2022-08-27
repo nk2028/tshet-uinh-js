@@ -781,6 +781,7 @@ export class 音韻地位 {
    * @throws 若給定的音韻地位六要素不合法，則拋出異常。
    */
   static 驗證(母: string, 呼: string | null, 等: string, 重紐: string | null, 韻: string, 聲: string): void {
+    // TODO 此為簡易驗證，待升級為強驗證
     assert([...所有母].includes(母), `Unexpected 母: ${JSON.stringify(母)}`);
     assert([...所有等].includes(等), `Unexpected 等: ${JSON.stringify(等)}`);
     assert([...所有韻].includes(韻), `Unexpected 韻: ${JSON.stringify(韻)}`);

@@ -2,7 +2,7 @@ import test_, { ExecutionContext } from 'ava';
 // TODO v0.14 拆解
 const test = test_.skip;
 
-import 適配分析體系 from './分析體系';
+import 適配分析體系 from './原分析體系';
 import { iter音韻地位 } from './解析資料';
 import { 音韻地位 } from './音韻地位';
 

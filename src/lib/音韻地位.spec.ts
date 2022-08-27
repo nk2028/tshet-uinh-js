@@ -249,5 +249,5 @@ test('最簡描述', t => {
 });
 
 test('不合法音韻地位', t => {
-  t.throws(() => new 音韻地位('匣', '開', '三', null, '眞', '平'), { message: /重紐.*null/ });
+  t.throws(() => new 音韻地位('匣', '開', '三', null, '真', '平'), { message: /重紐.*null/ });
 });

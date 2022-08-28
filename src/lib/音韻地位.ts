@@ -1,5 +1,5 @@
 import { 母到清濁, 母到組, 母到音, 韻到攝 } from './拓展音韻屬性';
-import { 可靠重紐韻, 各等韻, 必為合口的韻, 必為開口的韻, 所有, 重紐母, 重紐韻, 開合中立的韻 } from './音韻屬性常量';
+import { 可靠重紐韻, 各等韻, 呼韻限制, 所有, 重紐韻, 鈍音母 } from './音韻屬性常量';
 
 // For encoder
 const 編碼表 = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789$_';
@@ -27,8 +27,6 @@ const 次入韻 = '祭泰夬廢';
 const 陰聲韻 = '支脂之微魚虞模齊祭泰佳皆夬灰咍廢蕭宵肴豪歌麻侯尤幽';
 // TODO 取消
 const 輕脣韻 = '東鍾微虞廢文元陽尤凡';
-// TODO 與「重紐母」合併
-const 鈍音組 = '幫見影';
 
 const pattern音韻地位 = new RegExp(
   `^([${所有.母.join('')}])([${所有.呼.join('')}]?)([${所有.等.join('')}]?)` +
@@ -322,7 +320,7 @@ export class 音韻地位 {
   get 最簡描述(): string {
     const { 母, 韻, 聲 } = this;
     let { 呼, 等, 重紐 } = this;
-    if ((呼 === '開' && 必為開口的韻.includes(韻)) || (呼 === '合' && 必為合口的韻.includes(韻))) {
+    if ((呼 === '開' && 呼韻限制.開.includes(韻)) || (呼 === '合' && 呼韻限制.合.includes(韻))) {
       呼 = null;
     }
     if (![...各等韻.一三, ...各等韻.二三].includes(韻)) 等 = null;
@@ -482,7 +480,7 @@ export class 音韻地位 {
     if (typeof 表達式 === 'string') 表達式 = [表達式];
 
     /** 普通字串 token 求值 */
-    const { 呼, 等, 重紐, 韻, 聲, 清濁, 韻別, 組 } = this;
+    const { 母, 呼, 等, 重紐, 韻, 聲, 清濁, 韻別 } = this;
     const evalToken = (token: string): boolean => {
       let match: RegExpExecArray = null;
       const tryMatch = (pat: RegExp) => !!(match = pat.exec(token));
@@ -497,8 +495,8 @@ export class 音韻地位 {
       if (tryMatch(/^不分重紐$/)) return 重紐 === null;
       if (tryMatch(/^(清|濁)音$/)) return 清濁[1] === match[1];
       if (tryMatch(/^[全次][清濁]$/)) return 清濁 === match[0];
-      if (tryMatch(/^鈍音$/)) return 鈍音組.includes(組);
-      if (tryMatch(/^銳音$/)) return !鈍音組.includes(組);
+      if (tryMatch(/^鈍音$/)) return 鈍音母.includes(母);
+      if (tryMatch(/^銳音$/)) return !鈍音母.includes(母);
       if (tryMatch(/^(.+?)([母等韻音攝組聲])$/)) {
         const values = [...match[1]];
         const check = 檢查[match[2] as keyof typeof 檢查];
@@ -778,11 +776,11 @@ export class 音韻地位 {
     assert([...所有.韻].includes(韻), `Unexpected 韻: ${JSON.stringify(韻)}`);
     assert([...所有.聲].includes(聲), `Unexpected 聲: ${JSON.stringify(聲)}`);
     assert(
-      [...所有.呼].includes(呼) || (呼 === null && ([...'幫滂並明'].includes(母) || 開合中立的韻.includes(韻))),
+      [...所有.呼].includes(呼) || (呼 === null && ([...'幫滂並明'].includes(母) || 呼韻限制.中立.includes(韻))),
       `Unexpected 呼: ${JSON.stringify(呼)}`
     );
     assert(
-      [...所有.重紐].includes(重紐) || (重紐 === null && !(重紐母.includes(母) && 重紐韻.includes(韻))),
+      [...所有.重紐].includes(重紐) || (重紐 === null && !(鈍音母.includes(母) && 重紐韻.includes(韻))),
       `Unexpected 重紐: ${JSON.stringify(重紐)}`
     );
 
@@ -876,8 +874,8 @@ export class 音韻地位 {
     const 聲 = match[6];
 
     if (呼 === null && ![...'幫滂並明'].includes(母)) {
-      if (必為開口的韻.includes(韻)) 呼 = '開';
-      else if (必為合口的韻.includes(韻)) 呼 = '合';
+      if (呼韻限制.開.includes(韻)) 呼 = '開';
+      else if (呼韻限制.合.includes(韻)) 呼 = '合';
     }
 
     if (等 === null) {
@@ -887,7 +885,7 @@ export class 音韻地位 {
       else if ([...各等韻.四].includes(韻)) 等 = '四';
     }
 
-    if (重紐 === null && 等 === '三' && 可靠重紐韻.includes(韻) && 重紐母.includes(母)) {
+    if (重紐 === null && 等 === '三' && 可靠重紐韻.includes(韻) && 鈍音母.includes(母)) {
       if (韻 === '清') 重紐 = 'A';
       else if (韻 === '庚' || 母 === '云') 重紐 = 'B';
     }

@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "incremental": true,
-    "target": "es2017",
+    "target": "es2019",
     "outDir": "build/esnext",
     "rootDir": "src",
     "moduleResolution": "node",
@@ -37,7 +37,7 @@
     // "experimentalDecorators": true /* Enables experimental support for ES7 decorators. */,
     // "emitDecoratorMetadata": true /* Enables experimental support for emitting type metadata for decorators. */,
 
-    "lib": ["esnext"],
+    "lib": ["es2019"],
     "types": ["node"],
     "typeRoots": ["node_modules/@types", "src/types"]
   },

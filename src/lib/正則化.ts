@@ -52,11 +52,11 @@ export function 導入或驗證(某體系音韻地位: 任意音韻地位, is導
   // NOTE 僅列出支持的若干家體系的標準用字，不任意添加其他異體、異名
   {
     const 韻別名: Record<string, string> = { 眞: '真', 欣: '殷' };
-    if (Object.hasOwn(韻別名, 地位.韻)) {
+    if (Object.prototype.hasOwnProperty.call(韻別名, 地位.韻)) {
       調整({ 韻: 韻別名[地位.韻] }, 'variant character');
     }
     const 母別名: Record<string, string> = { 娘: '孃', 群: '羣' };
-    if (Object.hasOwn(母別名, 地位.母)) {
+    if (Object.prototype.hasOwnProperty.call(母別名, 地位.母)) {
       調整({ 母: 母別名[地位.母] }, 'variant character');
     }
   }

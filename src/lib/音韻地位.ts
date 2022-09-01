@@ -1,4 +1,5 @@
 import { 母到清濁, 母到組, 母到音, 韻到攝 } from './拓展音韻屬性';
+import { 導入或驗證 } from './正則化';
 import { 可靠重紐韻, 各等韻, 呼韻限制, 所有, 重紐韻, 鈍音母 } from './音韻屬性常量';
 
 // For encoder
@@ -185,7 +186,7 @@ export class 音韻地位 {
    * ```
    */
   constructor(母: string, 呼: string | null, 等: string, 重紐: string | null, 韻: string, 聲: string) {
-    音韻地位.驗證(母, 呼, 等, 重紐, 韻, 聲);
+    導入或驗證({ 母, 呼, 等, 重紐, 韻, 聲 }, false);
     this.母 = 母;
     this.呼 = 呼;
     this.等 = 等;

@@ -18,6 +18,8 @@ export const 各等韻 = {
   二三: [...'麻庚'],
 } as const;
 
+export const 陰聲韻 = [...'支脂之微魚虞模齊祭泰佳皆夬灰咍廢蕭宵肴豪歌麻侯尤幽'] as const;
+
 export const 鈍音母 = [...'幫滂並明見溪羣疑影曉匣云'] as const;
 
 // TODO 更新

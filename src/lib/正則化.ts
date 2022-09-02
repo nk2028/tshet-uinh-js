@@ -1,5 +1,5 @@
 import type { 任意音韻地位, 部分音韻屬性 } from './音韻地位';
-import { 各等韻, 呼韻限制, 所有, 鈍音母 } from './音韻屬性常量';
+import { 各等韻, 呼韻限制, 所有, 鈍音母, 陰聲韻 } from './音韻屬性常量';
 
 const 脣音母 = [...'幫滂並明'];
 const 鈍音除云母 = 鈍音母.filter(x => x !== '云');
@@ -115,6 +115,11 @@ export function 導入或驗證(某體系音韻地位: 任意音韻地位, is導
   }
   if (!地位.重紐 && 鈍音除云母.includes(地位.母) && 重紐八韻.includes(地位.韻)) {
     reject('need 重紐');
+  }
+
+  // 陰聲韻限平上去
+  if (地位.聲 === '入' && 陰聲韻.includes(地位.韻)) {
+    reject(`unexpected 入聲 for ${地位.韻}韻`);
   }
 
   // 類隔

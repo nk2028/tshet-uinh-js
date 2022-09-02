@@ -1,6 +1,6 @@
 import { 母到清濁, 母到組, 母到音, 韻到攝 } from './拓展音韻屬性';
 import { 導入或驗證 } from './正則化';
-import { 可靠重紐韻, 各等韻, 呼韻限制, 所有, 重紐韻, 鈍音母 } from './音韻屬性常量';
+import { 可靠重紐韻, 各等韻, 呼韻限制, 所有, 重紐韻, 鈍音母, 陰聲韻 } from './音韻屬性常量';
 
 // For encoder
 const 編碼表 = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789$_';
@@ -25,7 +25,6 @@ const 檢查 = {
 } as const;
 
 const 次入韻 = '祭泰夬廢';
-const 陰聲韻 = '支脂之微魚虞模齊祭泰佳皆夬灰咍廢蕭宵肴豪歌麻侯尤幽';
 // TODO 取消
 const 輕脣韻 = '東鍾微虞廢文元陽尤凡';
 

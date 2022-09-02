@@ -45,6 +45,20 @@ export type 規則<T = unknown> = [unknown, T | 規則<T>][];
 export type 任意音韻地位 = Pick<音韻地位, '母' | '呼' | '等' | '重紐' | '韻' | '聲'>;
 export type 部分音韻屬性 = Partial<任意音韻地位>;
 
+export type 其他分析體系 = 'v2' | 'v2ext' | 'poem' | 'v1' | 'ytenx' | 'yonh';
+
+const 脣音分寒桓by分析體系: Record<其他分析體系, boolean> = {
+  v2: true, // actually `false`, but treated as its susperset `v2ext` here
+  v2ext: true,
+  poem: false,
+  v1: false,
+  ytenx: true,
+  yonh: true,
+};
+
+/**  (For internal use) Indicates bypassed verification in `音韻地位.constructor` */
+export const Unchecked: 其他分析體系 = Symbol('Unchecked') as unknown as 其他分析體系;
+
 /**
  * 《切韻》音系音韻地位。
  *
@@ -169,24 +183,32 @@ export class 音韻地位 {
   readonly 聲: string;
 
   /**
-   * 初始化音韻地位物件。
+   * 初始化音韻地位物件。（各項參數詳見 [`音韻地位`] 說明）
    * @param 母 聲母：幫, 滂, 並, 明, …
    * @param 呼 呼：`null`, 開, 合
    * @param 等 等：一, 二, 三, 四
    * @param 重紐 重紐：`null`, A, B
    * @param 韻 韻母（舉平以賅上去入）：東, 冬, 鍾, 江, …, 祭, 泰, 夬, 廢
    * @param 聲 聲調：平, 上, 去, 入
-   * @returns 字串所描述的音韻地位。
+   * @param 導入自 某個其他家資料 ID，表明指定的六項屬性來自該家資料；若指定此項，則構造後的六項屬性會經過變換以符合本項目之音韻分析體系
+   * @returns 所描述的音韻地位
    * @example
    * ```typescript
    * > new Qieyun.音韻地位('幫', null, '三', null, '凡', '入');
    * 音韻地位 { '幫三凡入' }
    * > new Qieyun.音韻地位('羣', '開', '三', 'A', '支', '平');
    * 音韻地位 { '羣開三A支平' }
+   * > new Qieyun.音韻地位('明', '合', '一', null, '桓', '入', 'ytenx);
+   * 音韻地位 { '明一寒入' }
    * ```
    */
-  constructor(母: string, 呼: string | null, 等: string, 重紐: string | null, 韻: string, 聲: string) {
-    導入或驗證({ 母, 呼, 等, 重紐, 韻, 聲 }, false);
+  constructor(母: string, 呼: string | null, 等: string, 重紐: string | null, 韻: string, 聲: string, 導入自?: 其他分析體系) {
+    if (導入自 !== Unchecked) {
+      if (導入自 != null && !Object.prototype.hasOwnProperty.call(脣音分寒桓by分析體系, 導入自)) {
+        throw new Error(`unknown 分析體系: ${導入自}`);
+      }
+      ({ 母, 呼, 等, 重紐, 韻, 聲 } = 導入或驗證({ 母, 呼, 等, 重紐, 韻, 聲 }, 導入自 != null, 脣音分寒桓by分析體系[導入自]));
+    }
     this.母 = 母;
     this.呼 = 呼;
     this.等 = 等;

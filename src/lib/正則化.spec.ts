@@ -1,7 +1,9 @@
 import test, { ExecutionContext } from 'ava';
 
-import { 導入或驗證 } from './正則化';
-import { 任意音韻地位 } from './音韻地位';
+import { 導入或驗證, 正則化或驗證 } from './正則化';
+import { 任意音韻地位, 音韻地位 } from './音韻地位';
+
+// Helper functions
 
 function raw地位fromString(s: string): 任意音韻地位 {
   const 六元組 = s.split(',');
@@ -28,9 +30,8 @@ function test導入或驗證(t: ExecutionContext, 原體系脣音分寒桓歌戈
       expected ?? input,
       `導入: (${input}) (原體系脣音分寒桓歌戈: ${原體系脣音分寒桓歌戈})`
     );
-    const 待驗證 = expected ?? input;
     const 待驗證地位 = expected地位 ?? input地位;
-    t.is(stringFromRaw地位(導入或驗證(待驗證地位, false)), 待驗證, `驗證: (${input}) (原體系脣音分寒桓歌戈: ${原體系脣音分寒桓歌戈})`);
+    t.is(導入或驗證(待驗證地位, false), 待驗證地位, `驗證: (${input}) (原體系脣音分寒桓歌戈: ${原體系脣音分寒桓歌戈})`);
     if (expected !== undefined && 原體系脣音分寒桓歌戈 === true) {
       t.throws(
         () => 導入或驗證(input地位, false),
@@ -46,6 +47,36 @@ function test導入或驗證(t: ExecutionContext, 原體系脣音分寒桓歌戈
   };
   return [run, reject] as const;
 }
+
+// XXX DRY?
+function test正則化或驗證(t: ExecutionContext, 寬鬆 = false) {
+  const run = (input: string, expected?: string) => {
+    const input地位 = 音韻地位.from描述(input);
+    const expected地位 = expected !== undefined ? 音韻地位.from描述(expected) : undefined;
+    if (expected地位?.等於(input地位)) {
+      throw new Error(`unnecessary argument "expected": ${expected} (equivalent to ${input})`);
+    }
+    const 正則地位 = expected地位 ?? input地位;
+    t.is(正則化或驗證(input地位, true, 寬鬆).描述, 正則地位.描述, `正則化: ${input地位.描述} (寬鬆: ${寬鬆})`);
+    t.is(正則化或驗證(正則地位, false, 寬鬆), 正則地位, `驗證: ${正則地位.描述} (寬鬆: ${寬鬆})`);
+    if (expected地位 !== undefined) {
+      t.throws(
+        () => 正則化或驗證(input地位, false, 寬鬆),
+        { message: /^非正則地位 / },
+        `驗證正則化前地位: ${input地位.描述} (寬鬆: ${寬鬆})`
+      );
+    }
+  };
+
+  const reject = (input: string) => {
+    const input地位 = 音韻地位.from描述(input);
+    t.throws(() => 正則化或驗證(input地位, true, 寬鬆), { message: /^cannot normalize 音韻地位 / });
+  };
+
+  return [run, reject] as const;
+}
+
+// 導入/驗證
 
 test('導入/驗證', t => {
   const [run] = test導入或驗證(t, true);
@@ -183,4 +214,58 @@ test('導入/驗證（重紐）', t => {
 
   // 其他
   reject('生,開,三,B,蒸,入'); // 生造地位，測試重紐八韻與清韻以外銳音不要重紐
+});
+
+// 正則化/驗證
+
+test('正則化/驗證（類隔）', t => {
+  const [run, reject] = test正則化或驗證(t);
+  const [lenient] = test正則化或驗證(t, true);
+
+  // 端知
+  run('定開脂去');
+  run('定合山平', '澄合山平');
+  run('定開佳上');
+  run('端開三麻平');
+  run('端開二庚上');
+  run('端幽平');
+
+  // 蟹三平上
+  run('昌咍上', '昌開廢上');
+
+  // 齒音
+  run('昌開山平', '初開山平');
+  reject('以開寒入');
+  lenient('以開寒入');
+  run('清合夬去', '初合夬去');
+  reject('崇開先平');
+  lenient('崇開先平');
+
+  // 云匣
+  run('云灰上', '云合廢上');
+  reject('云合山平');
+  lenient('云合山平');
+
+  // 莊組臻攝開口
+  run('崇開臻上');
+  run('莊開殷上', '莊開臻上');
+  run('崇開真上', '崇開臻上');
+  run('崇合真上');
+});
+
+test('正則化/驗證（呼、重紐）', t => {
+  const [run] = test正則化或驗證(t, false);
+
+  // 寒、歌
+  run('並開一歌上', '並一歌上');
+  run('明開寒入', '明寒入');
+
+  // 灰咍嚴凡
+  run('並咍上', '並灰上');
+  run('明嚴去', '明凡去');
+  run('見凡去', '見嚴去');
+
+  // 重紐：清
+  run('幫A清入');
+  run('幫B清入', '幫三庚入');
 });

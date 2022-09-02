@@ -1,9 +1,21 @@
-import type { 任意音韻地位, 部分音韻屬性 } from './音韻地位';
+import type { 任意音韻地位, 部分音韻屬性, 音韻地位 } from './音韻地位';
 import { 各等韻, 呼韻限制, 所有, 鈍音母, 陰聲韻 } from './音韻屬性常量';
 
 const 脣音母 = [...'幫滂並明'];
 const 鈍音除云母 = 鈍音母.filter(x => x !== '云');
 const 重紐八韻 = [...'支脂祭真仙宵侵鹽'];
+
+const 端知對應: Record<string, string> = {};
+for (const [t, tr] of ['端知', '透徹', '定澄', '泥孃']) {
+  端知對應[t] = tr;
+  端知對應[tr] = t;
+}
+const 齒音二等對應: Record<string, string> = {};
+for (const triplet of ['精莊章', '清初昌', '從崇常', '心生書', '邪俟船', '日孃日']) {
+  const [s, sr, sj] = [...triplet];
+  齒音二等對應[s] = sr;
+  齒音二等對應[sj] = sr;
+}
 
 /**
  * 將其他家音韻地位（六要素）轉換為 ext 體系之地位，或驗證地位是否符合 ext 體系（符合則表示可用其建立 `音韻地位` 對象）。
@@ -39,8 +51,8 @@ export function 導入或驗證(某體系音韻地位: 任意音韻地位, is導
 
   const errors: string[] = [];
   let unmodified = true;
-  const 調整 = (x: 部分音韻屬性, msg: string | (() => string)) => {
-    if (!is導入) errors.push(typeof msg === 'function' ? msg() : msg);
+  const 調整 = (x: 部分音韻屬性, msg: string) => {
+    if (!is導入) errors.push(msg);
     unmodified = false;
     return (地位 = { ...地位, ...x });
   };
@@ -183,4 +195,65 @@ export function 導入或驗證(某體系音韻地位: 任意音韻地位, is導
     reject(`${errors.join('; ')} (try ${母}${呼 || ''}${等}${重紐 || ''}${韻}${聲} instead)`);
   }
   return unmodified ? 某體系音韻地位 : 地位;
+}
+
+// TODO 自定義異常類，當中包含相應的正則地位（若有）
+export function 正則化或驗證(地位: 音韻地位, is正則化: boolean, 寬鬆: boolean): 音韻地位 {
+  const 原地位 = 地位;
+  const is = (...xs: Parameters<音韻地位['屬於']>) => 地位.屬於(...xs);
+
+  const errors: string[] = [];
+  let unmodified = true;
+  const 調整 = (x: 部分音韻屬性, msg: string) => {
+    if (!is正則化) errors.push(msg);
+    unmodified = false;
+    return (地位 = 地位.調整(x));
+  };
+  const reject = (msg: string) => {
+    throw new Error(`cannot normalize 音韻地位 ${原地位.描述}: ${msg}`);
+  };
+
+  // 類隔
+  if (is`知組 一四等 或 端組 (二等 非 (佳庚韻 開口) 或 三等 非 (脂麻幽韻 開口))`) {
+    // 端知
+    調整({ 母: 端知對應[地位.母] }, `端知類隔`);
+  } else if (is`(章組 或 云以日母) 齊灰咍韻`) {
+    // 蟹攝三等
+    調整({ 等: '三', 韻: 地位.韻 === '齊' ? '祭' : '廢' }, '齒音/云以母蟹攝類隔');
+  } else if (is`(精章組 或 日母) 二等`) {
+    // 精章日二等
+    調整({ 母: 齒音二等對應[地位.母] }, '精章組/日母二等類隔');
+  } else if (is`莊組 開口 真殷韻`) {
+    調整({ 韻: '臻' }, `${地位.韻}韻 should be 臻韻 for 莊組開口`);
+  }
+  // 這裡前後分離，因為前面蟹攝調整可能會改變云母所在等
+  if (!寬鬆 && is`莊組 一四等 或 (章組 或 日以云母) 非 三等`) {
+    reject(`cannot normalize ${地位.母}母${地位.等}等 automatically`);
+  }
+
+  // 呼
+  if (地位.呼 && 脣音母.includes(地位.母)) {
+    // 寒歌韻脣音開口
+    調整({ 呼: null }, '呼 should be null for 脣音');
+  } else {
+    // 灰咍嚴凡
+    const draft: 部分音韻屬性 = 地位.判斷([
+      ['咍韻 脣音', { 韻: '灰' }],
+      ['凡韻 非 脣音', { 韻: '嚴', 呼: '開' }],
+      ['嚴韻 脣音', { 韻: '凡' }],
+    ]);
+    if (draft) {
+      調整(draft, `unexpected ${地位.母}母${地位.韻}韻`);
+    }
+  }
+
+  // 重紐：清
+  if (地位.韻 === '清' && 地位.重紐 === 'B') {
+    調整({ 韻: '庚' }, `清 should be 庚 for B類`);
+  }
+
+  if (errors.length) {
+    throw new Error(`非正則地位 ${原地位.描述}: ${errors.join('; ')} (try ${地位.描述} instead)`);
+  }
+  return unmodified ? 原地位 : 地位;
 }

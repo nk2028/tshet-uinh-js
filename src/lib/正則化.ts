@@ -197,7 +197,13 @@ export function 導入或驗證(某體系音韻地位: 任意音韻地位, is導
   return unmodified ? 某體系音韻地位 : 地位;
 }
 
-// TODO 自定義異常類，當中包含相應的正則地位（若有）
+export class 正則化Error extends Error {
+  constructor(public 正則地位: 音韻地位 | null, ...args: Parameters<ErrorConstructor>) {
+    super(...args);
+    this.name = '正則化Error';
+  }
+}
+
 export function 正則化或驗證(地位: 音韻地位, is正則化: boolean, 寬鬆: boolean): 音韻地位 {
   const 原地位 = 地位;
   const is = (...xs: Parameters<音韻地位['屬於']>) => 地位.屬於(...xs);
@@ -210,7 +216,7 @@ export function 正則化或驗證(地位: 音韻地位, is正則化: boolean, �
     return (地位 = 地位.調整(x));
   };
   const reject = (msg: string) => {
-    throw new Error(`cannot normalize 音韻地位 ${原地位.描述}: ${msg}`);
+    throw new 正則化Error(null, `cannot normalize 音韻地位 ${原地位.描述}: ${msg}`);
   };
 
   // 類隔
@@ -253,7 +259,7 @@ export function 正則化或驗證(地位: 音韻地位, is正則化: boolean, �
   }
 
   if (errors.length) {
-    throw new Error(`非正則地位 ${原地位.描述}: ${errors.join('; ')} (try ${地位.描述} instead)`);
+    throw new 正則化Error(地位, `非正則地位 ${原地位.描述}: ${errors.join('; ')} (try ${地位.描述} instead)`);
   }
   return unmodified ? 原地位 : 地位;
 }

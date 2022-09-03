@@ -1,6 +1,6 @@
 import { 母到清濁, 母到組, 母到音, 韻到攝 } from './拓展音韻屬性';
-import { 導入或驗證 } from './正則化';
-import { 可靠重紐韻, 各等韻, 呼韻限制, 所有, 重紐韻, 鈍音母, 陰聲韻 } from './音韻屬性常量';
+import { 導入或驗證, 正則化Error, 正則化或驗證 } from './正則化';
+import { 可靠重紐韻, 各等韻, 呼韻限制, 所有, 鈍音母, 陰聲韻 } from './音韻屬性常量';
 
 // For encoder
 const 編碼表 = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789$_';
@@ -764,64 +764,52 @@ export class 音韻地位 {
   }
 
   /**
-   * 驗證給定的音韻地位六要素是否合法。此為最小程度的驗證，想要更強限定請用 [[`適配分析體系`]]。
+   * 取得該地位經正則化處理後的地位。
+   * - 脣音「呼」均歸 `null`
+   * - 脣音咍韻歸灰韻
+   * - 嚴凡韻依脣音與否歸派
+   * - 清B視同庚三B
+   * - 端知組類隔視作混切，按實際的等歸派（惟「地」「爹」「打」「箉」「丟」例外）
+   * - 章組、云以日母的齊灰咍韻平上聲視作祭廢韻
+   * - 精章組、日母二等視作混切，歸入莊組、孃母
+   * - 其他與「等」不搭配的齒音，無法按統一規則自動處理
    *
-   * 母必須為「幫滂並明端透定泥來知徹澄孃精清從心邪莊初崇生俟章昌常書船日
-   * 見溪羣疑影曉匣云以」三十八聲類之一。
-   *
-   * 韻必須為「東冬鍾江支脂之微魚虞模齊祭泰佳皆夬灰咍廢真臻文殷元魂痕
-   * 寒刪山仙先蕭宵肴豪歌麻陽唐庚耕清青蒸登尤侯幽侵覃談鹽添咸銜嚴凡」五十八韻之一。
-   *
-   * 「呼」和「重紐」可為 `null`，其餘四個屬性不可為 `null`。
-   *
-   * 當聲母為脣音，或韻為「東冬鍾江模尤侯」（開合中立的韻）時，（除極少數例外）呼必須為 `null`。
-   * 在其他情況下，呼必須取「開」或「合」。
-   *
-   * 當聲母為幫見影組，且韻為「支脂祭真仙宵庚清侵鹽」十韻之一時，重紐必須取 `A` 或 `B`。
-   * 當聲母為幫見影組，且韻為「蒸幽麻」三韻之一時，重紐可以取 `null` 或 `A` 或 `B`。
-   * 在其他情況下，（除極少數例外）重紐必須為 `null`。
-   *
-   * 不設《廣韻》新增之諄、桓、戈韻。依《切韻》併入真、寒、歌韻。
-   *
-   * @param 母 聲母：幫, 滂, 並, 明, …
-   * @param 呼 呼：`null`, 開, 合
-   * @param 等 等：一, 二, 三, 四
-   * @param 重紐 重紐：`null`, A, B
-   * @param 韻 韻母（舉平以賅上去入）：東, 冬, 鍾, 江, …, 祭, 泰, 夬, 廢
-   * @param 聲 聲調：平, 上, 去, 入
-   * @throws 若給定的音韻地位六要素不合法，則拋出異常。
+   * @param 寬鬆 允許無法自動正則化的地位保持原狀
+   * @returns 正則化後的地位，若該地位已是正則地位，則返回自身
+   * @throws {正則化Error} 當地位沒有統一的正則化方式，無法自動正則化，且 `寬鬆` 為 `false` 時拋出
    */
-  static 驗證(母: string, 呼: string | null, 等: string, 重紐: string | null, 韻: string, 聲: string): void {
-    // TODO 此為簡易驗證，待升級為強驗證
-    assert([...所有.母].includes(母), `Unexpected 母: ${JSON.stringify(母)}`);
-    assert([...所有.等].includes(等), `Unexpected 等: ${JSON.stringify(等)}`);
-    assert([...所有.韻].includes(韻), `Unexpected 韻: ${JSON.stringify(韻)}`);
-    assert([...所有.聲].includes(聲), `Unexpected 聲: ${JSON.stringify(聲)}`);
-    assert(
-      [...所有.呼].includes(呼) || (呼 === null && ([...'幫滂並明'].includes(母) || 呼韻限制.中立.includes(韻))),
-      `Unexpected 呼: ${JSON.stringify(呼)}`
-    );
-    assert(
-      [...所有.重紐].includes(重紐) || (重紐 === null && !(鈍音母.includes(母) && 重紐韻.includes(韻))),
-      `Unexpected 重紐: ${JSON.stringify(重紐)}`
-    );
+  正則化(寬鬆 = false): 音韻地位 {
+    return 正則化或驗證(this, true, 寬鬆);
+  }
 
-    if ([...各等韻.一].includes(韻)) {
-      assert(等 === '一', `Unexpected 等: ${JSON.stringify(等)}`);
-    } else if ([...各等韻.二].includes(韻)) {
-      assert(等 === '二', `Unexpected 等: ${JSON.stringify(等)}`);
-    } else if ([...各等韻.三].includes(韻)) {
-      assert(等 === '三', `Unexpected 等: ${JSON.stringify(等)}`);
-    } else if ([...各等韻.四].includes(韻)) {
-      assert(等 === '四', `Unexpected 等: ${JSON.stringify(等)}`);
-    } else if ([...各等韻.一三].includes(韻)) {
-      assert(['一', '三'].includes(等), `Unexpected 等: ${JSON.stringify(等)}`);
-    } else if ([...各等韻.二三].includes(韻)) {
-      assert(['二', '三'].includes(等), `Unexpected 等: ${JSON.stringify(等)}`);
-    }
+  /**
+   * 驗證以確保該地位為正則地位。
+   * 若為正則地位，則返回自身，否則拋出異常。
+   *
+   * @param 寬鬆 允許無法自動正則化的地位保持原狀
+   * @returns 自身
+   * @throws {正則化Error} 該地位並非正則地位時拋出，其中會包含原因及相應的正則地位（若有）
+   */
+  check正則地位(寬鬆 = false): 音韻地位 {
+    return 正則化或驗證(this, false, 寬鬆);
+  }
 
-    if ([...陰聲韻].includes(韻)) {
-      assert(聲 !== '入', `unexpected 入聲 for ${韻}韻`);
+  /**
+   * 檢查該地位是否為正則地位。
+   *
+   * @param 寬鬆 允許無法自動正則化的地位保持原狀
+   * @returns 自身
+   */
+  is正則地位(寬鬆 = false): boolean {
+    try {
+      this.check正則地位(寬鬆);
+      return true;
+    } catch (e) {
+      if (e instanceof 正則化Error) {
+        return false;
+      } else {
+        throw e;
+      }
     }
   }
 

@@ -66,7 +66,7 @@ def 描述2編碼(描述: str) -> str:
 def fetch_data():
     if not os.path.exists('prepare/data.csv'):
         status = os.system(
-            'curl -LsSo prepare/data.csv https://raw.githubusercontent.com/nk2028/qieyun-data/c562352/%E9%9F%BB%E6%9B%B8/%E5%BB%A3%E9%9F%BB.csv')
+            'curl -LsSo prepare/data.csv https://raw.githubusercontent.com/nk2028/qieyun-data/a49f5d1/%E9%9F%BB%E6%9B%B8/%E5%BB%A3%E9%9F%BB.csv')
         assert status == 0
 
 

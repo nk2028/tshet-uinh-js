@@ -1,6 +1,6 @@
 import { 母到清濁, 母到組, 母到音, 韻到攝 } from './拓展音韻屬性';
 import { 導入或驗證, 正則化Error, 正則化或驗證 } from './正則化';
-import { 可靠重紐韻, 各等韻, 呼韻限制, 所有, 鈍音母, 陰聲韻 } from './音韻屬性常量';
+import { 可靠重紐韻, 各等韻, 呼韻搭配, 所有, 鈍音母, 陰聲韻 } from './音韻屬性常量';
 
 // For encoder
 const 編碼表 = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789$_';
@@ -342,7 +342,7 @@ export class 音韻地位 {
   get 最簡描述(): string {
     const { 母, 韻, 聲 } = this;
     let { 呼, 等, 重紐 } = this;
-    if ((呼 === '開' && 呼韻限制.開.includes(韻)) || (呼 === '合' && 呼韻限制.合.includes(韻))) {
+    if ((呼 === '開' && 呼韻搭配.開.includes(韻)) || (呼 === '合' && 呼韻搭配.合.includes(韻))) {
       呼 = null;
     }
     if (![...各等韻.一三, ...各等韻.二三].includes(韻)) 等 = null;
@@ -884,8 +884,8 @@ export class 音韻地位 {
     const 聲 = match[6];
 
     if (呼 === null && ![...'幫滂並明'].includes(母)) {
-      if (呼韻限制.開.includes(韻)) 呼 = '開';
-      else if (呼韻限制.合.includes(韻)) 呼 = '合';
+      if (呼韻搭配.開.includes(韻)) 呼 = '開';
+      else if (呼韻搭配.合.includes(韻)) 呼 = '合';
     }
 
     if (等 === null) {

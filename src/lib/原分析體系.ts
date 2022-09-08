@@ -1,5 +1,5 @@
 import { 部分音韻屬性, 音韻地位 } from './音韻地位';
-import { 呼韻限制, 重紐韻, 鈍音母 } from './音韻屬性常量';
+import { 呼韻搭配, 重紐韻, 鈍音母 } from './音韻屬性常量';
 
 const 端知組對應: Record<string, string> = {};
 for (const pair of ['端知', '透徹', '定澄', '泥孃']) {
@@ -33,9 +33,9 @@ function 適配v2ext(地位: 音韻地位, 嚴格: boolean, 原地位脣音寒�
   };
 
   // 呼：指定開合的韻
-  if (呼韻限制.開.includes(地位.韻)) {
+  if (呼韻搭配.開.includes(地位.韻)) {
     if (!is`開口 或 (脣音 開合中立)`) reject('呼 should be 開');
-  } else if (呼韻限制.合.includes(地位.韻)) {
+  } else if (呼韻搭配.合.includes(地位.韻)) {
     if (!is`合口 或 (脣音 開合中立)`) reject('呼 should be 合');
   }
 
@@ -49,7 +49,7 @@ function 適配v2ext(地位: 音韻地位, 嚴格: boolean, 原地位脣音寒�
     } else if (is`合口`) {
       reject(`unexpected 合口 for 脣音${地位.韻}韻`);
     }
-  } else if (呼韻限制.中立.includes(地位.韻) || is`幫組`) {
+  } else if (呼韻搭配.中立.includes(地位.韻) || is`幫組`) {
     地位.呼 && 調整({ 呼: null }, 'unexpected 呼');
   }
 
@@ -407,7 +407,7 @@ export function 適配分析體系(分析體系 = 'v2', 選項?: 適配分析體
     }
 
     // 中立韻
-    if (isRequire(參數.呼_中立韻) && 呼韻限制.中立.includes(地位.韻)) {
+    if (isRequire(參數.呼_中立韻) && 呼韻搭配.中立.includes(地位.韻)) {
       let 呼;
       if (isRequire(參數.呼_脣音) || !is`脣音`) {
         if (參數.呼_中立韻 === 'requirePoem') {
@@ -426,11 +426,11 @@ export function 適配分析體系(分析體系 = 'v2', 選項?: 適配分析體
     if (isRequire(參數.呼_脣音) && !地位.呼 && is`脣音`) {
       // `!地位.呼` 用於排除中立韻（已處理過了）以及 v2ext 下已經是寒歌開的地位
       let 呼: string;
-      if (呼韻限制.開.includes(地位.韻)) {
+      if (呼韻搭配.開.includes(地位.韻)) {
         呼 = '開';
-      } else if (呼韻限制.合.includes(地位.韻)) {
+      } else if (呼韻搭配.合.includes(地位.韻)) {
         呼 = '合';
-      } else if (呼韻限制.開合.includes(地位.韻)) {
+      } else if (呼韻搭配.開合.includes(地位.韻)) {
         if (is`三等`) {
           呼 = is`輕脣韻 或 歌韻` ? '合' : '開';
         } else if (is`二四等`) {

@@ -1,5 +1,5 @@
 import type { 任意音韻地位, 部分音韻屬性, 音韻地位 } from './音韻地位';
-import { 各等韻, 呼韻限制, 所有, 鈍音母, 陰聲韻 } from './音韻屬性常量';
+import { 各等韻, 呼韻搭配, 所有, 鈍音母, 陰聲韻 } from './音韻屬性常量';
 
 const 脣音母 = [...'幫滂並明'];
 const 鈍音除云母 = 鈍音母.filter(x => x !== '云');
@@ -57,7 +57,9 @@ export function 導入或驗證(某體系音韻地位: 任意音韻地位, is導
     return (地位 = { ...地位, ...x });
   };
   const reject = (msg: string) => {
-    throw new Error(`Invalid 音韻屬性 ${JSON.stringify(原地位)}: ${msg}`);
+    const 原地位str =
+      '{ ' + (['母', '呼', '等', '重紐', '韻', '聲'] as const).map(k => `${k}${JSON.stringify(原地位[k])}`).join(', ') + ' }';
+    throw new Error(`Invalid 音韻屬性 ${原地位str}: ${msg}`);
   };
 
   // 別家地位用字
@@ -122,7 +124,7 @@ export function 導入或驗證(某體系音韻地位: 任意音韻地位, is導
   }
 
   // 必要呼、重紐
-  if (!地位.呼 && !脣音母.includes(地位.母) && 呼韻限制.開合.includes(地位.韻)) {
+  if (!地位.呼 && !脣音母.includes(地位.母) && 呼韻搭配.開合.includes(地位.韻)) {
     reject('need 呼');
   }
   if (!地位.重紐 && 鈍音除云母.includes(地位.母) && 重紐八韻.includes(地位.韻)) {
@@ -145,18 +147,18 @@ export function 導入或驗證(某體系音韻地位: 任意音韻地位, is導
     if (地位.韻 === '清' && 地位.呼 === '合' && 地位.重紐 !== 'B') {
       調整({ 呼: null, 重紐: 'B' }, '合口 should be B類 for 清韻脣音');
     } else if (地位.呼 && !(原體系脣音分寒桓歌戈 && 地位.呼 === '開' && ['寒', '歌'].includes(地位.韻))) {
-      調整({ 呼: null }, '呼 should be null 脣音');
+      調整({ 呼: null }, '呼 should be null for 脣音');
     }
   } else if (['虞', '幽'].includes(地位.韻) && 地位.呼 === null) {
     const 呼 = 地位.韻 === '虞' ? '合' : '開';
     調整({ 呼 }, `呼 should be ${呼} for ${地位.韻}韻`);
-  } else if (呼韻限制.中立.includes(地位.韻)) {
+  } else if (呼韻搭配.中立.includes(地位.韻)) {
     if (地位.呼) {
       調整({ 呼: null }, `呼 should be null for ${地位.韻}韻`);
     }
   } else {
     for (const 呼 of ['開', '合'] as const) {
-      if (呼韻限制[呼].includes(地位.韻) && 地位.呼 !== 呼) {
+      if (呼韻搭配[呼].includes(地位.韻) && 地位.呼 !== 呼) {
         reject(`呼 should be ${呼} for ${地位.韻}韻`);
       }
     }
@@ -218,6 +220,8 @@ export function 正則化或驗證(地位: 音韻地位, is正則化: boolean, �
   const reject = (msg: string) => {
     throw new 正則化Error(null, `cannot normalize 音韻地位 ${原地位.描述}: ${msg}`);
   };
+
+  // TODO revisit
 
   // 類隔
   if (is`知組 一四等 或 端組 (二等 非 (佳庚韻 開口) 或 三等 非 (脂麻幽韻 開口))`) {

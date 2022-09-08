@@ -1,6 +1,6 @@
 import test, { ExecutionContext } from 'ava';
 
-import { 導入或驗證, 正則化或驗證 } from './正則化';
+import { 導入或驗證, 正則化Error, 正則化或驗證 } from './正則化';
 import { 任意音韻地位, 音韻地位 } from './音韻地位';
 
 // Helper functions
@@ -70,7 +70,7 @@ function test正則化或驗證(t: ExecutionContext, 寬鬆 = false) {
 
   const reject = (input: string) => {
     const input地位 = 音韻地位.from描述(input);
-    t.throws(() => 正則化或驗證(input地位, true, 寬鬆), { message: /^cannot normalize 音韻地位 / });
+    t.throws(() => 正則化或驗證(input地位, true, 寬鬆), { message: /^cannot normalize 音韻地位 /, instanceOf: 正則化Error });
   };
 
   return [run, reject] as const;

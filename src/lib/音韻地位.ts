@@ -38,6 +38,9 @@ function assert(value: unknown, error: string): asserts value {
   if (!value) throw new Error(error);
 }
 
+// `Array.isArray`, but with more conservative type inference
+const isArray: (x: unknown) => x is readonly unknown[] = Array.isArray;
+
 type Falsy = '' | 0 | false | null | undefined;
 export type 規則<T = unknown> = [unknown, T | 規則<T>][];
 
@@ -182,7 +185,7 @@ export class 音韻地位 {
   readonly 聲: string;
 
   /**
-   * 初始化音韻地位物件。（各項參數詳見 [`音韻地位`] 說明）
+   * 初始化音韻地位物件。（各項參數詳見 [[`音韻地位`]] 說明）
    * @param 母 聲母：幫, 滂, 並, 明, …
    * @param 呼 呼：`null`, 開, 合
    * @param 等 等：一, 二, 三, 四
@@ -351,7 +354,7 @@ export class 音韻地位 {
   }
 
   /**
-   * 表達式，可用於 [[`屬於`]] 函數
+   * 表達式，可用於 [[`.屬於`]] 函數
    * @example
    * ```typescript
    * > 音韻地位 = Qieyun.音韻地位.from描述('幫三凡入');
@@ -394,6 +397,8 @@ export class 音韻地位 {
   /**
    * 調整該音韻地位的屬性，會驗證調整後地位的合法性，返回新的對象。
    *
+   * 本方法可使用一般形式（`.調整({ ... })`）、字串形式（`.調整('...')`）或標籤模板語法（`` .調整`...` ``）。
+   *
    * **注意**：原對象不會被修改。
    *
    * @param 調整屬性 對象，其屬性可為六項基本屬性中的若干項，各屬性的值為欲修改成的值。
@@ -410,7 +415,97 @@ export class 音韻地位 {
    * '見合三元上'
    * ```
    */
-  調整(調整屬性: 部分音韻屬性): 音韻地位 {
+  調整(調整屬性: 部分音韻屬性): 音韻地位;
+
+  /**
+   * @example
+   * ```typescript
+   * > 音韻地位 = Qieyun.音韻地位.from描述('幫三元上');
+   * > 音韻地位.調整`平聲`.描述 // 標籤模板語法（表達式為字面值時推薦）
+   * '幫三元平'
+   * > 音韻地位.調整('平聲').描述
+   * '幫三元平'
+   * > 音韻地位.調整`見母 合口`.描述
+   * '見合三元上'
+   * ```
+   */
+  調整(調整屬性: string): 音韻地位;
+
+  /**
+   * @example
+   * ```typescript
+   * > 音韻地位 = Qieyun.音韻地位.from描述('幫三元上');
+   * > 音韻地位.調整`${'見'}母 ${'合口'}`.描述
+   * '見合三元上'
+   * ```
+   */
+  調整(調整屬性: TemplateStringsArray, ...參數: string[]): 音韻地位;
+
+  調整(調整屬性: string | readonly string[] | 部分音韻屬性, ...參數: string[]): 音韻地位 {
+    if (typeof 調整屬性 === 'string') 調整屬性 = [調整屬性];
+
+    if (isArray(調整屬性)) {
+      const tokenGroups: string[][] = [[]];
+      for (let i = 0; i < 調整屬性.length; i++) {
+        let fragment = 調整屬性[i];
+        if (!i) {
+          fragment = fragment.trimStart();
+        }
+        if (i === 調整屬性.length - 1) {
+          fragment = fragment.trimEnd();
+        }
+
+        const tokens = fragment.split(/\s+/);
+        for (let j = 0; j < tokens.length; j++) {
+          if (tokens[j]) {
+            tokenGroups[tokenGroups.length - 1].push(tokens[j]);
+          }
+          if (j < tokens.length - 1) {
+            tokenGroups.push([]);
+          }
+        }
+        if (i < 參數.length) {
+          tokenGroups[tokenGroups.length - 1].push(參數[i]);
+        }
+      }
+
+      const 音韻屬性: 部分音韻屬性 = {};
+      const tryAssign = <T extends keyof 部分音韻屬性>(屬性: T, 值: 音韻地位[T]) => {
+        assert(!(屬性 in 音韻屬性), `duplicated assignment of ${屬性}`);
+        音韻屬性[屬性] = 值;
+      };
+
+      for (let tokens of tokenGroups) {
+        assert(tokens.length, 'empty expression');
+        let original: string | undefined;
+        if (tokens.length === 1) {
+          switch (tokens[0]) {
+            case '開合中立':
+              tryAssign('呼', null);
+              continue;
+            case '不分重紐':
+              tryAssign('重紐', null);
+              continue;
+          }
+          original = tokens[0];
+          tokens = [...tokens[0]];
+        }
+        let 屬性 = tokens[tokens.length - 1];
+        const 值 = tokens[tokens.length - 2];
+        assert(
+          屬性 === '類' ? tokens.slice(0, -2).join('') === '重紐' : tokens.length === 2 && ['母', '等', '韻', '聲', '口'].includes(屬性),
+          `unrecognized expression: ${original ?? tokens.join(', ')}`
+        );
+        if (屬性 === '口') 屬性 = '呼';
+        if (屬性 === '類') 屬性 = '重紐';
+        const check = 檢查[屬性 as keyof 部分音韻屬性];
+        assert(check.includes(值), `unexpected ${屬性}: ${值}`);
+        tryAssign(屬性 as keyof 部分音韻屬性, 值);
+      }
+
+      調整屬性 = 音韻屬性;
+    }
+
     const { 母 = this.母, 呼 = this.呼, 等 = this.等, 重紐 = this.重紐, 韻 = this.韻, 聲 = this.聲 } = 調整屬性;
     return new 音韻地位(母, 呼, 等, 重紐, 韻, 聲);
   }
@@ -449,17 +544,15 @@ export class 音韻地位 {
    * * NOT 運算子：`非`, `not`, `~`, `!`
    * * 括號：`(……)`, `（……）`
    *
-   * 各表達式及運算子之間以空格隔開。
+   * 各表達式及運算子之間必須以空格隔開。
    *
-   * AND 運算子可省略。
-   *
-   * 如 `(端精組 且 入聲) 或 (以母 且 四等 且 去聲)` 與 `端精組 入聲 或 以母 四等 去聲` 同義。
+   * AND 運算子可省略，如 `(端精組 且 入聲) 或 (以母 且 四等 且 去聲)` 與 `端精組 入聲 或 以母 四等 去聲` 同義。
    * @returns 若描述音韻地位的字串符合該音韻地位，回傳 `true`；否則回傳 `false`。
    * @throws 若表達式為空、不合語法、或限定條件不合法，則拋出異常。
    * @example
    * ```typescript
    * > 音韻地位 = Qieyun.音韻地位.from描述('幫三凡入');
-   * > 音韻地位.屬於`章母`; // 標籤模板語法（表達式為字面值時推荐）
+   * > 音韻地位.屬於`章母`; // 標籤模板語法（表達式為字面值時推薦）
    * false
    * > 音韻地位.屬於('章母'); // 一般形式
    * false
@@ -476,8 +569,8 @@ export class 音韻地位 {
    *
    * 嵌入的參數可以是：
    *
-   * * 函數：會被執行；若其傳回值為字串，會遞迴套用至 [[`音韻地位.屬於`]] 函數，否則會檢測其真值
-   * * 字串：會遞迴套用至 [[`音韻地位.屬於`]] 函數
+   * * 函數：會被執行；若其傳回值為字串，會遞迴套用至 [[`.屬於`]] 函數，否則會檢測其真值
+   * * 字串：會遞迴套用至 [[`.屬於`]] 函數
    * * 其他：會檢測其真值
    *
    * **注意**：
@@ -496,7 +589,7 @@ export class 音韻地位 {
    * true
    * ```
    */
-  屬於(表達式: readonly string[], ...參數: unknown[]): boolean;
+  屬於(表達式: TemplateStringsArray, ...參數: unknown[]): boolean;
 
   屬於(表達式: string | readonly string[], ...參數: unknown[]): boolean {
     if (typeof 表達式 === 'string') 表達式 = [表達式];
@@ -526,7 +619,7 @@ export class 音韻地位 {
         assert(!invalid, invalid + match[2] + '不存在');
         return values.includes(this[match[2] as keyof typeof 檢查]);
       }
-      throw new Error(`unreconized test condition: ${token}`);
+      throw new Error(`unrecognized test condition: ${token}`);
     };
 
     // 詞法分析，同時給普通運算元求值（惟函數型運算元留待後面惰性求值）
@@ -684,8 +777,8 @@ export class 音韻地位 {
    *
    * 判斷式可以是：
    *
-   * * &#x3000;&#x3000;函數：會被執行；若其傳回值為非空字串，會套用至 [[`音韻地位.屬於`]] 函數，若為布林值則直接決定是否跳過本規則，否則規則永遠不會被跳過
-   * * 非空字串：描述音韻地位的表達式，會套用至 [[`音韻地位.屬於`]] 函數
+   * * &#x3000;&#x3000;函數：會被執行；若其傳回值為非空字串，會套用至 [[`.屬於`]] 函數，若為布林值則直接決定是否跳過本規則，否則規則永遠不會被跳過
+   * * 非空字串：描述音韻地位的表達式，會套用至 [[`.屬於`]] 函數
    * * &#x3000;布林值：直接決定是否跳過本規則
    * * &#x3000;&#x3000;其他：規則永遠不會被跳過（可用作指定後備結果）
    *

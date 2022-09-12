@@ -1,6 +1,6 @@
 import test, { ExecutionContext } from 'ava';
 
-import { 導入或驗證, 正則化Error, 正則化或驗證 } from './正則化';
+import { 導入或驗證, 正則化Error, 正則化或驗證, 正則化選項 } from './正則化';
 import { 任意音韻地位, 音韻地位 } from './音韻地位';
 
 // Helper functions
@@ -49,31 +49,42 @@ function test導入或驗證(t: ExecutionContext, 原體系脣音分寒桓歌戈
 }
 
 // XXX DRY?
-function test正則化或驗證(t: ExecutionContext, 寬鬆 = false) {
-  const run = (input: string, expected?: string) => {
+function test正則化或驗證(t: ExecutionContext) {
+  const run = (input: string, 字頭或選項: string | 正則化選項 = '', expected?: string) => {
     const input地位 = 音韻地位.from描述(input);
     const expected地位 = expected !== undefined ? 音韻地位.from描述(expected) : undefined;
     if (expected地位?.等於(input地位)) {
       throw new Error(`unnecessary argument "expected": ${expected} (equivalent to ${input})`);
     }
     const 正則地位 = expected地位 ?? input地位;
-    t.is(正則化或驗證(input地位, true, 寬鬆).描述, 正則地位.描述, `正則化: ${input地位.描述} (寬鬆: ${寬鬆})`);
-    t.is(正則化或驗證(正則地位, false, 寬鬆), 正則地位, `驗證: ${正則地位.描述} (寬鬆: ${寬鬆})`);
+    const argStr = JSON.stringify(字頭或選項);
+    t.is(正則化或驗證(input地位, true, 字頭或選項)[0].描述, 正則地位.描述, `正則化: ${input地位.描述} (arg: ${argStr})`);
+    t.is(正則化或驗證(正則地位, false, 字頭或選項)[0], 正則地位, `驗證: ${正則地位.描述} (arg: ${argStr})`);
     if (expected地位 !== undefined) {
       t.throws(
-        () => 正則化或驗證(input地位, false, 寬鬆),
+        () => 正則化或驗證(input地位, false, 字頭或選項),
         { message: /^非正則地位 / },
-        `驗證正則化前地位: ${input地位.描述} (寬鬆: ${寬鬆})`
+        `驗證正則化前地位: ${input地位.描述} (arg: ${argStr})`
       );
     }
   };
 
-  const reject = (input: string) => {
+  const reject = (input: string, 字頭或選項: string | 正則化選項 = '') => {
     const input地位 = 音韻地位.from描述(input);
-    t.throws(() => 正則化或驗證(input地位, true, 寬鬆), { message: /^cannot normalize 音韻地位 /, instanceOf: 正則化Error });
+    t.throws(() => 正則化或驗證(input地位, true, 字頭或選項), { message: /^cannot normalize 音韻地位 /, instanceOf: 正則化Error });
+  };
+  const warn = (input: string, 字頭或選項: string | 正則化選項 = '', pattern?: RegExp) => {
+    const input地位 = 音韻地位.from描述(input);
+    const [res地位, warning] = 正則化或驗證(input地位, false, 字頭或選項);
+    t.is(res地位, input地位);
+    if (pattern === undefined) {
+      t.is(warning, null);
+    } else {
+      t.regex(warning, pattern, `邊緣地位: ${input地位.描述}`);
+    }
   };
 
-  return [run, reject] as const;
+  return [run, reject, warn] as const;
 }
 
 // 導入/驗證
@@ -220,52 +231,74 @@ test('導入/驗證（重紐）', t => {
 
 test('正則化/驗證（類隔）', t => {
   const [run, reject] = test正則化或驗證(t);
-  const [lenient] = test正則化或驗證(t, true);
+
+  // 匣三
+
+  reject('匣開A真平');
 
   // 端知
+  run('定開脂去', '地');
   run('定開脂去');
-  run('定合山平', '澄合山平');
+  run('定開脂去', '草', '澄開脂去');
+  run('定合山平', '窀', '澄合山平');
+  run('定開佳上', '箉');
   run('定開佳上');
+  run('端開三麻平', '爹');
   run('端開三麻平');
+  run('端開二庚上', '打');
   run('端開二庚上');
+  run('端幽平', '丟');
   run('端幽平');
 
   // 蟹三平上
-  run('昌咍上', '昌開廢上');
+  run('昌咍上', '', '昌開廢上');
+  run('云灰上', '', '云合廢上');
 
   // 齒音
-  run('昌開山平', '初開山平');
   reject('以開寒入');
-  lenient('以開寒入');
-  run('清合夬去', '初合夬去');
-  reject('崇開先平');
-  lenient('崇開先平');
+  run('清合夬去', '', '初合夬去');
+  run('崇侯上', '', '從侯上');
 
-  // 云匣
-  run('云灰上', '云合廢上');
+  // 章組云以日母
   reject('云合山平');
-  lenient('云合山平');
+  reject('昌開山平');
 
   // 莊組臻攝開口
   run('崇開臻上');
-  run('莊開殷上', '莊開臻上');
-  run('崇開真上', '崇開臻上');
+  run('莊開殷上', '', '莊開臻上');
+  run('崇開真上', '', '崇開臻上');
   run('崇合真上');
+  reject('見開臻平');
 });
 
 test('正則化/驗證（呼、重紐）', t => {
-  const [run] = test正則化或驗證(t, false);
+  const [run, reject] = test正則化或驗證(t);
 
   // 寒、歌
-  run('並開一歌上', '並一歌上');
-  run('明開寒入', '明寒入');
+  run('並開一歌上', '', '並一歌上');
+  run('明開寒入', '', '明寒入');
+  reject('幫之平');
+  reject('幫痕平');
+  reject('幫殷平');
 
   // 灰咍嚴凡
-  run('並咍上', '並灰上');
-  run('明嚴去', '明凡去');
-  run('見凡去', '見嚴去');
+  run('並咍上', '', '並灰上');
+  run('並咍上', { 字頭: '', 保留咍韻脣音: true });
+  run('明嚴去', '', '明凡去');
+  run('見凡去', '', '見嚴去');
 
   // 重紐：清
   run('幫A清入');
-  run('幫B清入', '幫三庚入');
+  run('幫B清入', '', '幫三庚入');
+
+  // 重紐：陽
+  run('並A陽上', '𩦠');
+  run('並A陽上', '');
+  reject('並A陽上', '草');
+});
+
+test('正則化/驗證（弱非正則地位）', t => {
+  const [, , warn] = test正則化或驗證(t);
+  warn('云開仙平', '', /^弱非正則地位 .+?: 云母開口 is marginal/);
+  warn('羣合佳上', '', /^弱非正則地位 .*?: 羣母非三等 is marginal/);
 });

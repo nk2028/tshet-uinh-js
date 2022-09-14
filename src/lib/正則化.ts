@@ -195,13 +195,6 @@ for (const [t, tr] of ['端知', '透徹', '定澄', '泥孃', '精莊', '清初
   端知精莊對應[tr] = t;
 }
 
-export class 正則化Error extends Error {
-  constructor(public 正則地位: 音韻地位 | null, ...args: Parameters<ErrorConstructor>) {
-    super(...args);
-    this.name = '正則化Error';
-  }
-}
-
 function make例外data(entries: [string, string][]): { 字: Map<string, Set<string>>; 地位: Set<string> } {
   const by字: Map<string, Set<string>> = new Map();
   const by地位: Set<string> = new Set();
@@ -234,7 +227,7 @@ const 所有例外 = {
     ['打/咑', '=端開二庚上'],
     ['地坔埅埊墬嶳灺𠏂𡍑𡏇𡑸𡒰𡒴𡒿𡓬𤅴𨹛𨻐𪒉墬/哋/𢓧', '=定開三脂去'],
     ['爹/嗲/𪦕', '端母 開口 三等 麻韻 平上聲'],
-    ['箉䈆簤', '定母 開口 佳皆韻 平上聲'],
+    ['箉䈆簤', '定母 開口 佳皆韻 上去聲'],
     ['丟丢厾銩铥', '=端開三幽平'],
   ]),
   陽A: make例外data([['𩦠𫠌', '=並三A陽上']]),
@@ -245,12 +238,45 @@ const 所有策略 = {
   保守正則化: true,
 };
 
+/**
+ * [[`音韻地位.正則地位`]] 及類似方法所用之選項。
+ *
+ * 選項作用優先級：`is...例外字` > `字頭` > `策略`；建議至少指定 `字頭` 或 `策略`。
+ */
 export interface 正則化選項 {
+  /**
+   * 用於判定是否為例外字
+   * - 若其為有非正則音的字，則其對應的非正則音將得以保留（如傳入「地」字，則「定開脂去」將不會被改為「澄開脂去」）
+   * - 若無法給出字頭，也可用空串 `''`；此時將僅靠地位判定，已知有字的非正則地位將均得以保留
+   */
   字頭?: string;
+  /**
+   * 使用較粗放的正則化策略，目前支持的值有：
+   * - `'一律正則化'`: 無視例外字，一律處理為正則地位
+   * - `'保守正則化'`: 對可能有例外的組合（端組二三等、陽韻A類），均保留
+   */
   策略?: string;
+  /** 直接指定待處理之地位是否視為端組二三等之例外 */
   is端組例外字?: boolean | null;
+  /** 直接指定待處理之地位是否視為陽韻A類之例外 */
   is陽A例外字?: boolean | null;
+  /** 咍韻脣音可保留，不視同灰韻（預設為不保留） */
   保留咍韻脣音?: boolean;
+}
+
+/**
+ * [[`音韻地位.正則地位`]] 及類似方法可能拋出的異常。
+ */
+export class 正則化Error extends Error {
+  /**
+   * 僅用於 [[`音韻地位.ensure正則化`]]，當地位非正則，且能自動處理為正則地位時，表示其所對應正則地位
+   */
+  正則地位: 音韻地位 | null;
+  constructor(正則地位: 音韻地位 | null, ...args: Parameters<ErrorConstructor>) {
+    super(...args);
+    this.name = '正則化Error';
+    this.正則地位 = 正則地位;
+  }
 }
 
 function is正則化例外(name: '端組' | '陽A', 選項: 正則化選項, 地位: 音韻地位): boolean | null {
@@ -369,7 +395,7 @@ export function 正則化或驗證(地位: 音韻地位, is正則化: boolean, �
   // 容許的邊緣組合（弱非正則地位）
   const warnings: string[] = [];
   // 云母開口
-  if (is`云母 開口 非 宵幽侵鹽韻`) {
+  if (is`云母 開口 非 宵侵鹽韻`) {
     warnings.push('云母開口 is marginal');
   } else if (is`羣邪俟母 非 三等`) {
     warnings.push(`${地位.母}母非三等 is marginal`);

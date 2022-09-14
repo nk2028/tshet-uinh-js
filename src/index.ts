@@ -5,4 +5,5 @@ export * as 資料 from './lib/解析資料';
 
 export * as 表達式 from './lib/常用表達式';
 
+export { 正則化Error } from './lib/正則化';
 export type { 正則化選項 } from './lib/正則化';

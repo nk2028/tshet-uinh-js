@@ -1,5 +1,5 @@
 import { 母到清濁, 母到組, 母到音, 韻到攝 } from './拓展音韻屬性';
-import { 導入或驗證, 正則化Error, 正則化或驗證, 正則化選項 } from './正則化';
+import { 正則化Error, 正則化或驗證, 正則化選項 } from './正則化';
 import { 可靠重紐韻, 各等韻, 呼韻搭配, 所有, 鈍音母, 陰聲韻 } from './音韻屬性常量';
 
 // For encoder
@@ -28,6 +28,23 @@ const 次入韻 = '祭泰夬廢';
 // TODO 取消
 const 輕脣韻 = '東鍾微虞廢文元陽尤凡';
 
+const 已知邊緣地位 = new Set([
+  // 嚴格邊緣地位
+  // 端組
+  '定開三脂去', // 地
+  '端開二庚上', // 打
+  '端開三麻平', // 爹
+  '端開三麻上', // 嗲
+  ...['佳', '皆'].flatMap(韻 => ['上', '去'].map(聲 => `定開二${韻}${聲}`)), // 箉䈆
+  '端開三幽平', // 丟
+  // 陽A
+  '並三A陽上', // 𩦠
+  // 非嚴格邊緣地位
+  // 云母
+  '云開三之上', // 矣
+  '云開三B仙平', // 焉
+]);
+
 const pattern音韻地位 = new RegExp(
   `^([${所有.母.join('')}])([${所有.呼.join('')}]?)([${所有.等.join('')}]?)` +
     `([${所有.重紐.join('')}]?)([${所有.韻.join('')}])([${所有.聲.join('')}])$`,
@@ -44,19 +61,15 @@ export type 規則<T = unknown> = [unknown, T | 規則<T>][];
 export type 任意音韻地位 = Pick<音韻地位, '母' | '呼' | '等' | '重紐' | '韻' | '聲'>;
 export type 部分音韻屬性 = Partial<任意音韻地位>;
 
-export type 其他分析體系 = 'v2' | 'v2ext' | 'poem' | 'v1' | 'ytenx' | 'yonh';
+export interface 邊緣地位選項 {
+  端組二三等?: boolean;
+  陽韻A類?: boolean;
+  羣邪俟母非三等?: boolean;
+  云母開口?: boolean;
+  脣音咍韻?: boolean;
+}
 
-const 脣音分寒桓by分析體系: Record<其他分析體系, boolean> = {
-  v2: true, // actually `false`, but treated as its susperset `v2ext` here
-  v2ext: true,
-  poem: false,
-  v1: false,
-  ytenx: true,
-  yonh: true,
-};
-
-/**  (For internal use) Indicates bypassed verification in `音韻地位.constructor` */
-export const Unchecked: 其他分析體系 = Symbol('Unchecked') as unknown as 其他分析體系;
+const _Unchecked = Symbol('_Unchecked') as 邊緣地位選項;
 
 /**
  * 《切韻》音系音韻地位。
@@ -189,7 +202,7 @@ export class 音韻地位 {
    * @param 重紐 重紐：`null`, A, B
    * @param 韻 韻母（舉平以賅上去入）：東, 冬, 鍾, 江, …, 祭, 泰, 夬, 廢
    * @param 聲 聲調：平, 上, 去, 入
-   * @param 導入自 某個其他家資料 ID，表明指定的六項屬性來自該家資料；若指定此項，則構造後的六項屬性會經過變換以符合本項目之音韻分析體系
+   * @param 邊緣地位指定 若創建邊緣地位（列於內建已知邊緣地位的除外），須於該參數指明其種類
    * @returns 所描述的音韻地位
    * @example
    * ```typescript
@@ -197,17 +210,18 @@ export class 音韻地位 {
    * 音韻地位 { '幫三凡入' }
    * > new Qieyun.音韻地位('羣', '開', '三', 'A', '支', '平');
    * 音韻地位 { '羣開三A支平' }
-   * > new Qieyun.音韻地位('明', '合', '一', null, '桓', '入', 'ytenx);
-   * 音韻地位 { '明一寒入' }
    * ```
    */
-  constructor(母: string, 呼: string | null, 等: string, 重紐: string | null, 韻: string, 聲: string, 導入自?: 其他分析體系) {
-    if (導入自 !== Unchecked) {
-      if (導入自 != null && !Object.prototype.hasOwnProperty.call(脣音分寒桓by分析體系, 導入自)) {
-        throw new Error(`unknown 分析體系: ${導入自}`);
-      }
-      ({ 母, 呼, 等, 重紐, 韻, 聲 } = 導入或驗證({ 母, 呼, 等, 重紐, 韻, 聲 }, 導入自 != null, 脣音分寒桓by分析體系[導入自]));
-    }
+  constructor(
+    母: string,
+    呼: string | null = null,
+    等: string,
+    重紐: string | null = null,
+    韻: string,
+    聲: string,
+    邊緣地位指定: 邊緣地位選項 = {}
+  ) {
+    音韻地位.驗證(母, 呼, 等, 重紐, 韻, 聲, 邊緣地位指定);
     this.母 = 母;
     this.呼 = 呼;
     this.等 = 等;
@@ -892,7 +906,7 @@ export class 音韻地位 {
       if ([...各等韻.四].includes(韻)) 等 = '四';
     }
 
-    return new 音韻地位(母, 呼, 等, 重紐, 韻, 聲);
+    return new 音韻地位(母, 呼, 等, 重紐, 韻, 聲, _Unchecked);
   }
 
   /**
@@ -907,7 +921,7 @@ export class 音韻地位 {
    * 音韻地位 { '羣開三A支平' }
    * ```
    */
-  static from描述(音韻描述: string): 音韻地位 {
+  static from描述(音韻描述: string, 邊緣地位指定: 邊緣地位選項 = {}): 音韻地位 {
     const match = pattern音韻地位.exec(音韻描述);
     if (match === null) {
       throw new Error(`Cannot parse 描述: ${音韻描述}`);
@@ -937,7 +951,185 @@ export class 音韻地位 {
       else if (韻 === '庚' || 母 === '云') 重紐 = 'B';
     }
 
-    return new 音韻地位(母, 呼, 等, 重紐, 韻, 聲);
+    return new 音韻地位(母, 呼, 等, 重紐, 韻, 聲, 邊緣地位指定);
+  }
+
+  // TODO doc（以及 `音韻地位` 的也更新）
+  static 驗證(母: string, 呼: string | null, 等: string, 重紐: string | null, 韻: string, 聲: string, 邊緣地位指定: 邊緣地位選項) {
+    const tipIncompatible = " (note: use nk2028's data to avoid compatibility issues)";
+    const reject = (msg: string) => {
+      throw new Error(`invalid 音韻地位 <${母},${呼 || ''},${等},${重紐 || ''},${韻},${聲}>: ` + msg);
+    };
+
+    // 基本取值
+    for (const [屬性, 值, nullable] of [
+      ['母', 母],
+      ['呼', 呼, true],
+      ['等', 等],
+      ['重紐', 重紐, true],
+      ['韻', 韻],
+      ['聲', 聲],
+    ] as const) {
+      if (!((nullable && 值 === null) || 所有[屬性].includes(值))) {
+        if (屬性 === '韻' && [...'諄桓戈'].includes(值)) {
+          reject(`unexpected ${值}韻${tipIncompatible}`);
+        }
+        const suggestion = (
+          {
+            母: { 娘: '孃', 群: '羣' },
+            韻: { 眞: '真', 欣: '殷' },
+          } as Record<string, Record<string, string>>
+        )[屬性]?.[值];
+        reject(`unrecognized ${屬性}: ${值}` + (suggestion ? ` (did you mean: ${suggestion}?)` : ''));
+      }
+    }
+
+    // 等搭配
+    // 韻
+    for (const [韻等, 韻s] of Object.entries(各等韻)) {
+      if (韻s.includes(韻)) {
+        if (韻等.includes(等)) {
+          break;
+        } else {
+          const tip = 等 === '三' && ['齊', '灰', '咍'].includes(韻) ? tipIncompatible : '';
+          reject(`unexpected ${韻}韻${等}等${tip}`);
+        }
+      }
+    }
+    // 重紐
+    if (重紐 && 等 !== '三') {
+      reject(`unexpected ${等}等重紐`);
+    }
+    // 母
+    if ([...'章昌常書船云以日'].includes(母) && 等 !== '三') {
+      const tip = ['齊', '灰', '咍'].includes(韻) ? tipIncompatible : '';
+      reject(`unexpected ${母}母${等}等${tip}`);
+    }
+    for (const [母s, 等s] of [
+      ['知徹澄孃莊初崇生俟', '二三'],
+      ['精清從心邪', '一三四'],
+      ['匣', '一二四'],
+    ] as const) {
+      if ([...母s].includes(母)) {
+        if ([...等s].includes(等)) {
+          break;
+        } else {
+          reject(`unexpected ${母}母${等}等`);
+        }
+      }
+    }
+
+    // 聲搭配
+    // 陰聲韻
+    if (聲 === '入' && 陰聲韻.includes(韻)) {
+      reject(`unexpected ${韻}韻入聲`);
+    }
+
+    // 呼搭配
+    if (['幫', '滂', '並', '明'].includes(母)) {
+      呼 && reject(`unexpected 呼 for 脣音`);
+    } else if (呼韻搭配.中立.includes(韻)) {
+      呼 && reject(`unexpected 呼 for 開合中立韻`);
+    } else if (呼韻搭配.開合.includes(韻)) {
+      呼 || reject(`missing 呼`);
+    } else {
+      for (const 韻呼 of ['開', '合'] as const) {
+        if (呼韻搭配[韻呼].includes(韻)) {
+          if (呼 === 韻呼) {
+            break;
+          } else if (呼) {
+            reject(`unexpected ${韻}韻${呼}口`);
+          } else {
+            reject(`missing 呼 (should be ${韻呼})`);
+          }
+        }
+      }
+    }
+
+    // 重紐搭配
+    if (等 === '三') {
+      if (鈍音母.includes(母)) {
+        if (['庚', '清'].includes(韻)) {
+          const expected = 韻 === '庚' ? 'B' : 'A';
+          重紐 || reject(`missing 重紐 (should be ${expected})`);
+          const tip = 韻 === '清' && 重紐 === 'B' ? tipIncompatible : '';
+          重紐 !== expected && reject(`unexpected ${韻}韻${重紐}類${tip}`);
+        } else if ([...'支脂祭真仙宵侵鹽'].includes(韻)) {
+          重紐 || reject(`missing 重紐`);
+        } else if (['蒸', '幽', '麻', '陽'].includes(韻)) {
+          韻 === '陽' && 重紐 === 'B' && reject('unexpected 陽韻B類');
+        } else {
+          重紐 && reject(`unexpected 重紐 for ${韻}韻`);
+        }
+        母 === '云' && 重紐 === 'A' && reject('unexpected 云母A類');
+      } else {
+        重紐 && reject(`unexpected 重紐 for ${母}母`);
+      }
+    }
+
+    // 母韻搭配
+    // 臻韻
+    if (['莊', '初', '崇', '生', '俟'].includes(母)) {
+      呼 === '開' && ['真', '殷'].includes(韻) && reject(`unexpected 莊組${韻}韻${tipIncompatible}`);
+    } else {
+      韻 === '臻' && reject(`unexpected ${母}母臻韻`);
+    }
+    if (['幫', '滂', '並', '明'].includes(母)) {
+      ['之', '魚', '殷', '痕', '嚴'].includes(韻) && reject(`unexpected 脣音${韻}韻`);
+    } else {
+      韻 === '凡' && reject(`unexpected ${母}母凡韻${tipIncompatible}`);
+    }
+
+    // 邊緣搭配
+
+    // 已知邊緣地位（或特別指定跳過檢查），跳過搭配驗證
+    if (邊緣地位指定 === _Unchecked || 已知邊緣地位.has(母 + (呼 ?? '') + 等 + (重紐 ?? '') + 韻 + 聲)) {
+      return;
+    }
+
+    const checkMarginal = (kind: keyof 邊緣地位選項, isStrict: boolean, condition: () => boolean, errorMessage: () => string) => {
+      if (isStrict ? condition() !== !!邊緣地位指定[kind] : !邊緣地位指定[kind] && condition()) {
+        reject(
+          isStrict && 邊緣地位指定[kind]
+            ? `expected marginal 音韻地位: ${kind} (note: set 邊緣地位指定.${kind} only when it really is)`
+            : errorMessage() + (isStrict ? '' : ` (note: set 邊緣地位指定.${kind} to allow)`)
+        );
+      }
+    };
+
+    // 嚴格邊緣地位
+    checkMarginal(
+      '端組二三等',
+      true,
+      () => ['端', '透', '定', '泥'].includes(母) && ['二', '三'].includes(等),
+      () => `unexpected ${母}母${等}等`
+    );
+    checkMarginal(
+      '陽韻A類',
+      true,
+      () => 韻 === '陽' && 重紐 === 'A',
+      () => `unexpected 陽韻A類`
+    );
+
+    // 非嚴格邊緣地位
+    checkMarginal(
+      '羣邪俟母非三等',
+      false,
+      () => 等 !== '三' && ['羣', '邪', '俟'].includes(母),
+      () => `unexpected ${母}母$${等}等`
+    );
+    checkMarginal(
+      '云母開口',
+      false,
+      () => 母 === '云' && 呼 === '開' && !['宵', '幽', '侵', '鹽', '嚴'].includes(韻),
+      () => 'unexpected 云母開口'
+    );
+    checkMarginal(
+      '脣音咍韻',
+      false,
+      () => 韻 === '咍' && ['幫', '滂', '並', '明'].includes(母),
+      () => 'unexpected 脣音咍韻'
+    );
   }
 }
 

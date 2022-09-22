@@ -1,5 +1,5 @@
 import { 母到清濁, 母到組, 母到音, 韻到攝 } from './拓展音韻屬性';
-import { 可靠重紐韻, 各等韻, 呼韻搭配, 所有, 鈍音母, 陰聲韻 } from './音韻屬性常量';
+import { 可靠重紐韻, 各等韻, 呼韻搭配, 所有, 重紐八韻, 鈍音母, 陰聲韻 } from './音韻屬性常量';
 
 // For encoder
 const 編碼表 = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789$_';
@@ -24,8 +24,6 @@ const 檢查 = {
 } as const;
 
 const 次入韻 = '祭泰夬廢';
-// TODO 取消
-const 輕脣韻 = '東鍾微虞廢文元陽尤凡';
 
 const 已知邊緣地位 = new Set([
   // 嚴格邊緣地位
@@ -515,13 +513,12 @@ export class 音韻地位 {
     if (typeof 表達式 === 'string') 表達式 = [表達式];
 
     /** 普通字串 token 求值 */
-    const { 母, 呼, 等, 重紐, 韻, 聲, 清濁, 韻別 } = this;
+    const { 母, 呼, 重紐, 韻, 聲, 清濁, 韻別 } = this;
     const evalToken = (token: string): boolean => {
       let match: RegExpExecArray = null;
       const tryMatch = (pat: RegExp) => !!(match = pat.exec(token));
       if (tryMatch(/^(陰|陽|入)聲韻$/)) return 韻別 === match[1];
-      if (tryMatch(/^輕脣韻$/)) return 輕脣韻.includes(韻) && 等 === '三';
-      if (tryMatch(/^次入韻$/)) return 次入韻.includes(韻);
+      if (tryMatch(/^次入韻$/)) return 次入韻.includes(韻) && 聲 === '去';
       if (tryMatch(/^仄聲$/)) return 聲 !== '平';
       if (tryMatch(/^舒聲$/)) return 聲 !== '入';
       if (tryMatch(/^(開|合)口$/)) return 呼 === match[1];
@@ -966,7 +963,7 @@ export class 音韻地位 {
           重紐 || reject(`missing 重紐 (should be ${expected})`);
           const tip = 韻 === '清' && 重紐 === 'B' ? tipIncompatible : '';
           重紐 !== expected && reject(`unexpected ${韻}韻${重紐}類${tip}`);
-        } else if ([...'支脂祭真仙宵侵鹽'].includes(韻)) {
+        } else if (重紐八韻.includes(韻)) {
           重紐 || reject(`missing 重紐`);
         } else if (['蒸', '幽', '麻', '陽'].includes(韻)) {
           韻 === '陽' && 重紐 === 'B' && reject('unexpected 陽韻B類');

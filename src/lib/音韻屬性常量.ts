@@ -18,19 +18,22 @@ export const 各等韻 = {
   二三: [...'麻庚'],
 } as const;
 
-export const 陰聲韻 = [...'支脂之微魚虞模齊祭泰佳皆夬灰咍廢蕭宵肴豪歌麻侯尤幽'] as const;
-
-export const 鈍音母 = [...'幫滂並明見溪羣疑影曉匣云'] as const;
-
-// TODO 更新
-export const 重紐韻 = [...'支脂祭真仙宵侵鹽'] as const;
-
-/** 重紐八韻及庚、清 */
-export const 可靠重紐韻 = [...'支脂祭真仙宵庚清侵鹽'] as const;
-
 export const 呼韻搭配 = {
   開合: [...'支脂微齊祭泰佳皆夬廢真元寒刪山先仙歌麻陽唐庚耕清青蒸登'],
   開: [...'之魚咍臻殷痕蕭宵肴豪幽侵覃談鹽添嚴咸銜'],
   合: [...'虞灰魂文凡'],
   中立: [...'東冬鍾江模尤侯'],
 } as const;
+
+export const 陰聲韻 = [...'支脂之微魚虞模齊祭泰佳皆夬灰咍廢蕭宵肴豪歌麻侯尤幽'] as const;
+
+export const 重紐八韻 = [...'支脂祭真仙宵侵鹽'] as const;
+/** 重紐八韻及庚、清，必須標重紐 */
+export const 可靠重紐韻 = [...重紐八韻, ...'庚清'] as const;
+/** 重紐八韻及庚、清、蒸、幽 */
+export const 重紐韻 = [...可靠重紐韻, ...'蒸幽'] as const;
+
+export const 前元音三等韻 = [...'支脂祭真仙宵麻庚清幽侵鹽'] as const;
+export const 非前元音三等韻 = [...'東鍾之微魚虞廢殷元文歌陽尤鹽嚴凡'] as const;
+
+export const 鈍音母 = [...'幫滂並明見溪羣疑影曉匣云'] as const;

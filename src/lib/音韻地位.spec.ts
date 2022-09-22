@@ -3,7 +3,7 @@ import { readFileSync } from 'fs';
 import test, { ThrowsExpectation } from 'ava';
 
 import { iter音韻地位, query字頭 } from './解析資料';
-import { 規則, 音韻地位 } from './音韻地位';
+import { 規則, 邊緣地位選項, 音韻地位 } from './音韻地位';
 
 // 由音韻地位得出各項音韻屬性
 
@@ -227,12 +227,12 @@ test('特殊地位編碼', t => {
 });
 
 test('最簡描述 & from描述', t => {
-  const run = (描述: string, 最簡描述: string) => {
-    const 地位 = 音韻地位.from描述(描述);
+  const run = (描述: string, 最簡描述: string, 邊緣地位指定?: 邊緣地位選項) => {
+    const 地位 = 音韻地位.from描述(描述, 邊緣地位指定);
     t.is(地位.描述, 描述);
     t.is(地位.最簡描述, 最簡描述);
     if (描述 !== 最簡描述) {
-      const 地位from最簡描述 = 音韻地位.from描述(最簡描述);
+      const 地位from最簡描述 = 音韻地位.from描述(最簡描述, 邊緣地位指定);
       t.true(地位.等於(地位from最簡描述), `expected ${地位.描述}, got ${地位from最簡描述.描述}`);
     }
   };
@@ -251,7 +251,7 @@ test('最簡描述 & from描述', t => {
   run('明三A清平', '明清平');
   // 蒸幽重紐非必須，故不作此處理
   run('云合三蒸入', '云合蒸入');
-  run('云合三B蒸入', '云合B蒸入');
+  run('云合三B蒸入', '云合B蒸入', { 麻蒸幽韻重紐: true });
 });
 
 // 驗證
@@ -298,6 +298,8 @@ test('不合法音韻地位', t => {
   run('見,開,三,,庚,平', 'missing 重紐 (should be B)'); // 京（v2、字音韻、韻典、全字表）
   run('見,合,三,,真,平', 'missing 重紐'); // 生造地位，測試鈍音重紐韻需重紐
   run('云,開,三,A,真,平', 'unexpected 云母A類'); // 礥（字音表）
+  run('影,開,三,A,蒸,入', 'unexpected 蒸韻A類'); // 生造地位，測試幽韻不標A類
+  run('並,,三,B,陽,上', 'unexpected 陽韻B類'); // 生造地位，測試陽韻無B類
   run('章,開,三,A,脂,上', 'unexpected 重紐 for 章母'); // 旨（字音表）
 
   // 母韻
@@ -323,7 +325,7 @@ test('邊緣地位', t => {
   t.throws(() => 音韻地位.from描述('並陽上', { 陽韻A類: true }), { message: /: expected marginal 音韻地位:/ });
 
   // 非嚴格型邊緣地位，可以一律指定
-  t.is(音韻地位.from描述('幫凡入', { 云母開口: true, 羣邪俟母非三等: true, 脣音咍韻: true }).描述, '幫三凡入');
+  t.is(音韻地位.from描述('幫凡入', { 云母開口: true, 羣邪俟母非三等: true, 麻蒸幽韻重紐: true }).描述, '幫三凡入');
 
   // `from編碼` 不檢查邊緣地位
   t.is(音韻地位.from編碼(音韻地位.from描述('端開二庚平', { 端組二三等: true }).編碼).描述, '端開二庚平');

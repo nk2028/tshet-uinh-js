@@ -40,6 +40,12 @@ const 已知邊緣地位 = new Set([
   // 云母
   '云開三之上', // 矣
   '云開三B仙平', // 焉
+  // 麻蒸幽韻重紐
+  '明三A麻上', // 乜
+  '影開三B蒸入', // 抑
+  '溪開三B蒸平', // 硱
+  '溪開三B幽平', // 𠁫
+  '曉開三B幽平', // 烋
 ]);
 
 const pattern音韻地位 = new RegExp(
@@ -58,12 +64,14 @@ export type 規則<T = unknown> = [unknown, T | 規則<T>][];
 export type 任意音韻地位 = Pick<音韻地位, '母' | '呼' | '等' | '重紐' | '韻' | '聲'>;
 export type 部分音韻屬性 = Partial<任意音韻地位>;
 
+// TODO doc
 export interface 邊緣地位選項 {
   端組二三等?: boolean;
   陽韻A類?: boolean;
-  羣邪俟母非三等?: boolean;
-  云母開口?: boolean;
   脣音咍韻?: boolean;
+  云母開口?: boolean;
+  麻蒸幽韻重紐?: boolean;
+  羣邪俟母非三等?: boolean;
 }
 
 const _Unchecked = Symbol('_Unchecked') as 邊緣地位選項;
@@ -966,7 +974,7 @@ export class 音韻地位 {
         } else if (重紐八韻.includes(韻)) {
           重紐 || reject(`missing 重紐`);
         } else if (['蒸', '幽', '麻', '陽'].includes(韻)) {
-          韻 === '陽' && 重紐 === 'B' && reject('unexpected 陽韻B類');
+          重紐 && 重紐 !== (['陽', '麻'].includes(韻) ? 'A' : 'B') && reject(`unexpected ${韻}韻${重紐}類`);
         } else {
           重紐 && reject(`unexpected 重紐 for ${韻}韻`);
         }
@@ -1019,14 +1027,14 @@ export class 音韻地位 {
       () => 韻 === '陽' && 重紐 === 'A',
       () => `unexpected 陽韻A類`
     );
+    checkMarginal(
+      '脣音咍韻',
+      true,
+      () => 韻 === '咍' && ['幫', '滂', '並', '明'].includes(母),
+      () => 'unexpected 脣音咍韻'
+    );
 
     // 非嚴格邊緣地位
-    checkMarginal(
-      '羣邪俟母非三等',
-      false,
-      () => 等 !== '三' && ['羣', '邪', '俟'].includes(母),
-      () => `unexpected ${母}母$${等}等`
-    );
     checkMarginal(
       '云母開口',
       false,
@@ -1034,10 +1042,16 @@ export class 音韻地位 {
       () => 'unexpected 云母開口'
     );
     checkMarginal(
-      '脣音咍韻',
+      '麻蒸幽韻重紐',
       false,
-      () => 韻 === '咍' && ['幫', '滂', '並', '明'].includes(母),
-      () => 'unexpected 脣音咍韻'
+      () => 重紐 && ['麻', '蒸', '幽'].includes(韻),
+      () => `unexpected ${韻}韻重紐`
+    );
+    checkMarginal(
+      '羣邪俟母非三等',
+      false,
+      () => 等 !== '三' && ['羣', '邪', '俟'].includes(母),
+      () => `unexpected ${母}母$${等}等`
     );
   }
 }

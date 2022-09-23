@@ -1,6 +1,12 @@
 import { 母到清濁, 母到組, 母到音, 韻到攝 } from './拓展音韻屬性';
 import { 可靠重紐韻, 各等韻, 呼韻搭配, 所有, 重紐八韻, 鈍音母, 陰聲韻 } from './音韻屬性常量';
 
+const pattern音韻地位 = new RegExp(
+  `^([${所有.母.join('')}])([${所有.呼.join('')}]?)([${所有.等.join('')}]?)` +
+    `([${所有.重紐.join('')}]?)([${所有.韻.join('')}])([${所有.聲.join('')}])$`,
+  'u'
+);
+
 // For encoder
 const 編碼表 = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789$_';
 const 韻順序表 = '東_冬鍾江支脂之微魚虞模齊祭泰佳皆夬灰咍廢真臻文殷元魂痕寒刪山先仙蕭宵肴豪歌_麻_陽唐庚_耕清青蒸登尤侯幽侵覃談鹽添咸銜嚴凡';
@@ -25,7 +31,8 @@ const 檢查 = {
 
 const 次入韻 = '祭泰夬廢';
 
-const 已知邊緣地位 = new Set([
+// For 驗證
+const 已知例外地位 = new Set([
   // 嚴格邊緣地位
   // 端組
   '定開三脂去', // 地
@@ -48,24 +55,28 @@ const 已知邊緣地位 = new Set([
   '曉開三B幽平', // 烋
 ]);
 
-const pattern音韻地位 = new RegExp(
-  `^([${所有.母.join('')}])([${所有.呼.join('')}]?)([${所有.等.join('')}]?)` +
-    `([${所有.重紐.join('')}]?)([${所有.韻.join('')}])([${所有.聲.join('')}])$`,
-  'u'
-);
-
 function assert(value: unknown, error: string): asserts value {
   if (!value) throw new Error(error);
 }
 
-type Falsy = '' | 0 | false | null | undefined;
-export type 規則<T = unknown> = [unknown, T | 規則<T>][];
-
 export type 任意音韻地位 = Pick<音韻地位, '母' | '呼' | '等' | '重紐' | '韻' | '聲'>;
 export type 部分音韻屬性 = Partial<任意音韻地位>;
 
-// TODO doc
-export interface 邊緣地位選項 {
+type Falsy = '' | 0 | false | null | undefined;
+export type 判斷規則列表<T = unknown> = [unknown, T | 判斷規則列表<T>][];
+
+/**
+ * 創建[[`音韻地位`]]時，該類型選項參數用於允許額外的邊緣地位作為「例外」而創建。
+ *
+ * **注意**：內建的例外地位白名單**已涵蓋內建資料中全部邊緣地位**，不需用到該類型參數。
+ * 請僅當**一定需要**時才使用該參數。
+ *
+ * 每項屬性對應一個邊緣地位種類，置為 `true` 即表示容許該類例外。
+ * 種類分為「嚴格型」和「非嚴格型」。其中「云母開口」「麻蒸幽韻重韻」「羣邪俟母非三等」為非嚴格型，餘皆為嚴格型。
+ *
+ * 「嚴格型」不僅需要在創建該類邊緣地位時將該屬性置為 `true`，而且不允許濫用，即創建無關地位時不可置 `true`。
+ */
+export interface 邊緣地位例外選項 {
   端組二三等?: boolean;
   陽韻A類?: boolean;
   脣音咍韻?: boolean;
@@ -74,7 +85,7 @@ export interface 邊緣地位選項 {
   羣邪俟母非三等?: boolean;
 }
 
-const _Unchecked = Symbol('_Unchecked') as 邊緣地位選項;
+const _Unchecked = Symbol('_Unchecked') as 邊緣地位例外選項;
 
 /**
  * 《切韻》音系音韻地位。
@@ -83,23 +94,16 @@ const _Unchecked = Symbol('_Unchecked') as 邊緣地位選項;
  *
  * | 音韻屬性 | 中文名稱 | 英文名稱 | 可能取值 |
  * | :- | :- | :- | :- |
- * | 母<br/>組 | 聲母<br/>組 | initial<br/>group | **幫**滂並明<br/>**端**透定泥<br/>來<br/>**知**徹澄孃<br/>**精**清從心邪<br/>**莊**初崇生俟<br/>**章**昌常書船<br/>日<br/>**見**溪羣疑<br/>**影**曉匣云<br/>以<br/>（粗體字為組，未涵蓋「來日以」） |
- * | 呼 | 呼 | rounding | 開口<br/>合口 |
+ * | 母<br/>組 | 聲母<br/>組 | initial<br/>group | **幫**滂並明<br/>**端**透定泥<br/>來<br/>**知**徹澄孃<br/>**精**清從心邪<br/>**莊**初崇生俟<br/>**章**昌常書船<br/>日<br/>**見**溪羣疑<br/>**影**曉匣云<br/>以<br/>（粗體字為組，「來日以」母不屬於任何組） |
+ * | 呼 | 呼 | rounding | 開口<br/>合口<br/>開合中立（`null`） |
  * | 等 | 等 | division | 一二三四 |
- * | 重紐 | 重紐 | repeated initials | 重紐A類<br/>重紐B類 |
+ * | 重紐 | 重紐 | repeated initials | 重紐A類<br/>重紐B類<br/>不分重紐（`null`） |
  * | 韻<br/>攝 | 韻母<br/>攝 | rhyme<br/>class | 通：東冬鍾<br/>江：江<br/>止：支脂之微<br/>遇：魚虞模<br/>蟹：齊祭泰佳皆夬灰咍廢<br/>臻：真臻文殷魂痕<br/>山：元寒刪山先仙<br/>效：蕭宵肴豪<br/>果：歌<br/>假：麻<br/>宕：陽唐<br/>梗：庚耕清青<br/>曾：蒸登<br/>流：尤侯幽<br/>深：侵<br/>咸：覃談鹽添咸銜嚴凡<br/>（冒號前為攝，後為對應的韻） |
- * | 聲 | 聲調 | tone | 平上去入<br/>仄<br/>舒 |
+ * | 聲 | 聲調 | tone | 平上去入 |
  *
  * 音韻地位六要素：母、呼、等、重紐、韻、聲。
  *
- * 「呼」和「重紐」可為 `null`，其餘四個屬性不可為 `null`。
- *
- * 當聲母為脣音，或韻為「東冬鍾江模尤侯」（開合中立的韻）時，（除極少數例外）呼必須為 `null`。
- * 在其他情況下，呼必須取「開」或「合」。
- *
- * 當聲母為幫見影組，且韻為「支脂祭真仙宵庚清侵鹽」十韻之一時，重紐必須取 `A` 或 `B`。
- * 當聲母為幫見影組，且韻為「蒸幽麻」三韻之一時，重紐可以取 `null` 或 `A` 或 `B`。
- * 在其他情況下，（除極少數例外）重紐必須為 `null`。
+ * 「呼」和「重紐」可為 `null`（分別表示「開合中立」與「不分重紐」），其餘四個屬性不可為 `null`。
  *
  * 不設《廣韻》新增之諄、桓、戈韻。依《切韻》併入真、寒、歌韻。
  *
@@ -113,6 +117,42 @@ const _Unchecked = Symbol('_Unchecked') as 邊緣地位選項;
  * * 韻 眞 → 真
  * * 韻 欣 → 殷
  * * 韻 餚 → 肴
+ *
+ * ## 聲韻搭配規則
+ *
+ * （提及「例外」的，詳見本節末尾）
+ *
+ * 等：
+ * - 見組、影曉來母：不限（但羣母非三等屬例外）
+ * - 章組、云以日母：限三等
+ * - 匣母：限一二四等
+ * - 精組：限一三四等（邪母非三等屬例外）
+ * - 知莊組：限二三等（俟母非三等屬例外）
+ * - 端組：限一四等（有例外）
+ *
+ * 呼：
+ * - 聲母為脣音，或韻為「東冬鍾江模尤侯」（開合中立的韻）之一：限 `null`（開合中立）
+ * - 云母：除效流深咸四攝外，限非開口（有例外）
+ * - 其餘情形：呼必須取「開」或「合」，注意魚虞韻亦為開合相配
+ *
+ * 重紐：
+ * - 僅部分三等鈍音（幫見影組）需要重紐；一二四等或銳音的情況，重紐須為 `null`（不分重紐）
+ * - 「支脂祭真仙宵庚清侵鹽」十韻：重紐必須取 `A` 或 `B`
+ * - 蒸幽麻韻：重紐一般取 `null` （但蒸幽韻有取 `B` 之例外，麻韻有取 `A` 之例外）
+ * - 陽韻：限 `null`（但有個別取 `B` 之例外）
+ *
+ * 韻：
+ * - 凡韻：限脣音
+ * - 嚴韻：限非脣音
+ * - 臻韻：限莊組
+ * - 真殷韻：限非莊組
+ *
+ * 關於邊緣地位及例外：
+ *
+ * 「邊緣地位」指不符合上述搭配的地位。
+ * 除內建的例外地位白名單（包含基礎資料中出現的邊緣地位）外，邊緣地位一般不能任意構造。
+ *
+ * 若確需構造邊緣地位，須在構造時傳入參數以取得許可，參數指定方式詳見[[`邊緣地位例外選項`]]。
  */
 export class 音韻地位 {
   /**
@@ -207,7 +247,7 @@ export class 音韻地位 {
    * @param 重紐 重紐：`null`, A, B
    * @param 韻 韻母（舉平以賅上去入）：東, 冬, 鍾, 江, …, 祭, 泰, 夬, 廢
    * @param 聲 聲調：平, 上, 去, 入
-   * @param 邊緣地位指定 若創建邊緣地位（列於內建已知邊緣地位的除外），須於該參數指明其種類
+   * @param 邊緣地位例外 若創建邊緣地位（列於內建白名單的除外），須於該參數指明其種類
    * @returns 所描述的音韻地位
    * @example
    * ```typescript
@@ -224,9 +264,9 @@ export class 音韻地位 {
     重紐: string | null = null,
     韻: string,
     聲: string,
-    邊緣地位指定: 邊緣地位選項 = {}
+    邊緣地位例外: 邊緣地位例外選項 = {}
   ) {
-    音韻地位.驗證(母, 呼, 等, 重紐, 韻, 聲, 邊緣地位指定);
+    音韻地位.驗證(母, 呼, 等, 重紐, 韻, 聲, 邊緣地位例外);
     this.母 = 母;
     this.呼 = 呼;
     this.等 = 等;
@@ -737,9 +777,9 @@ export class 音韻地位 {
    * 'p'
    * ```
    */
-  判斷<T, E = undefined>(規則: 規則<T>, error?: E, fallback?: boolean): E extends Falsy ? T | null : T {
+  判斷<T, E = undefined>(規則: 判斷規則列表<T>, error?: E, fallback?: boolean): E extends Falsy ? T | null : T {
     const Exhaustion = Symbol('Exhaustion');
-    const loop = (所有規則: 規則<T>): T | typeof Exhaustion => {
+    const loop = (所有規則: 判斷規則列表<T>): T | typeof Exhaustion => {
       for (const 規則 of 所有規則) {
         assert(Array.isArray(規則) && 規則.length === 2, '規則需符合格式');
         let 表達式 = 規則[0];
@@ -838,7 +878,7 @@ export class 音韻地位 {
    * 音韻地位 { '羣開三A支平' }
    * ```
    */
-  static from描述(音韻描述: string, 邊緣地位指定: 邊緣地位選項 = {}): 音韻地位 {
+  static from描述(音韻描述: string, 邊緣地位指定: 邊緣地位例外選項 = {}): 音韻地位 {
     const match = pattern音韻地位.exec(音韻描述);
     if (match === null) {
       throw new Error(`Cannot parse 描述: ${音韻描述}`);
@@ -871,8 +911,14 @@ export class 音韻地位 {
     return new 音韻地位(母, 呼, 等, 重紐, 韻, 聲, 邊緣地位指定);
   }
 
-  // TODO doc（以及 `音韻地位` 的也更新）
-  static 驗證(母: string, 呼: string | null, 等: string, 重紐: string | null, 韻: string, 聲: string, 邊緣地位指定: 邊緣地位選項) {
+  /**
+   * 驗證音韻地位六要素及其搭配是否合法。
+   *
+   * 合法搭配詳見 [[`音韻地位`]] 說明。`邊緣地位例外` 參數詳見 [[`邊緣地位例外選項`]] 說明。
+   *
+   * @throws 若地位不合法，會拋出異常。
+   */
+  static 驗證(母: string, 呼: string | null, 等: string, 重紐: string | null, 韻: string, 聲: string, 邊緣地位例外: 邊緣地位例外選項) {
     const tipIncompatible = " (note: use nk2028's data to avoid compatibility issues)";
     const reject = (msg: string) => {
       throw new Error(`invalid 音韻地位 <${母},${呼 || ''},${等},${重紐 || ''},${韻},${聲}>: ` + msg);
@@ -1000,14 +1046,14 @@ export class 音韻地位 {
     // 邊緣搭配
 
     // 已知邊緣地位（或特別指定跳過檢查），跳過搭配驗證
-    if (邊緣地位指定 === _Unchecked || 已知邊緣地位.has(母 + (呼 ?? '') + 等 + (重紐 ?? '') + 韻 + 聲)) {
+    if (邊緣地位例外 === _Unchecked || 已知例外地位.has(母 + (呼 ?? '') + 等 + (重紐 ?? '') + 韻 + 聲)) {
       return;
     }
 
-    const checkMarginal = (kind: keyof 邊緣地位選項, isStrict: boolean, condition: () => boolean, errorMessage: () => string) => {
-      if (isStrict ? condition() !== !!邊緣地位指定[kind] : !邊緣地位指定[kind] && condition()) {
+    const checkMarginal = (kind: keyof 邊緣地位例外選項, isStrict: boolean, condition: () => boolean, errorMessage: () => string) => {
+      if (isStrict ? condition() !== !!邊緣地位例外[kind] : !邊緣地位例外[kind] && condition()) {
         reject(
-          isStrict && 邊緣地位指定[kind]
+          isStrict && 邊緣地位例外[kind]
             ? `expected marginal 音韻地位: ${kind} (note: set 邊緣地位指定.${kind} only when it really is)`
             : errorMessage() + (isStrict ? '' : ` (note: set 邊緣地位指定.${kind} to allow)`)
         );

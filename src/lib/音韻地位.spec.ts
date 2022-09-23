@@ -3,7 +3,7 @@ import { readFileSync } from 'fs';
 import test, { ThrowsExpectation } from 'ava';
 
 import { iter音韻地位, query字頭 } from './解析資料';
-import { 規則, 邊緣地位選項, 音韻地位 } from './音韻地位';
+import { 判斷規則列表, 邊緣地位例外選項, 音韻地位 } from './音韻地位';
 
 // 由音韻地位得出各項音韻屬性
 
@@ -173,7 +173,7 @@ test('判斷式 null 與 fallback', t => {
   t.is(地位.判斷([]), null);
   t.is(地位.判斷([['見母', 42]]), null);
 
-  const 規則: 規則 = [
+  const 規則: 判斷規則列表 = [
     ['幫組', []],
     ['幫母 凡韻', 43],
   ];
@@ -227,7 +227,7 @@ test('特殊地位編碼', t => {
 });
 
 test('最簡描述 & from描述', t => {
-  const run = (描述: string, 最簡描述: string, 邊緣地位指定?: 邊緣地位選項) => {
+  const run = (描述: string, 最簡描述: string, 邊緣地位指定?: 邊緣地位例外選項) => {
     const 地位 = 音韻地位.from描述(描述, 邊緣地位指定);
     t.is(地位.描述, 描述);
     t.is(地位.最簡描述, 最簡描述);

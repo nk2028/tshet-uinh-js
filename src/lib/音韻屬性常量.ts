@@ -27,13 +27,11 @@ export const 呼韻搭配 = {
 
 export const 陰聲韻 = [...'支脂之微魚虞模齊祭泰佳皆夬灰咍廢蕭宵肴豪歌麻侯尤幽'] as const;
 
-export const 重紐八韻 = [...'支脂祭真仙宵侵鹽'] as const;
-/** 重紐八韻及庚、清，必須標重紐 */
-export const 可靠重紐韻 = [...重紐八韻, ...'庚清'] as const;
-/** 重紐八韻及庚、清、蒸、幽 */
-export const 重紐韻 = [...可靠重紐韻, ...'蒸幽'] as const;
-
+/** 鈍音須分重紐的韻：重紐八韻及麻、庚、清、幽韻 */
 export const 前元音三等韻 = [...'支脂祭真仙宵麻庚清幽侵鹽'] as const;
+/** 可以標重紐的韻：重紐八韻及麻、庚、清、蒸、幽韻 */
+export const 重紐韻 = [...前元音三等韻, '蒸'] as const;
+
 export const 非前元音三等韻 = [...'東鍾之微魚虞廢殷元文歌陽尤鹽嚴凡'] as const;
 
 export const 鈍音母 = [...'幫滂並明見溪羣疑影曉匣云'] as const;

@@ -1053,61 +1053,32 @@ export class 音韻地位 {
       return;
     }
 
-    const checkMarginal = (kind: keyof 邊緣地位例外選項, isStrict: boolean, condition: () => boolean, errorMessage: () => string) => {
-      if (isStrict ? condition() !== !!邊緣地位例外[kind] : !邊緣地位例外[kind] && condition()) {
+    // 嚴格邊緣地位
+    for (const [kind, condition, errorDescription] of [
+      ['端組二三等', ['端', '透', '定', '泥'].includes(母) && ['二', '三'].includes(等), `${母}母${等}等`],
+      ['麻三鈍音', 韻 === '麻' && 等 === '三' && 鈍音母.includes(母), `麻韻三等${母}母`],
+      ['陽韻A類', 韻 === '陽' && 重紐 === 'A', `陽韻A類`],
+      ['咍韻脣音', 韻 === '咍' && ['幫', '滂', '並', '明'].includes(母), '咍韻脣音'],
+    ] as const) {
+      if (condition !== !!邊緣地位例外[kind]) {
         reject(
-          isStrict && 邊緣地位例外[kind]
+          邊緣地位例外[kind]
             ? `expected marginal 音韻地位: ${kind} (note: set 邊緣地位指定.${kind} only when it really is)`
-            : errorMessage() + (isStrict ? '' : ` (note: set 邊緣地位指定.${kind} to allow)`)
+            : 'unexpected ' + errorDescription
         );
       }
-    };
-
-    // 嚴格邊緣地位
-    checkMarginal(
-      '端組二三等',
-      true,
-      () => ['端', '透', '定', '泥'].includes(母) && ['二', '三'].includes(等),
-      () => `unexpected ${母}母${等}等`
-    );
-    checkMarginal(
-      '麻三鈍音',
-      true,
-      () => 韻 === '麻' && 等 === '三' && 鈍音母.includes(母),
-      () => `unexpected 麻韻三等${母}母`
-    );
-    checkMarginal(
-      '陽韻A類',
-      true,
-      () => 韻 === '陽' && 重紐 === 'A',
-      () => `unexpected 陽韻A類`
-    );
-    checkMarginal(
-      '咍韻脣音',
-      true,
-      () => 韻 === '咍' && ['幫', '滂', '並', '明'].includes(母),
-      () => 'unexpected 咍韻脣音'
-    );
+    }
 
     // 非嚴格邊緣地位
-    checkMarginal(
-      '云母開口',
-      false,
-      () => 母 === '云' && 呼 === '開' && !['宵', '幽', '侵', '鹽', '嚴'].includes(韻),
-      () => 'unexpected 云母開口'
-    );
-    checkMarginal(
-      '蒸韻B類',
-      false,
-      () => 韻 === '蒸' && 重紐 === 'B',
-      () => 'unexpected 蒸韻B類'
-    );
-    checkMarginal(
-      '羣邪俟母非三等',
-      false,
-      () => 等 !== '三' && ['羣', '邪', '俟'].includes(母),
-      () => `unexpected ${母}母$${等}等`
-    );
+    for (const [kind, condition, errorDescription] of [
+      ['云母開口', 母 === '云' && 呼 === '開' && !['宵', '幽', '侵', '鹽', '嚴'].includes(韻), '云母開口'],
+      ['蒸韻B類', 韻 === '蒸' && 重紐 === 'B', '蒸韻B類'],
+      ['羣邪俟母非三等', 等 !== '三' && ['羣', '邪', '俟'].includes(母), `${母}母$${等}等`],
+    ] as const) {
+      if (!邊緣地位例外[kind] && condition) {
+        reject(`unexpected ${errorDescription} (note: set 邊緣地位指定.${kind} to allow)`);
+      }
+    }
   }
 }
 

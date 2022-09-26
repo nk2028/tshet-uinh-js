@@ -38,9 +38,6 @@ function assert(value: unknown, error: string): asserts value {
   if (!value) throw new Error(error);
 }
 
-// `Array.isArray`, but with more conservative type inference
-const isArray: (x: unknown) => x is readonly unknown[] = Array.isArray;
-
 type Falsy = '' | 0 | false | null | undefined;
 export type 規則<T = unknown> = [unknown, T | 規則<T>][];
 
@@ -397,13 +394,20 @@ export class 音韻地位 {
   /**
    * 調整該音韻地位的屬性，會驗證調整後地位的合法性，返回新的對象。
    *
-   * 本方法可使用一般形式（`.調整({ ... })`）、字串形式（`.調整('...')`）或標籤模板語法（`` .調整`...` ``）。
+   * 本方法可使用一般形式（`.調整({ ... })`）或字串形式（`.調整('...')`）。
    *
    * **注意**：原對象不會被修改。
    *
-   * @param 調整屬性 對象，其屬性可為六項基本屬性中的若干項，各屬性的值為欲修改成的值。
+   * @param 調整屬性 可為以下種類之一：
+   * - 物件，其屬性可為六項基本屬性中的若干項，各屬性的值為欲修改成的值。
    *
-   * 不含某屬性或某屬性值為 `undefined` 則表示不修改該屬性。
+   *   不含某屬性或某屬性值為 `undefined` 則表示不修改該屬性。
+   *
+   * - 字串，可寫出若干項屬性，以空白分隔各項。各屬性的寫法如下：
+   *
+   *   - 母、等、韻、聲：如 `'見母'`、`''三等''`、`'元韻'`、`'平聲'` 等
+   *   - 呼：`'開口'`、`'合口'`、`'開合中立'`
+   *   - 重紐：`'重紐A類'`、`'重紐B類'`、`'不分重紐'`
    *
    * @returns 新的 `音韻地位`，其中會含有指定的修改值。
    * @example
@@ -411,99 +415,41 @@ export class 音韻地位 {
    * > 音韻地位 = Qieyun.音韻地位.from描述('幫三元上');
    * > 音韻地位.調整({ 聲: '平' }).描述
    * '幫三元平'
-   * > 音韻地位.調整({ 母: '見', 呼: '合' }).描述
-   * '見合三元上'
-   * ```
-   */
-  調整(調整屬性: 部分音韻屬性): 音韻地位;
-
-  /**
-   * @example
-   * ```typescript
-   * > 音韻地位 = Qieyun.音韻地位.from描述('幫三元上');
-   * > 音韻地位.調整`平聲`.描述 // 標籤模板語法（表達式為字面值時推薦）
-   * '幫三元平'
    * > 音韻地位.調整('平聲').描述
    * '幫三元平'
-   * > 音韻地位.調整`見母 合口`.描述
+   * > 音韻地位.調整({ 母: '見', 呼: '合' }).描述
+   * '見合三元上'
+   * > 音韻地位.調整('見母 合口').描述
+   * '見合三元上'
+   * > 音韻地位.調整(`${'見'}母 ${'合口'}`).描述
    * '見合三元上'
    * ```
    */
-  調整(調整屬性: string): 音韻地位;
-
-  /**
-   * @example
-   * ```typescript
-   * > 音韻地位 = Qieyun.音韻地位.from描述('幫三元上');
-   * > 音韻地位.調整`${'見'}母 ${'合口'}`.描述
-   * '見合三元上'
-   * ```
-   */
-  調整(調整屬性: TemplateStringsArray, ...參數: string[]): 音韻地位;
-
-  調整(調整屬性: string | readonly string[] | 部分音韻屬性, ...參數: string[]): 音韻地位 {
-    if (typeof 調整屬性 === 'string') 調整屬性 = [調整屬性];
-
-    if (isArray(調整屬性)) {
-      const tokenGroups: string[][] = [[]];
-      for (let i = 0; i < 調整屬性.length; i++) {
-        let fragment = 調整屬性[i];
-        if (!i) {
-          fragment = fragment.trimStart();
-        }
-        if (i === 調整屬性.length - 1) {
-          fragment = fragment.trimEnd();
-        }
-
-        const tokens = fragment.split(/\s+/);
-        for (let j = 0; j < tokens.length; j++) {
-          if (tokens[j]) {
-            tokenGroups[tokenGroups.length - 1].push(tokens[j]);
-          }
-          if (j < tokens.length - 1) {
-            tokenGroups.push([]);
-          }
-        }
-        if (i < 參數.length) {
-          tokenGroups[tokenGroups.length - 1].push(參數[i]);
-        }
-      }
-
-      const 音韻屬性: 部分音韻屬性 = {};
-      const tryAssign = <T extends keyof 部分音韻屬性>(屬性: T, 值: 音韻地位[T]) => {
-        assert(!(屬性 in 音韻屬性), `duplicated assignment of ${屬性}`);
-        音韻屬性[屬性] = 值;
+  調整(調整屬性: 部分音韻屬性 | string): 音韻地位 {
+    if (typeof 調整屬性 === 'string') {
+      const 屬性object: 部分音韻屬性 = {};
+      const set = <T extends keyof 部分音韻屬性>(屬性: T, 值: 音韻地位[T]) => {
+        assert(!(屬性 in 屬性object), `duplicated assignment of ${屬性}`);
+        屬性object[屬性] = 值;
       };
 
-      for (let tokens of tokenGroups) {
-        assert(tokens.length, 'empty expression');
-        let original: string | undefined;
-        if (tokens.length === 1) {
-          switch (tokens[0]) {
-            case '開合中立':
-              tryAssign('呼', null);
-              continue;
-            case '不分重紐':
-              tryAssign('重紐', null);
-              continue;
-          }
-          original = tokens[0];
-          tokens = [...tokens[0]];
+      for (const token of 調整屬性.trim().split(/\s+/u)) {
+        const match = /^(?:(?<kv>開合中立|不分重紐)|(?<k1>重紐)(?<v1>.)類|(?<v2>.)(?<k2>[母口等韻聲]))$/u.exec(token);
+        if (match === null) {
+          throw new Error(`unrecognized expression: ${token}`);
         }
-        let 屬性 = tokens[tokens.length - 1];
-        const 值 = tokens[tokens.length - 2];
-        assert(
-          屬性 === '類' ? tokens.slice(0, -2).join('') === '重紐' : tokens.length === 2 && ['母', '等', '韻', '聲', '口'].includes(屬性),
-          `unrecognized expression: ${original ?? tokens.join(', ')}`
-        );
-        if (屬性 === '口') 屬性 = '呼';
-        if (屬性 === '類') 屬性 = '重紐';
-        const check = 檢查[屬性 as keyof 部分音韻屬性];
-        assert(check.includes(值), `unexpected ${屬性}: ${值}`);
-        tryAssign(屬性 as keyof 部分音韻屬性, 值);
+        const { kv, k1, v1, k2, v2 } = match.groups;
+        const k = k1 ?? k2;
+        const v = v1 ?? v2;
+        if (kv) {
+          if (kv === '開合中立') set('呼', null);
+          else if (kv === '不分重紐') set('重紐', null);
+        } else {
+          set(k.replace('口', '呼') as keyof 部分音韻屬性, v);
+        }
       }
 
-      調整屬性 = 音韻屬性;
+      調整屬性 = 屬性object;
     }
 
     const { 母 = this.母, 呼 = this.呼, 等 = this.等, 重紐 = this.重紐, 韻 = this.韻, 聲 = this.聲 } = 調整屬性;

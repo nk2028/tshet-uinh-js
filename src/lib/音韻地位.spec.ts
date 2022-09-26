@@ -61,19 +61,17 @@ test('音韻地位.調整', t => {
   const 地位 = 音韻地位.from描述('幫三元上');
   t.is(地位.調整({ 聲: '平' }).描述, '幫三元平');
   t.is(地位.調整('平聲').描述, '幫三元平');
-  t.is(地位.調整`平聲`.描述, '幫三元平');
   t.throws(() => 地位.調整({ 母: '見' }), { message: /: need 呼/ }, '.調整() 會驗證新地位');
   t.is(地位.調整({ 母: '見', 呼: '合' }).描述, '見合三元上');
-  t.is(地位.調整`見母 合口`.描述, '見合三元上');
-  t.is(地位.調整`${'見'}母 ${'合口'}`.描述, '見合三元上');
-  t.is(地位.調整`仙韻 重紐A類`.描述, '幫三A仙上');
-  t.is(地位.調整`仙韻 重紐${'A'}類`.描述, '幫三A仙上');
-  t.throws(() => 地位.調整`壞耶`, { message: 'unrecognized expression: 壞耶' });
-  t.throws(() => 地位.調整`見影母`, { message: 'unrecognized expression: 見影母' });
-  t.throws(() => 地位.調整`${'見影'}母`, { message: 'unexpected 母: 見影' });
-  t.throws(() => 地位.調整`見母 ${'影'}母`, { message: 'duplicated assignment of 母' });
-  t.throws(() => 地位.調整`${'開合'}中立`, { message: 'unrecognized expression: 開合, 中立' });
-  t.throws(() => 地位.調整`仙韻 重紐${'A類'}`, { message: 'unrecognized expression: 重紐, A類' });
+  t.is(地位.調整('見母 合口').描述, '見合三元上');
+  t.is(地位.調整(`${'見'}母 ${'合口'}`).描述, '見合三元上');
+  t.is(地位.調整('仙韻 重紐A類').描述, '幫三A仙上');
+  t.is(地位.調整(`仙韻 重紐${'A'}類`).描述, '幫三A仙上');
+  t.is(地位.調整(`仙韻 重紐${'A類'}`).描述, '幫三A仙上');
+  t.throws(() => 地位.調整('壞耶'), { message: 'unrecognized expression: 壞耶' });
+  t.throws(() => 地位.調整('見影母'), { message: 'unrecognized expression: 見影母' });
+  t.throws(() => 地位.調整(`見母 影母`), { message: 'duplicated assignment of 母' });
+  t.throws(() => 地位.調整(`見母${'合口'}`), { message: 'unrecognized expression: 見母合口' });
   t.is(地位.描述, '幫三元上', '.調整() 不修改原對象');
 });
 

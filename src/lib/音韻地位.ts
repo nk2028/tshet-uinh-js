@@ -757,10 +757,12 @@ export class 音韻地位 {
    * 建議使用空字串、`null` 或 `true` 作末項判斷式以指定後備結果。
    *
    * 結果可以是任意傳回值或遞迴規則。
-   * @param error 若為 `true` 或非空字串，在未涵蓋所有條件時會拋出錯誤。
+   * @param throws 指定若所有判斷條件均未滿足時是否拋出錯誤
+   * - `true` 或字串: 拋出錯誤，用字串可自訂錯誤信息
+   * - `false` 或不指定該參數：不拋錯誤，返回 `null`
    * @param fallback 若為 `true`，在遞迴子陣列未涵蓋所有條件時會繼續嘗試母陣列的條件。
    * @returns 自訂值，在未涵蓋所有條件且不使用 `error` 時會回傳 `null`。
-   * @throws `未涵蓋所有條件`（或 `error` 參數）, `規則需符合格式`, `無效的表達式`, `表達式為空`, `非預期的運算子`, `非預期的閉括號`, `括號未匹配`
+   * @throws `未涵蓋所有條件`（或 `error` 參數）、`規則需符合格式`，或者套用 [[`.屬於`]] 時可能拋出的錯誤
    * @example
    * ```typescript
    * > 音韻地位 = Qieyun.音韻地位.from描述('幫三凡入');
@@ -784,9 +786,9 @@ export class 音韻地位 {
    * 'p'
    * ```
    */
-  判斷<T>(規則: 判斷規則列表<T>, error?: null, fallback?: boolean): T | null;
-  判斷<T, E>(規則: 判斷規則列表<T>, error: E, fallback?: boolean): T;
-  判斷<T, E = undefined>(規則: 判斷規則列表<T>, error?: E, fallback?: boolean): T | null {
+  判斷<T>(規則: 判斷規則列表<T>, throws: string | true, fallback?: boolean): T;
+  判斷<T>(規則: 判斷規則列表<T>, throws?: string | boolean, fallback?: boolean): T | null;
+  判斷<T>(規則: 判斷規則列表<T>, throws?: string | boolean, fallback = false): T | null {
     const Exhaustion = Symbol('Exhaustion');
     const loop = (所有規則: 判斷規則列表<T>): T | typeof Exhaustion => {
       for (const 規則 of 所有規則) {
@@ -806,8 +808,9 @@ export class 音韻地位 {
 
     const res = loop(規則);
     if (res === Exhaustion) {
-      if (!error) return null;
-      else throw new Error(typeof error === 'string' ? error : '未涵蓋所有條件');
+      if (typeof throws === 'string') throw new Error(throws);
+      else if (throws) throw new Error('未涵蓋所有條件');
+      else return null;
     }
     return res;
   }

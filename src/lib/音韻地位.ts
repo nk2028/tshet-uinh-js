@@ -61,7 +61,6 @@ function assert(value: unknown, error: string): asserts value {
 export type 任意音韻地位 = Pick<音韻地位, '母' | '呼' | '等' | '重紐' | '韻' | '聲'>;
 export type 部分音韻屬性 = Partial<任意音韻地位>;
 
-type Falsy = '' | 0 | false | null | undefined;
 export type 判斷規則列表<T = unknown> = [unknown, T | 判斷規則列表<T>][];
 
 /**
@@ -407,9 +406,9 @@ export class 音韻地位 {
     if ((呼 === '開' && 呼韻搭配.開.includes(韻)) || (呼 === '合' && 呼韻搭配.合.includes(韻))) {
       呼 = null;
     }
-    if (![...各等韻.一三, ...各等韻.二三].includes(韻)) 等 = null;
+    if (![...各等韻.一三, ...各等韻.二三].includes(韻)) 等 = '';
     if (['清', '庚'].includes(韻) || (母 === '云' && 前元音三等韻.includes(韻))) 重紐 = null;
-    return 母 + (呼 || '') + (等 || '') + (重紐 || '') + 韻 + 聲;
+    return 母 + (呼 || '') + 等 + (重紐 || '') + 韻 + 聲;
   }
 
   /**
@@ -447,8 +446,8 @@ export class 音韻地位 {
     const { 母, 呼, 等, 重紐, 韻, 聲 } = this;
     const 母編碼 = 所有.母.indexOf(母);
     const 韻編碼 = { 東三: 1, 歌三: 38, 麻三: 40, 庚三: 44 }[`${韻}${等}`] || 韻順序表.indexOf(韻);
-    const 呼編碼 = 所有.呼.indexOf(呼) + 1;
-    const 重紐編碼 = 所有.重紐.indexOf(重紐) + 1;
+    const 呼編碼 = 所有.呼.indexOf(呼!) + 1;
+    const 重紐編碼 = 所有.重紐.indexOf(重紐!) + 1;
     const 其他編碼 = (呼編碼 << 4) | (重紐編碼 << 2) | 所有.聲.indexOf(聲);
     return 編碼表[母編碼] + 編碼表[韻編碼] + 編碼表[其他編碼];
   }
@@ -566,26 +565,25 @@ export class 音韻地位 {
     /** 普通字串 token 求值 */
     const { 母, 呼, 重紐, 韻, 聲, 清濁, 韻別 } = this;
     const evalToken = (token: string): boolean => {
-      let match: RegExpExecArray = null;
-      const tryMatch = (pat: RegExp) => !!(match = pat.exec(token));
-      if (tryMatch(/^(陰|陽|入)聲韻$/)) return 韻別 === match[1];
-      if (tryMatch(/^次入韻$/)) return 次入韻.includes(韻) && 聲 === '去';
-      if (tryMatch(/^仄聲$/)) return 聲 !== '平';
-      if (tryMatch(/^舒聲$/)) return 聲 !== '入';
-      if (tryMatch(/^(開|合)口$/)) return 呼 === match[1];
-      if (tryMatch(/^開合中立$/)) return 呼 === null;
-      if (tryMatch(/^重紐(A|B)類$/)) return 重紐 === match[1];
-      if (tryMatch(/^不分重紐$/)) return 重紐 === null;
-      if (tryMatch(/^(清|濁)音$/)) return 清濁[1] === match[1];
-      if (tryMatch(/^[全次][清濁]$/)) return 清濁 === match[0];
-      if (tryMatch(/^鈍音$/)) return 鈍音母.includes(母);
-      if (tryMatch(/^銳音$/)) return !鈍音母.includes(母);
-      if (tryMatch(/^(.+?)([母等韻音攝組聲])$/)) {
+      let match: RegExpExecArray | null = null;
+      if ((match = /^(陰|陽|入)聲韻$/.exec(token))) return 韻別 === match[1];
+      if (/^次入韻$/.exec(token)) return 次入韻.includes(韻) && 聲 === '去';
+      if (/^仄聲$/.exec(token)) return 聲 !== '平';
+      if (/^舒聲$/.exec(token)) return 聲 !== '入';
+      if ((match = /^(開|合)口$/.exec(token))) return 呼 === match[1];
+      if (/^開合中立$/.exec(token)) return 呼 === null;
+      if ((match = /^重紐(A|B)類$/.exec(token))) return 重紐 === match[1];
+      if (/^不分重紐$/.exec(token)) return 重紐 === null;
+      if ((match = /^(清|濁)音$/.exec(token))) return 清濁[1] === match[1];
+      if ((match = /^[全次][清濁]$/.exec(token))) return 清濁 === match[0];
+      if (/^鈍音$/.exec(token)) return 鈍音母.includes(母);
+      if (/^銳音$/.exec(token)) return !鈍音母.includes(母);
+      if ((match = /^(.+?)([母等韻音攝組聲])$/.exec(token))) {
         const values = [...match[1]];
         const check = 檢查[match[2] as keyof typeof 檢查];
         const invalid = values.filter(i => !check.includes(i)).join('');
         assert(!invalid, invalid + match[2] + '不存在');
-        return values.includes(this[match[2] as keyof typeof 檢查]);
+        return values.includes(this[match[2] as keyof typeof 檢查]!);
       }
       throw new Error(`unreconized test condition: ${token}`);
     };
@@ -629,7 +627,9 @@ export class 音韻地位 {
     type Operator = 'value' | 'not' | 'and' | 'or';
     type SExpr = [Operator, ...Operand[]];
 
-    const parseOrExpr = (required: boolean): SExpr => {
+    function parseOrExpr(required: true): SExpr;
+    function parseOrExpr(required: boolean): SExpr | null;
+    function parseOrExpr(required: boolean): SExpr | null {
       const firstAndExpr = parseAndExpr(required);
       if (!firstAndExpr) {
         return null;
@@ -645,9 +645,11 @@ export class 音韻地位 {
           return orExpr;
         }
       }
-    };
+    }
 
-    const parseAndExpr = (required: boolean): SExpr => {
+    function parseAndExpr(required: true): SExpr;
+    function parseAndExpr(required: boolean): SExpr | null;
+    function parseAndExpr(required: boolean): SExpr | null {
       const firstNotExpr = parseNotExpr(required);
       if (!firstNotExpr) {
         return null;
@@ -668,9 +670,11 @@ export class 音韻地位 {
           }
         }
       }
-    };
+    }
 
-    const parseNotExpr = (required: boolean): SExpr => {
+    function parseNotExpr(required: true): SExpr;
+    function parseNotExpr(required: boolean): SExpr | null;
+    function parseNotExpr(required: boolean) {
       // 非*
       let seenNotOperator = false;
       let negate = false;
@@ -710,7 +714,7 @@ export class 音韻地位 {
       } else {
         return null;
       }
-    };
+    }
 
     const expr = parseOrExpr(true);
     const [token, rawToken] = read();
@@ -753,10 +757,12 @@ export class 音韻地位 {
    * 建議使用空字串、`null` 或 `true` 作末項判斷式以指定後備結果。
    *
    * 結果可以是任意傳回值或遞迴規則。
-   * @param error 若為 `true` 或非空字串，在未涵蓋所有條件時會拋出錯誤。
+   * @param throws 指定若所有判斷條件均未滿足時是否拋出錯誤
+   * - `true` 或字串: 拋出錯誤，用字串可自訂錯誤信息
+   * - `false` 或不指定該參數：不拋錯誤，返回 `null`
    * @param fallback 若為 `true`，在遞迴子陣列未涵蓋所有條件時會繼續嘗試母陣列的條件。
    * @returns 自訂值，在未涵蓋所有條件且不使用 `error` 時會回傳 `null`。
-   * @throws `未涵蓋所有條件`（或 `error` 參數）, `規則需符合格式`, `無效的表達式`, `表達式為空`, `非預期的運算子`, `非預期的閉括號`, `括號未匹配`
+   * @throws `未涵蓋所有條件`（或 `error` 參數）、`規則需符合格式`，或者套用 [[`.屬於`]] 時可能拋出的錯誤
    * @example
    * ```typescript
    * > 音韻地位 = Qieyun.音韻地位.from描述('幫三凡入');
@@ -780,7 +786,9 @@ export class 音韻地位 {
    * 'p'
    * ```
    */
-  判斷<T, E = undefined>(規則: 判斷規則列表<T>, error?: E, fallback?: boolean): E extends Falsy ? T | null : T {
+  判斷<T>(規則: 判斷規則列表<T>, throws: string | true, fallback?: boolean): T;
+  判斷<T>(規則: 判斷規則列表<T>, throws?: string | boolean, fallback?: boolean): T | null;
+  判斷<T>(規則: 判斷規則列表<T>, throws?: string | boolean, fallback = false): T | null {
     const Exhaustion = Symbol('Exhaustion');
     const loop = (所有規則: 判斷規則列表<T>): T | typeof Exhaustion => {
       for (const 規則 of 所有規則) {
@@ -800,8 +808,9 @@ export class 音韻地位 {
 
     const res = loop(規則);
     if (res === Exhaustion) {
-      if (!error) return null;
-      else throw new Error(typeof error === 'string' ? error : '未涵蓋所有條件');
+      if (typeof throws === 'string') throw new Error(throws);
+      else if (throws) throw new Error('未涵蓋所有條件');
+      else return null;
     }
     return res;
   }
@@ -861,12 +870,12 @@ export class 音韻地位 {
     } else {
       韻 = 韻順序表[韻編碼];
       if ([...各等韻.一].includes(韻)) 等 = '一';
-      if ([...各等韻.二].includes(韻)) 等 = '二';
-      if ([...各等韻.三].includes(韻)) 等 = '三';
-      if ([...各等韻.四].includes(韻)) 等 = '四';
+      else if ([...各等韻.二].includes(韻)) 等 = '二';
+      else if ([...各等韻.三].includes(韻)) 等 = '三';
+      else if ([...各等韻.四].includes(韻)) 等 = '四';
     }
 
-    return new 音韻地位(母, 呼, 等, 重紐, 韻, 聲, _Unchecked);
+    return new 音韻地位(母, 呼, 等!, 重紐, 韻, 聲, _Unchecked);
   }
 
   /**
@@ -911,7 +920,7 @@ export class 音韻地位 {
       else if (韻 === '庚' || 母 === '云') 重紐 = 'B';
     }
 
-    return new 音韻地位(母, 呼, 等, 重紐, 韻, 聲, 邊緣地位指定);
+    return new 音韻地位(母, 呼, 等!, 重紐, 韻, 聲, 邊緣地位指定);
   }
 
   /**
@@ -936,7 +945,7 @@ export class 音韻地位 {
       ['韻', 韻],
       ['聲', 聲],
     ] as const) {
-      if (!((nullable && 值 === null) || 所有[屬性].includes(值))) {
+      if (!((nullable && 值 === null) || 所有[屬性].includes(值!))) {
         if (屬性 === '韻' && [...'諄桓戈'].includes(值)) {
           reject(`unexpected ${值}韻${tipIncompatible}`);
         }
@@ -945,7 +954,7 @@ export class 音韻地位 {
             母: { 娘: '孃', 群: '羣' },
             韻: { 眞: '真', 欣: '殷' },
           } as Record<string, Record<string, string>>
-        )[屬性]?.[值];
+        )[屬性]?.[值!];
         reject(`unrecognized ${屬性}: ${值}` + (suggestion ? ` (did you mean: ${suggestion}?)` : ''));
       }
     }

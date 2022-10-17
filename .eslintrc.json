@@ -13,7 +13,42 @@
   ],
   "globals": { "BigInt": true, "console": true, "WebAssembly": true },
   "rules": {
-    "@typescript-eslint/explicit-module-boundary-types": "off",
+    // TODO Is this still needed?
+    //"@typescript-eslint/explicit-module-boundary-types": "off",
+
+    "@typescript-eslint/no-non-null-assertion": "off",
+    // NOTE
+    // Non-null assertions enabled for the sake of readability and maintainability.
+    //
+    // Since `x!` is just equivalent to `x as NonNull<typeof x>`, and using `as` is even less safe than `!` (as `as` allows arbitrary
+    // type assertion), `!` is actually the best practice to assert something is not null when the type system is not smart enough (or when
+    // it requires some kind of "type-gymnastics", which only makes the code more delicate and actually hinders readability).
+    //
+    // However, it is still recommended that use of non-null assertions should still be limited to these cases (use `as` or comment about
+    // it otherwise):
+    //
+    // 1. The assertion is clearly confirmable by simply looking at statements just before it.
+    //   ```js
+    //   if (!map.has(k)) map.set(k, v); // This line ensures the next `get` to be non-null
+    //   map.get(k)!
+    //   ```
+    //
+    // 2. An accidental null value can cause the program to fail fast (thus easy to test and fix).
+    //   ```js
+    //   let 等: string;
+    //   if (... ) 等 = ...;
+    //   else if (...) 等 = ...;
+    //   return new 音韻地位(..., 等!, ...); // an `undefined` will surely trigger an error in the constructor
+    //   ```
+    //
+    // 3. A type-sound version (if possible) would require too much type-gymnastics
+    //
+    // 4. `null` is actually an intended value
+    //   ```js
+    //   所有呼.indexOf(呼) + 1 // `indexOf` returns -1 if 呼 is null, which is intended
+    //   [...'幫見影'].includes(組!) // returns false if 組 is null, which is intended
+    //   ```
+
     "eslint-comments/disable-enable-pair": [
       "error",
       { "allowWholeFile": true }

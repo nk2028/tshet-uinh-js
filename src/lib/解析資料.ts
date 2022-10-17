@@ -14,7 +14,7 @@ const m音韻編碼檢索 = new Map<string, 編碼檢索結果[]>();
   // NOTE: Due to unknown issues in the bundler of qieyun-autoderiver,
   // writing `[^\w$]{2}` will make it fail to handle Unicode surrogate pairs in production build, even with the `u` flag.
   const patternOuter = /([\w$]{3})((?:(?![\w$]).){2})((?:(?![\w$]).)+)/gu;
-  let matchOuter: RegExpExecArray;
+  let matchOuter: RegExpExecArray | null;
   while ((matchOuter = patternOuter.exec(資料)) != null) {
     const [, 編碼, 反切_, 條目] = matchOuter;
 
@@ -23,19 +23,19 @@ const m音韻編碼檢索 = new Map<string, 編碼檢索結果[]>();
 
     // NOTE: See above
     const patternInner = /((?!\|).)((?!\|).)((?:(?!\|).)*)/gu;
-    let matchInner: RegExpExecArray;
+    let matchInner: RegExpExecArray | null;
     while ((matchInner = patternInner.exec(條目)) != null) {
       const [, 字頭, 韻部原貌, 解釋] = matchInner;
 
       if (!m字頭檢索.has(字頭)) {
         m字頭檢索.set(字頭, []); // set default value
       }
-      m字頭檢索.get(字頭).push({ 編碼, 韻部原貌, 反切, 解釋 });
+      m字頭檢索.get(字頭)!.push({ 編碼, 韻部原貌, 反切, 解釋 });
 
       if (!m音韻編碼檢索.has(編碼)) {
         m音韻編碼檢索.set(編碼, []); // set default value
       }
-      m音韻編碼檢索.get(編碼).push({ 字頭, 韻部原貌, 反切, 解釋 });
+      m音韻編碼檢索.get(編碼)!.push({ 字頭, 韻部原貌, 反切, 解釋 });
     }
   }
 })();

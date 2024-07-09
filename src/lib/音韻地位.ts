@@ -787,11 +787,11 @@ export class 音韻地位 {
     assert([...所有聲].includes(聲), `Unexpected 聲: ${JSON.stringify(聲)}`);
     assert(
       [...所有呼].includes(呼) || (呼 === null && ([...'幫滂並明'].includes(母) || 開合中立的韻.includes(韻))),
-      `Unexpected 呼: ${JSON.stringify(呼)}`
+      `Unexpected 呼: ${JSON.stringify(呼)}`,
     );
     assert(
       [...所有重紐].includes(重紐) || (重紐 === null && !(重紐母.includes(母) && 重紐韻.includes(韻))),
-      `Unexpected 重紐: ${JSON.stringify(重紐)}`
+      `Unexpected 重紐: ${JSON.stringify(重紐)}`,
     );
 
     if ([...一等韻].includes(韻)) {
@@ -927,7 +927,10 @@ export class 音韻地位 {
  * 惰性求值參數，用於 `音韻地位.屬於` 標籤模板形式
  */
 class LazyParameter {
-  private constructor(private inner: unknown, private 地位: 音韻地位) {}
+  private constructor(
+    private inner: unknown,
+    private 地位: 音韻地位,
+  ) {}
 
   static from(param: unknown, 地位: 音韻地位): LazyParameter | boolean {
     switch (typeof param) {

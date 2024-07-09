@@ -1,16 +1,16 @@
-.idea/*
-.nyc_output
-build
-node_modules
-test
-src/**.js
-coverage
+.idea/
+.nyc_output/
+.rollup.cache/
+/build/
+/node_modules/
+/test/
+/coverage/
 *.log
 yarn.lock
 
 /index.js
-/index.d.ts
 /index.js.map
+/types
 
 /docs
 

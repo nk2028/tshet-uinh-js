@@ -1,4 +1,6 @@
-import ts from 'rollup-plugin-ts';
+// @ts-check
+
+import typescript from '@rollup/plugin-typescript';
 
 export default {
   // FIXME src/entry.js adds default export, but also confuses index.d.ts.
@@ -11,5 +13,10 @@ export default {
     name: 'Qieyun',
     exports: 'named',
   },
-  plugins: [ts()],
+  plugins: [
+    typescript({
+      // XXX Apparently needed with `"incremental": true` in tsconfig
+      outputToFilesystem: false,
+    }),
+  ],
 };

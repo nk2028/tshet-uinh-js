@@ -1,54 +1,36 @@
+import * as 壓縮 from './壓縮';
 import { 母到清濁, 母到組, 母到音, 韻到攝 } from './拓展音韻屬性';
-import { 必為合口的韻, 必為開口的韻, 重紐母, 重紐韻, 開合中立的韻 } from './聲韻搭配';
+import { 必為合口的韻, 必為開口的韻 } from './聲韻搭配';
+import { 呼韻搭配, 所有, 等韻搭配, 鈍音母 } from './音韻屬性常量';
 
-// For encoder
+// TODO compatibility
+/** @deprecated */ const 所有母 = 所有.母;
+/** @deprecated */ const 所有呼 = 所有.呼;
+/** @deprecated */ const 所有等 = 所有.等;
+/** @deprecated */ const 所有韻 = 所有.韻;
+/** @deprecated */ const 所有聲 = 所有.聲;
+/** @deprecated */ const 一等韻 = 等韻搭配.一;
+/** @deprecated */ const 二等韻 = 等韻搭配.二;
+/** @deprecated */ const 三等韻 = 等韻搭配.三;
+/** @deprecated */ const 四等韻 = 等韻搭配.四;
+/** @deprecated */ const 一三等韻 = 等韻搭配.一三;
+/** @deprecated */ const 二三等韻 = 等韻搭配.二三;
 
-const 編碼表 = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789$_';
+const 所有音 = [...'脣舌齒牙喉'] as const;
+const 所有攝 = [...'通江止遇蟹臻山效果假宕梗曾流深咸'] as const;
+const 所有組 = [...'幫端知精莊章見影'] as const;
 
-const 所有母 = '幫滂並明端透定泥來知徹澄孃精清從心邪莊初崇生俟章昌常書船日見溪羣疑影曉匣云以';
-const 所有呼 = '開合';
-const 所有等 = '一二三四';
-const 所有重紐 = 'AB';
-const 所有韻 = '東冬鍾江支脂之微魚虞模齊祭泰佳皆夬灰咍廢眞臻文欣元魂痕寒刪山仙先蕭宵肴豪歌麻陽唐庚耕清青蒸登尤侯幽侵覃談鹽添咸銜嚴凡';
-const 所有聲 = '平上去入';
+const 檢查 = { 母: 所有母, 等: 所有等, 類: 所有.類, 韻: 所有韻, 音: 所有音, 攝: 所有攝, 組: 所有組, 聲: 所有聲 };
 
-const 所有音 = '脣舌齒牙喉';
-const 所有攝 = '通江止遇蟹臻山效果假宕梗曾流深咸';
-const 所有組 = '幫端知精莊章見影';
+const 輕脣韻 = [...'東鍾微虞廢文元陽尤凡'] as const;
+const 次入韻 = [...'祭泰夬廢'] as const;
+const 陰聲韻 = [...'支脂之微魚虞模齊祭泰佳皆夬灰咍廢蕭宵肴豪歌麻侯尤幽'] as const;
 
-const 檢查 = { 母: 所有母, 等: 所有等, 韻: 所有韻, 音: 所有音, 攝: 所有攝, 組: 所有組, 聲: 所有聲 };
+const 鈍音組 = [...'幫見影'] as const;
 
-// 用於編碼計算，兼容 0.12 編碼（可以等之後可能編碼要升位或大幅重編之類的再停止兼容，不然新舊編碼太相似容易迷惑
-const v1重紐韻 = 重紐韻.concat(['清']);
+const pattern = new RegExp(`^([${所有母}])([${所有呼}]?)([${所有等}]?)([${所有.類}]?)([${所有韻}])([${所有聲}])$`, 'u');
 
-const 韻順序表 = '東_冬鍾江支脂之微魚虞模齊祭泰佳皆夬灰咍廢眞臻文欣元魂痕寒刪山仙先蕭宵肴豪歌_麻_陽唐庚_耕清青蒸登尤侯幽侵覃談鹽添咸銜嚴凡';
-
-const 一等韻 = '冬模泰咍灰痕魂寒豪唐登侯覃談';
-const 二等韻 = '江佳皆夬刪山肴耕咸銜';
-const 三等韻 = '鍾支脂之微魚虞祭廢眞臻欣元文仙宵陽清蒸尤幽侵鹽嚴凡';
-const 四等韻 = '齊先蕭青添';
-const 一三等韻 = '東歌';
-const 二三等韻 = '麻庚';
-
-const 輕脣韻 = '東鍾微虞廢文元陽尤凡';
-const 次入韻 = '祭泰夬廢';
-const 陰聲韻 = '支脂之微魚虞模齊祭泰佳皆夬灰咍廢蕭宵肴豪歌麻侯尤幽';
-
-const 鈍音組 = '幫見影';
-
-const 特別編碼: Record<number, [string, string]> = {
-  0: ['東', '一'],
-  1: ['東', '三'],
-  37: ['歌', '一'],
-  38: ['歌', '三'],
-  39: ['麻', '二'],
-  40: ['麻', '三'],
-  43: ['庚', '二'],
-  44: ['庚', '三'],
-};
-
-const pattern = new RegExp(`^([${所有母}])([${所有呼}]?)([${所有等}]?)([${所有重紐}]?)([${所有韻}])([${所有聲}])$`, 'u');
-
+// TODO support lazy error message
 function assert(value: unknown, error: string): asserts value {
   if (!value) throw new Error(error);
 }
@@ -56,37 +38,37 @@ function assert(value: unknown, error: string): asserts value {
 type Falsy = '' | 0 | false | null | undefined;
 export type 規則<T = unknown> = [unknown, T | 規則<T>][];
 
-export type 音韻屬性 = Partial<Pick<音韻地位, '母' | '呼' | '等' | '重紐' | '韻' | '聲'>>;
+export type 音韻屬性 = Partial<Pick<音韻地位, '母' | '呼' | '等' | '類' | '韻' | '聲'>>;
 
 /**
  * 《切韻》音系音韻地位。
  *
- * 可使用字串 (母, 呼, 等, 重紐, 韻, 聲) 初始化。
+ * 可使用字串 (母, 呼, 等, 類, 韻, 聲) 初始化。
  *
  * | 音韻屬性 | 中文名稱 | 英文名稱 | 可能取值 |
  * | :- | :- | :- | :- |
  * | 母<br/>組 | 聲母<br/>組 | initial<br/>group | **幫**滂並明<br/>**端**透定泥<br/>來<br/>**知**徹澄孃<br/>**精**清從心邪<br/>**莊**初崇生俟<br/>**章**昌常書船<br/>日<br/>**見**溪羣疑<br/>**影**曉匣云<br/>以<br/>（粗體字為組，未涵蓋「來日以」） |
  * | 呼 | 呼 | rounding | 開口<br/>合口 |
  * | 等 | 等 | division | 一二三四 |
- * | 重紐 | 重紐 | repeated initials | 重紐A類<br/>重紐B類 |
+ * | 類 | 類 | TODO: en | ABC |
  * | 韻<br/>攝 | 韻母<br/>攝 | rhyme<br/>class | 通：東冬鍾<br/>江：江<br/>止：支脂之微<br/>遇：魚虞模<br/>蟹：齊祭泰佳皆夬灰咍廢<br/>臻：眞臻文欣元魂痕<br/>山：寒刪山先仙<br/>效：蕭宵肴豪<br/>果：歌<br/>假：麻<br/>宕：陽唐<br/>梗：庚耕清青<br/>曾：蒸登<br/>流：尤侯幽<br/>深：侵<br/>咸：覃談鹽添咸銜嚴凡<br/>（冒號前為攝，後為對應的韻） |
  * | 聲 | 聲調 | tone | 平上去入<br/>仄<br/>舒 |
  *
- * 音韻地位六要素：母、呼、等、重紐、韻、聲。
+ * 音韻地位六要素：母、呼、等、類、韻、聲。
  *
- * 「呼」和「重紐」可為 `null`，其餘四個屬性不可為 `null`。
+ * 「呼」和「類」可為 `null`，其餘四個屬性不可為 `null`。
  *
- * 當聲母為脣音，或韻母為「東冬鍾江虞模尤幽」（開合中立的韻）時，呼可以（並最好）為 `null`。
- * 在其他情況下，呼必須取「開」或「合」。
+ * 當聲母為脣音，或韻母為「東冬鍾江模尤侯」（開合中立的韻）之一時，「呼」須為 `null`。
+ * 在其他情況下，「呼」須取 `開` 或 `合`。
  *
- * 當聲母為脣牙喉音（云以母除外），且韻母為「支脂祭眞仙宵侵鹽」八韻之一時，重紐必須取 `A` 或 `B`。
- * 在其他情況下，重紐可以（並最好）取 `null`。
+ * 當聲母為脣牙喉音（不含以母），且為三等韻時，「類」須取 `A`、`B`、`C` 之一。
+ * 在其他情況下，「類」須為 `null`。
  *
  * **注意**：元韻置於臻攝而非山攝。
  *
- * 不設諄、桓、戈韻。分別併入眞、寒、歌韻。
+ * 依切韻韻目，用殷韻不用欣韻；亦不設諄、桓、戈韻，分別併入真、寒、歌韻。
  *
- * 不支援異體字，請手動轉換：
+ * 不支援異體字，請自行轉換：
  *
  * * 音 唇 → 脣
  * * 母 娘 → 孃
@@ -94,14 +76,14 @@ export type 音韻屬性 = Partial<Pick<音韻地位, '母' | '呼' | '等' | '�
  * * 母 谿 → 溪
  * * 母 群 → 羣
  * * 韻 餚 → 肴
- * * 韻 真 → 眞
+ * * 韻 眞 → 真
  */
 export class 音韻地位 {
   /**
    * 聲母
    * @example
    * ```typescript
-   * > 音韻地位 = Qieyun.音韻地位.from描述('幫三凡入');
+   * > 音韻地位 = Qieyun.音韻地位.from描述('幫三C凡入');
    * > 音韻地位.母;
    * '幫'
    * > 音韻地位 = Qieyun.音韻地位.from描述('羣開三A支平');
@@ -115,7 +97,7 @@ export class 音韻地位 {
    * 呼
    * @example
    * ```typescript
-   * > 音韻地位 = Qieyun.音韻地位.from描述('幫三凡入');
+   * > 音韻地位 = Qieyun.音韻地位.from描述('幫三C凡入');
    * > 音韻地位.呼;
    * null
    * > 音韻地位 = Qieyun.音韻地位.from描述('羣開三A支平');
@@ -129,7 +111,7 @@ export class 音韻地位 {
    * 等
    * @example
    * ```typescript
-   * > 音韻地位 = Qieyun.音韻地位.from描述('幫三凡入');
+   * > 音韻地位 = Qieyun.音韻地位.from描述('幫三C凡入');
    * > 音韻地位.等;
    * '三'
    * > 音韻地位 = Qieyun.音韻地位.from描述('羣開三A支平');
@@ -140,24 +122,30 @@ export class 音韻地位 {
   readonly 等: string;
 
   /**
-   * 重紐
+   * 類
    * @example
    * ```typescript
-   * > 音韻地位 = Qieyun.音韻地位.from描述('幫三凡入');
-   * > 音韻地位.重紐;
-   * null
+   * > 音韻地位 = Qieyun.音韻地位.from描述('幫三C凡入');
+   * > 音韻地位.類;
+   * 'C'
    * > 音韻地位 = Qieyun.音韻地位.from描述('羣開三A支平');
-   * > 音韻地位.重紐;
+   * > 音韻地位.類;
    * 'A'
+   * > 音韻地位 = Qieyun.音韻地位.from描述('章開三支平');
+   * > 音韻地位.類;
+   * null
+   * > 音韻地位 = Qieyun.音韻地位.from描述('幫四先平');
+   * > 音韻地位.類;
+   * null
    * ```
    */
-  readonly 重紐: string | null;
+  readonly 類: string | null;
 
   /**
-   * 韻（舉平以賅上去入）
+   * 韻（舉平以賅上去入，唯泰、祭、夬、廢例外）
    * @example
    * ```typescript
-   * > 音韻地位 = Qieyun.音韻地位.from描述('幫三凡入');
+   * > 音韻地位 = Qieyun.音韻地位.from描述('幫三C凡入');
    * > 音韻地位.韻;
    * '凡'
    * > 音韻地位 = Qieyun.音韻地位.from描述('羣開三A支平');
@@ -171,7 +159,7 @@ export class 音韻地位 {
    * 聲調
    * @example
    * ```typescript
-   * > 音韻地位 = Qieyun.音韻地位.from描述('幫三凡入');
+   * > 音韻地位 = Qieyun.音韻地位.from描述('幫三C凡入');
    * > 音韻地位.聲;
    * '入'
    * > 音韻地位 = Qieyun.音韻地位.from描述('羣開三A支平');
@@ -186,24 +174,28 @@ export class 音韻地位 {
    * @param 母 聲母：幫, 滂, 並, 明, …
    * @param 呼 呼：`null`, 開, 合
    * @param 等 等：一, 二, 三, 四
-   * @param 重紐 重紐：`null`, A, B
-   * @param 韻 韻母（舉平以賅上去入）：東, 冬, 鍾, 江, …, 祭, 泰, 夬, 廢
+   * @param 類 類：`null`, A, B, C
+   * @param 韻 韻母（平賅上去入）：東, 冬, 鍾, 江, …, 祭, 泰, 夬, 廢
    * @param 聲 聲調：平, 上, 去, 入
    * @returns 字串所描述的音韻地位。
    * @example
    * ```typescript
-   * > new Qieyun.音韻地位('幫', null, '三', null, '凡', '入');
-   * 音韻地位 { '幫三凡入' }
+   * > new Qieyun.音韻地位('幫', null, '三', 'C', '凡', '入');
+   * 音韻地位 { '幫三C凡入' }
    * > new Qieyun.音韻地位('羣', '開', '三', 'A', '支', '平');
    * 音韻地位 { '羣開三A支平' }
+   * > new Qieyun.音韻地位('章', '開', '三', null, '支', '平');
+   * 音韻地位 { '章開三支平' }
+   * > new Qieyun.音韻地位('幫', null, '四', null, '先', '平');
+   * 音韻地位 { '幫四先平' }
    * ```
    */
-  constructor(母: string, 呼: string | null, 等: string, 重紐: string | null, 韻: string, 聲: string) {
-    音韻地位.驗證(母, 呼, 等, 重紐, 韻, 聲);
+  constructor(母: string, 呼: string | null, 等: string, 類: string | null, 韻: string, 聲: string) {
+    音韻地位.驗證(母, 呼, 等, 類, 韻, 聲);
     this.母 = 母;
     this.呼 = 呼;
     this.等 = 等;
-    this.重紐 = 重紐;
+    this.類 = 類;
     this.韻 = 韻;
     this.聲 = 聲;
   }
@@ -211,11 +203,11 @@ export class 音韻地位 {
   /**
    * 清濁（全清、次清、全濁、次濁）
    *
-   * 曉母為全清，云以來日四母為次濁。
+   * 曉母為全清，云以來日母為次濁。
    *
    * @example
    * ```typescript
-   * > 音韻地位 = Qieyun.音韻地位.from描述('幫三凡入');
+   * > 音韻地位 = Qieyun.音韻地位.from描述('幫三C凡入');
    * > 音韻地位.清濁;
    * '全清'
    * > 音韻地位 = Qieyun.音韻地位.from描述('羣開三A支平');
@@ -238,7 +230,7 @@ export class 音韻地位 {
    *
    * @example
    * ```typescript
-   * > 音韻地位 = Qieyun.音韻地位.from描述('幫三凡入');
+   * > 音韻地位 = Qieyun.音韻地位.from描述('幫三C凡入');
    * > 音韻地位.音;
    * '脣'
    * > 音韻地位 = Qieyun.音韻地位.from描述('羣開三A支平');
@@ -255,7 +247,7 @@ export class 音韻地位 {
    * 攝
    * @example
    * ```typescript
-   * > 音韻地位 = Qieyun.音韻地位.from描述('幫三凡入');
+   * > 音韻地位 = Qieyun.音韻地位.from描述('幫三C凡入');
    * > 音韻地位.攝;
    * '咸'
    * > 音韻地位 = Qieyun.音韻地位.from描述('羣開三A支平');
@@ -272,7 +264,7 @@ export class 音韻地位 {
    * 韻別（陰聲韻、陽聲韻、入聲韻）
    * @example
    * ```typescript
-   * > 音韻地位 = Qieyun.音韻地位.from描述('幫三凡入');
+   * > 音韻地位 = Qieyun.音韻地位.from描述('幫三C凡入');
    * > 音韻地位.韻別;
    * '入'
    * > 音韻地位 = Qieyun.音韻地位.from描述('羣開三A支平');
@@ -289,7 +281,7 @@ export class 音韻地位 {
    * 組
    * @example
    * ```typescript
-   * > 音韻地位 = Qieyun.音韻地位.from描述('幫三凡入');
+   * > 音韻地位 = Qieyun.音韻地位.from描述('幫三C凡入');
    * > 音韻地位.組;
    * '幫'
    * > 音韻地位 = Qieyun.音韻地位.from描述('羣開三A支平');
@@ -306,24 +298,30 @@ export class 音韻地位 {
    * 描述
    * @example
    * ```typescript
-   * > 音韻地位 = Qieyun.音韻地位.from描述('幫三凡入');
+   * > 音韻地位 = Qieyun.音韻地位.from描述('幫三C凡入');
    * > 音韻地位.描述;
    * '幫三凡入'
    * > 音韻地位 = Qieyun.音韻地位.from描述('羣開三A支平');
    * > 音韻地位.描述;
    * '羣開三A支平'
+   * > 音韻地位 = Qieyun.音韻地位.from描述('章開三支平');
+   * > 音韻地位.描述;
+   * '章開三支平'
+   * > 音韻地位 = Qieyun.音韻地位.from描述('幫四先平');
+   * > 音韻地位.描述;
+   * '幫四先平'
    * ```
    */
   get 描述(): string {
-    const { 母, 呼, 等, 重紐, 韻, 聲 } = this;
-    return 母 + (呼 || '') + 等 + (重紐 || '') + 韻 + 聲;
+    const { 母, 呼, 等, 類, 韻, 聲 } = this;
+    return 母 + (呼 || '') + 等 + (類 || '') + 韻 + 聲;
   }
 
   /**
    * 最簡描述
    * @example
    * ```typescript
-   * > 音韻地位 = Qieyun.音韻地位.from描述('幫三凡入');
+   * > 音韻地位 = Qieyun.音韻地位.from描述('幫三C凡入');
    * > 音韻地位.最簡描述;
    * '幫凡入'
    * > 音韻地位 = Qieyun.音韻地位.from描述('羣開三A支平');
@@ -332,36 +330,50 @@ export class 音韻地位 {
    * ```
    */
   get 最簡描述(): string {
-    const { 母, 重紐, 韻, 聲 } = this;
-    let { 呼, 等 } = this;
-    if ((呼 === '開' && 必為開口的韻.includes(韻)) || (呼 === '合' && 必為合口的韻.includes(韻))) {
+    const { 母, 韻, 聲 } = this;
+    let { 呼, 等, 類 } = this;
+    if (呼 != null && 呼韻搭配[呼 as '開' | '合'].includes(韻)) {
       呼 = null;
     }
-    if (![...一三等韻, ...二三等韻].includes(韻)) 等 = null;
-    return 母 + (呼 || '') + (等 || '') + (重紐 || '') + 韻 + 聲;
+    if (![...等韻搭配.一三, ...等韻搭配.二三].includes(韻)) {
+      等 = null;
+    }
+    if (類) {
+      // TODO 待定
+      if (
+        類 === 'C' ||
+        (韻 === '幽' && 類 === ([...'幫滂並明'].includes(母) ? 'B' : 'A')) ||
+        (韻 === '蒸' && 類 === (呼 === '合' || [...'幫滂並明'].includes(母) ? 'B' : 'C')) ||
+        ['庚B', '清A'].includes(`${韻}${類}`)
+      ) {
+        類 = null;
+      }
+    }
+    return 母 + (呼 || '') + (等 || '') + (類 || '') + 韻 + 聲;
   }
 
   /**
    * 表達式，可用於 [[`屬於`]] 函數
    * @example
    * ```typescript
-   * > 音韻地位 = Qieyun.音韻地位.from描述('幫三凡入');
+   * > 音韻地位 = Qieyun.音韻地位.from描述('幫三C凡入');
    * > 音韻地位.表達式;
-   * '幫母 開合中立 三等 不分重紐 凡韻 入聲'
+   * '幫母 開合中立 三等 C類 凡韻 入聲'
    * > 音韻地位 = Qieyun.音韻地位.from描述('羣開三A支平');
    * > 音韻地位.表達式;
-   * '羣母 開口 三等 重紐A類 支韻 平聲'
+   * '羣母 開口 三等 A類 支韻 平聲'
    * ```
    */
   get 表達式(): string {
-    const { 母, 呼, 等, 重紐, 韻, 聲 } = this;
+    const { 母, 呼, 等, 類, 韻, 聲 } = this;
     const 呼字段 = 呼 ? `${呼}口 ` : '開合中立 ';
-    const 重紐字段 = 重紐 ? `重紐${重紐}類 ` : '不分重紐 ';
-    return `${母}母 ${呼字段}${等}等 ${重紐字段}${韻}韻 ${聲}聲`;
+    const 類字段 = 類 ? `${類}類 ` : '不分類 ';
+    return `${母}母 ${呼字段}${等}等 ${類字段}${韻}韻 ${聲}聲`;
   }
 
   /**
    * 音韻地位對應的編碼。音韻編碼與音韻地位之間存在一一映射關係。
+   * @deprecated 請用 [[`Qieyun.壓縮.encode音韻地位`]]
    * @example
    * ```typescript
    * > 音韻地位 = Qieyun.音韻地位.from描述('幫三凡入');
@@ -373,15 +385,7 @@ export class 音韻地位 {
    * ```
    */
   get 編碼(): string {
-    const { 母, 呼, 等, 重紐, 韻, 聲 } = this;
-    const 母編碼 = 所有母.indexOf(母);
-    const 韻編碼 = { 東三: 1, 歌三: 38, 麻三: 40, 庚三: 44 }[`${韻}${等}`] || 韻順序表.indexOf(韻);
-
-    const 有額外開合 = 呼 !== null && ([...'幫滂並明'].includes(母) || 開合中立的韻.includes(韻));
-    const 特殊重紐 = 重紐 !== null ? !(重紐母.includes(母) && v1重紐韻.includes(韻)) : 重紐母.includes(母) && 韻 === '清';
-    const 其他編碼 = (+有額外開合 << 5) + (+特殊重紐 << 4) + (+(呼 === '合') << 3) + (+(重紐 === 'B') << 2) + 所有聲.indexOf(聲);
-
-    return 編碼表[母編碼] + 編碼表[韻編碼] + 編碼表[其他編碼];
+    return 壓縮.encode音韻地位(this);
   }
 
   /**
@@ -404,8 +408,8 @@ export class 音韻地位 {
    * ```
    */
   調整(調整屬性: 音韻屬性): 音韻地位 {
-    const { 母 = this.母, 呼 = this.呼, 等 = this.等, 重紐 = this.重紐, 韻 = this.韻, 聲 = this.聲 } = 調整屬性;
-    return new 音韻地位(母, 呼, 等, 重紐, 韻, 聲);
+    const { 母 = this.母, 呼 = this.呼, 等 = this.等, 類 = this.類, 韻 = this.韻, 聲 = this.聲 } = 調整屬性;
+    return new 音韻地位(母, 呼, 等, 類, 韻, 聲);
   }
 
   /**
@@ -422,7 +426,7 @@ export class 音韻地位 {
    * * 音韻地位六要素：
    *   * `……母`, `……等`, `……韻`, `……聲`
    *   * 呼：`開口`, `合口`, `開合中立`
-   *   * 重紐：`重紐A類`, `重紐B類`, `不分重紐`
+   *   * 類：`A類`, `B類`, `C類`, `不分類`（其中 ABC 可組合書寫，如 `AC類`）
    * * 拓展音韻地位：
    *   * `……組`, `……音`, `……攝`
    *   * 清濁：`全清`, `次清`, `全濁`, `次濁`, `清音`, `濁音`
@@ -451,7 +455,7 @@ export class 音韻地位 {
    * @throws 若表達式為空、不合語法、或限定條件不合法，則拋出異常。
    * @example
    * ```typescript
-   * > 音韻地位 = Qieyun.音韻地位.from描述('幫三凡入');
+   * > 音韻地位 = Qieyun.音韻地位.from描述('幫三C凡入');
    * > 音韻地位.屬於`章母`; // 標籤模板語法（表達式為字面值時推荐）
    * false
    * > 音韻地位.屬於('章母'); // 一般形式
@@ -495,7 +499,7 @@ export class 音韻地位 {
     if (typeof 表達式 === 'string') 表達式 = [表達式];
 
     /** 普通字串 token 求值 */
-    const { 呼, 等, 重紐, 韻, 聲, 清濁, 韻別, 組 } = this;
+    const { 呼, 等, 類, 韻, 聲, 清濁, 韻別, 組 } = this;
     const evalToken = (token: string): boolean => {
       let match: RegExpExecArray = null;
       const tryMatch = (pat: RegExp) => !!(match = pat.exec(token));
@@ -506,13 +510,12 @@ export class 音韻地位 {
       if (tryMatch(/^舒聲$/)) return 聲 !== '入';
       if (tryMatch(/^(開|合)口$/)) return 呼 === match[1];
       if (tryMatch(/^開合中立$/)) return 呼 === null;
-      if (tryMatch(/^重紐(A|B)類$/)) return 重紐 === match[1];
-      if (tryMatch(/^不分重紐$/)) return 重紐 === null;
+      if (tryMatch(/^不分類$/)) return 類 === null;
       if (tryMatch(/^(清|濁)音$/)) return 清濁[1] === match[1];
       if (tryMatch(/^[全次][清濁]$/)) return 清濁 === match[0];
       if (tryMatch(/^鈍音$/)) return 鈍音組.includes(組);
       if (tryMatch(/^銳音$/)) return !鈍音組.includes(組);
-      if (tryMatch(/^(.+?)([母等韻音攝組聲])$/)) {
+      if (tryMatch(/^(.+?)([母等類韻音攝組聲])$/)) {
         const values = [...match[1]];
         const check = 檢查[match[2] as keyof typeof 檢查];
         const invalid = values.filter(i => !check.includes(i)).join('');
@@ -691,7 +694,7 @@ export class 音韻地位 {
    * @throws `未涵蓋所有條件`（或 `error` 參數）, `規則需符合格式`, `無效的表達式`, `表達式為空`, `非預期的運算子`, `非預期的閉括號`, `括號未匹配`
    * @example
    * ```typescript
-   * > 音韻地位 = Qieyun.音韻地位.from描述('幫三凡入');
+   * > 音韻地位 = Qieyun.音韻地位.from描述('幫三C凡入');
    * > 音韻地位.判斷([
    * >   ['遇果假攝 或 支脂之佳韻', ''],
    * >   ['蟹攝 或 微韻', 'i'],
@@ -753,47 +756,42 @@ export class 音韻地位 {
    * ```
    */
   等於(other: 音韻地位): boolean {
-    return this.編碼 === other.編碼;
+    return this.描述 === other.描述;
   }
 
   /**
-   * 驗證給定的音韻地位六要素是否合法。此為最小程度的驗證，想要更強限定請用 [[`適配分析體系`]]。
+   * 驗證給定的音韻地位六要素是否合法。
    *
    * 母必須為「幫滂並明端透定泥來知徹澄孃精清從心邪莊初崇生俟章昌常書船日
    * 見溪羣疑影曉匣云以」三十八聲類之一。
    *
-   * 韻必須為「東冬鍾江支脂之微魚虞模齊祭泰佳皆夬灰咍廢眞臻文欣元魂痕
+   * 韻必須為「東冬鍾江支脂之微魚虞模齊祭泰佳皆夬灰咍廢真臻文殷元魂痕
    * 寒刪山仙先蕭宵肴豪歌麻陽唐庚耕清青蒸登尤侯幽侵覃談鹽添咸銜嚴凡」五十八韻之一。
    *
-   * 注意：不設諄、桓、戈韻。分別併入眞、寒、歌韻。
+   * 當聲母為脣音，或韻母為「東冬鍾江虞模尤幽」（開合中立的韻）時，呼須為 `null`。
+   * 在其他情況下，呼須取「開」或「合」。
    *
-   * 當聲母為脣音，或韻母為「東冬鍾江虞模尤幽」（開合中立的韻）時，呼可以為 `null`。
-   * 在其他情況下，呼必須取「開」或「合」。
-   *
-   * 當聲母為脣牙喉音，且韻母為「支脂祭眞仙宵侵鹽」八韻之一時，重紐必須取 `A` 或 `B`。
-   * 在其他情況下，重紐可以取 `null`。
+   * 當聲母為脣牙喉音（不含以母），且為三等韻時，類須取 `A`、`B`、`C` 之一。
+   * 在其他情況下，類須為 `null`。
    * @param 母 聲母：幫, 滂, 並, 明, …
    * @param 呼 呼：`null`, 開, 合
    * @param 等 等：一, 二, 三, 四
-   * @param 重紐 重紐：`null`, A, B
+   * @param 類 類：`null`, A, B, C
    * @param 韻 韻母（舉平以賅上去入）：東, 冬, 鍾, 江, …, 祭, 泰, 夬, 廢
    * @param 聲 聲調：平, 上, 去, 入
    * @throws 若給定的音韻地位六要素不合法，則拋出異常。
    */
-  static 驗證(母: string, 呼: string | null, 等: string, 重紐: string | null, 韻: string, 聲: string): void {
+  static 驗證(母: string, 呼: string | null, 等: string, 類: string | null, 韻: string, 聲: string): void {
+    // 值驗證
     assert([...所有母].includes(母), `Unexpected 母: ${JSON.stringify(母)}`);
+    assert(呼 === null || 所有.呼.includes(呼), `Unexpected 呼: ${JSON.stringify(呼)}`);
     assert([...所有等].includes(等), `Unexpected 等: ${JSON.stringify(等)}`);
+    assert(類 === null || 所有.類.includes(類), `Unexpected 類: ${JSON.stringify(類)}`);
     assert([...所有韻].includes(韻), `Unexpected 韻: ${JSON.stringify(韻)}`);
     assert([...所有聲].includes(聲), `Unexpected 聲: ${JSON.stringify(聲)}`);
-    assert(
-      [...所有呼].includes(呼) || (呼 === null && ([...'幫滂並明'].includes(母) || 開合中立的韻.includes(韻))),
-      `Unexpected 呼: ${JSON.stringify(呼)}`,
-    );
-    assert(
-      [...所有重紐].includes(重紐) || (重紐 === null && !(重紐母.includes(母) && 重紐韻.includes(韻))),
-      `Unexpected 重紐: ${JSON.stringify(重紐)}`,
-    );
 
+    // 基本搭配驗證
+    // 等韻搭配
     if ([...一等韻].includes(韻)) {
       assert(等 === '一', `Unexpected 等: ${JSON.stringify(等)}`);
     } else if ([...二等韻].includes(韻)) {
@@ -808,13 +806,37 @@ export class 音韻地位 {
       assert(['二', '三'].includes(等), `Unexpected 等: ${JSON.stringify(等)}`);
     }
 
+    // 調韻搭配
     if ([...陰聲韻].includes(韻)) {
       assert(聲 !== '入', `unexpected 入聲 for ${韻}韻`);
     }
+
+    const 需要呼 = ![...'幫滂並明'].includes(母) && !呼韻搭配.中立.includes(韻);
+    if (需要呼) {
+      assert(呼 !== null, `Need 呼 for ${韻}韻`);
+      for (const 搭配呼 of ['開', '合'] as const) {
+        if (呼韻搭配[搭配呼].includes(韻)) {
+          assert(呼 === 搭配呼, `Unexpected 呼 for ${韻}韻: ${呼}`);
+        }
+      }
+    } else {
+      assert(呼 === null, `呼 should be null for ${母}母${韻}韻`);
+    }
+
+    // FIXME 用具體搭配
+    const 需要類 = 等 === '三' && 鈍音母.includes(母);
+    if (需要類) {
+      assert(類 !== null, `Need 類 for ${母}母三等`);
+    } else {
+      assert(類 === null, `類 should be null for ${母}母${等}等`);
+    }
+
+    // TODO 更多搭配限制
   }
 
   /**
    * 將音韻編碼轉換為音韻地位。
+   * @deprecated 請用 [[`Qieyun.壓縮.decode音韻地位`]]
    * @param 音韻編碼 音韻地位的編碼
    * @returns 給定的音韻編碼對應的音韻地位。
    * @example
@@ -826,63 +848,7 @@ export class 音韻地位 {
    * ```
    */
   static from編碼(音韻編碼: string): 音韻地位 {
-    assert(音韻編碼.length === 3, `Invalid 編碼: ${JSON.stringify(音韻編碼)}`);
-
-    const 母編碼 = 編碼表.indexOf(音韻編碼[0]);
-    const 韻編碼 = 編碼表.indexOf(音韻編碼[1]);
-    const 其他編碼 = 編碼表.indexOf(音韻編碼[2]);
-
-    const 有額外開合 = (其他編碼 >> 5) & 0b1;
-    const 特殊重紐 = (其他編碼 >> 4) & 0b1;
-    const 呼編碼 = (其他編碼 >> 3) & 0b1;
-    const 重紐編碼 = (其他編碼 >> 2) & 0b1;
-    const 聲編碼 = 其他編碼 & 0b11;
-
-    const 母 = 所有母[母編碼];
-    const 聲 = 所有聲[聲編碼];
-
-    let 呼 = 所有呼[呼編碼];
-    let 重紐 = 所有重紐[重紐編碼];
-
-    let 韻: string;
-    let 等: string;
-
-    if (韻編碼 in 特別編碼) {
-      [韻, 等] = 特別編碼[韻編碼];
-    } else {
-      韻 = 韻順序表[韻編碼];
-      if ([...一等韻].includes(韻)) 等 = '一';
-      if ([...二等韻].includes(韻)) 等 = '二';
-      if ([...三等韻].includes(韻)) 等 = '三';
-      if ([...四等韻].includes(韻)) 等 = '四';
-    }
-
-    if ([...'幫滂並明'].includes(母) || 開合中立的韻.includes(韻)) {
-      if (!有額外開合) {
-        呼 = null;
-      }
-    } else if (有額外開合) {
-      throw new Error('Invalid code: 呼-flag should be 0');
-    }
-
-    if (重紐母.includes(母) && v1重紐韻.includes(韻)) {
-      if (韻 === '清') {
-        // 清韻鈍音特殊（向上兼容）：flag 表示重紐為 null
-        if (特殊重紐) {
-          重紐 = null;
-        }
-      } else if (特殊重紐) {
-        // 重紐八韻鈍音不允許該 flag
-        throw new Error('Invalid code: 重紐-flag should be 0');
-      }
-    } else {
-      // 其餘情形 flag 表示重紐非 null
-      if (!特殊重紐) {
-        重紐 = null;
-      }
-    }
-
-    return new 音韻地位(母, 呼, 等, 重紐, 韻, 聲);
+    return 壓縮.decode音韻地位(音韻編碼);
   }
 
   /**
@@ -903,7 +869,7 @@ export class 音韻地位 {
     const 母 = match[1];
     let 呼 = match[2] || null;
     let 等 = match[3] || null;
-    const 重紐 = match[4] || null;
+    let 類 = match[4] || null;
     const 韻 = match[5];
     const 聲 = match[6];
 
@@ -919,7 +885,12 @@ export class 音韻地位 {
       else if ([...四等韻].includes(韻)) 等 = '四';
     }
 
-    return new 音韻地位(母, 呼, 等, 重紐, 韻, 聲);
+    // TODO 填入類
+    if (類 === null && 等 === '三' && 鈍音母.includes(母) && !['蒸', '幽'].includes('韻')) {
+      類 = 'C';
+    }
+
+    return new 音韻地位(母, 呼, 等, 類, 韻, 聲);
   }
 }
 

@@ -1,11 +1,6 @@
+import { assert } from './utils';
 import { 音韻地位 } from './音韻地位';
 import { 所有, 等韻搭配 } from './音韻屬性常量';
-
-function assert(value: unknown, message: string | (() => string)): asserts value {
-  if (!value) {
-    throw new Error(typeof message === 'string' ? message : message());
-  }
-}
 
 const 編碼表 = [...'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789$_'] as const;
 const 韻序表 = [

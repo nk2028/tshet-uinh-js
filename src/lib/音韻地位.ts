@@ -1,3 +1,4 @@
+import { assert } from './utils';
 import { 母到清濁, 母到組, 母到音, 韻到攝 } from './拓展音韻屬性';
 import { 呼韻搭配, 所有, 等韻搭配, 鈍音母 } from './音韻屬性常量';
 
@@ -14,11 +15,6 @@ const 陰聲韻 = [...'支脂之微魚虞模齊祭泰佳皆夬灰咍廢蕭宵肴
 const 鈍音組 = [...'幫見影'] as const;
 
 const pattern = new RegExp(`^([${所有.母}])([${所有.呼}]?)([${所有.等}]?)([${所有.類}]?)([${所有.韻}])([${所有.聲}])$`, 'u');
-
-// TODO support lazy error message
-function assert(value: unknown, error: string): asserts value {
-  if (!value) throw new Error(error);
-}
 
 type Falsy = '' | 0 | false | null | undefined;
 export type 規則<T = unknown> = [unknown, T | 規則<T>][];
@@ -487,7 +483,7 @@ export class 音韻地位 {
         const values = [...match[1]];
         const check = 檢查[match[2] as keyof typeof 檢查];
         const invalid = values.filter(i => !check.includes(i)).join('');
-        assert(!invalid, invalid + match[2] + '不存在');
+        assert(!invalid, () => invalid + match[2] + '不存在');
         return values.includes(this[match[2] as keyof typeof 檢查]);
       }
       throw new Error(`unreconized test condition: ${token}`);
@@ -751,44 +747,44 @@ export class 音韻地位 {
    */
   static 驗證(母: string, 呼: string | null, 等: string, 類: string | null, 韻: string, 聲: string): void {
     // 值驗證
-    assert(所有.母.includes(母), `Unexpected 母: ${JSON.stringify(母)}`);
-    assert(呼 === null || 所有.呼.includes(呼), `Unexpected 呼: ${JSON.stringify(呼)}`);
-    assert(所有.等.includes(等), `Unexpected 等: ${JSON.stringify(等)}`);
-    assert(類 === null || 所有.類.includes(類), `Unexpected 類: ${JSON.stringify(類)}`);
-    assert(所有.韻.includes(韻), `Unexpected 韻: ${JSON.stringify(韻)}`);
-    assert(所有.聲.includes(聲), `Unexpected 聲: ${JSON.stringify(聲)}`);
+    assert(所有.母.includes(母), () => `Unexpected 母: ${JSON.stringify(母)}`);
+    assert(呼 === null || 所有.呼.includes(呼), () => `Unexpected 呼: ${JSON.stringify(呼)}`);
+    assert(所有.等.includes(等), () => `Unexpected 等: ${JSON.stringify(等)}`);
+    assert(類 === null || 所有.類.includes(類), () => `Unexpected 類: ${JSON.stringify(類)}`);
+    assert(所有.韻.includes(韻), () => `Unexpected 韻: ${JSON.stringify(韻)}`);
+    assert(所有.聲.includes(聲), () => `Unexpected 聲: ${JSON.stringify(聲)}`);
 
     // 基本搭配驗證
     // 等韻搭配
     for (const [搭配各等, 搭配各韻] of Object.entries(等韻搭配)) {
       if (搭配各韻.includes(韻)) {
-        assert([...搭配各等].includes(等), `Unexpected 等 for ${韻}韻: ${等}`);
+        assert([...搭配各等].includes(等), () => `Unexpected 等 for ${韻}韻: ${等}`);
       }
     }
 
     // 調韻搭配
     if ([...陰聲韻].includes(韻)) {
-      assert(聲 !== '入', `unexpected 入聲 for ${韻}韻`);
+      assert(聲 !== '入', () => `Unexpected 入聲 for ${韻}韻`);
     }
 
     const 需要呼 = ![...'幫滂並明'].includes(母) && !呼韻搭配.中立.includes(韻);
     if (需要呼) {
-      assert(呼 !== null, `Need 呼 for ${韻}韻`);
+      assert(呼 !== null, () => `Need 呼 for ${韻}韻`);
       for (const 搭配呼 of ['開', '合'] as const) {
         if (呼韻搭配[搭配呼].includes(韻)) {
-          assert(呼 === 搭配呼, `Unexpected 呼 for ${韻}韻: ${呼}`);
+          assert(呼 === 搭配呼, () => `Unexpected 呼 for ${韻}韻: ${呼}`);
         }
       }
     } else {
-      assert(呼 === null, `呼 should be null for ${母}母${韻}韻`);
+      assert(呼 === null, () => `呼 should be null for ${母}母${韻}韻`);
     }
 
     // FIXME 用具體搭配
     const 需要類 = 等 === '三' && 鈍音母.includes(母);
     if (需要類) {
-      assert(類 !== null, `Need 類 for ${母}母三等`);
+      assert(類 !== null, () => `Need 類 for ${母}母三等`);
     } else {
-      assert(類 === null, `類 should be null for ${母}母${等}等`);
+      assert(類 === null, () => `類 should be null for ${母}母${等}等`);
     }
 
     // TODO 更多搭配限制

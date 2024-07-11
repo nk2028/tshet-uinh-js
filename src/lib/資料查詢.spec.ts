@@ -1,3 +1,5 @@
+import { readFileSync } from 'fs';
+
 import test from 'ava';
 
 import { query字頭, query音韻地位 } from './解析資料';
@@ -54,4 +56,26 @@ test('查詢不存在的字，沒有讀音', t => {
 test('查詢韻目原貌', t => {
   t.is(query字頭('劒')?.[0].韻目原貌, '梵');
   t.is(query字頭('茝').find(({ 音韻地位 }) => 音韻地位.屬於('廢韻'))?.韻目原貌, '海');
+});
+
+test('根據原資料檔查詢所有字頭', t => {
+  for (const line of readFileSync('prepare/data.csv', { encoding: 'utf8' }).split('\n').slice(1, -1)) {
+    const [, , 韻目原貌1, 地位描述1, 原反切1, 字頭1, 字頭又作1, 原釋義1, 釋義補充1] = line.split(',');
+    if (!地位描述1) {
+      continue;
+    }
+    const 反切1 = 原反切1 || null;
+    const 釋義1 = 原釋義1 + (釋義補充1 && `（${釋義補充1}）`);
+    const 音韻地位1 = 音韻地位.from描述(地位描述1);
+
+    const query = (查詢字頭: string) =>
+      query字頭(查詢字頭).some(({ 字頭: 字頭2, 音韻地位: 音韻地位2, 韻目原貌: 韻目原貌2, 反切: 反切2, 釋義: 釋義2 }) => {
+        return 字頭1 === 字頭2 && 音韻地位1.等於(音韻地位2) && 韻目原貌1 == 韻目原貌2 && 反切1 === 反切2 && 釋義1 === 釋義2;
+      });
+
+    t.true(query(字頭1), line);
+    for (const 別體 of [...字頭又作1]) {
+      t.true(query(別體));
+    }
+  }
 });

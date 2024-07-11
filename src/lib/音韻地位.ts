@@ -1,4 +1,3 @@
-import * as 壓縮 from './壓縮';
 import { 母到清濁, 母到組, 母到音, 韻到攝 } from './拓展音韻屬性';
 import { 呼韻搭配, 所有, 等韻搭配, 鈍音母 } from './音韻屬性常量';
 
@@ -355,23 +354,6 @@ export class 音韻地位 {
     const 呼字段 = 呼 ? `${呼}口 ` : '開合中立 ';
     const 類字段 = 類 ? `${類}類 ` : '不分類 ';
     return `${母}母 ${呼字段}${等}等 ${類字段}${韻}韻 ${聲}聲`;
-  }
-
-  /**
-   * 音韻地位對應的編碼。音韻編碼與音韻地位之間存在一一映射關係。
-   * @deprecated 請用 [[`Qieyun.壓縮.encode音韻地位`]]
-   * @example
-   * ```typescript
-   * > 音韻地位 = Qieyun.音韻地位.from描述('幫三凡入');
-   * > 音韻地位.編碼;
-   * 'A9D'
-   * > 音韻地位 = Qieyun.音韻地位.from描述('羣開三A支平');
-   * > 音韻地位.編碼;
-   * 'fFA'
-   * ```
-   */
-  get 編碼(): string {
-    return 壓縮.encode音韻地位(this);
   }
 
   /**
@@ -810,23 +792,6 @@ export class 音韻地位 {
     }
 
     // TODO 更多搭配限制
-  }
-
-  /**
-   * 將音韻編碼轉換為音韻地位。
-   * @deprecated 請用 [[`Qieyun.壓縮.decode音韻地位`]]
-   * @param 音韻編碼 音韻地位的編碼
-   * @returns 給定的音韻編碼對應的音韻地位。
-   * @example
-   * ```typescript
-   * > Qieyun.音韻地位.from編碼('A9D');
-   * 音韻地位 { '幫三凡入' }
-   * > Qieyun.音韻地位.from編碼('fFA');
-   * 音韻地位 { '羣開三A支平' }
-   * ```
-   */
-  static from編碼(音韻編碼: string): 音韻地位 {
-    return 壓縮.decode音韻地位(音韻編碼);
   }
 
   /**

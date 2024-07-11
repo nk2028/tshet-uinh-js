@@ -1,5 +1,6 @@
 import 資料 from '../data/資料';
 
+import { decode音韻編碼, encode音韻編碼 } from './壓縮表示';
 import { 音韻地位 } from './音韻地位';
 
 type 檢索內部結果 = { 字頭: string; 編碼: string; 反切: string | null; 釋義: string; 韻目原貌: string };
@@ -38,7 +39,7 @@ function insertInto<K, V>(map: Map<K, V[]>, key: K, value: V) {
 
 function 結果from內部結果(內部結果: 檢索內部結果): 檢索結果 {
   const { 字頭, 編碼, ...rest } = 內部結果;
-  return { 字頭, 音韻地位: 音韻地位.from編碼(編碼), ...rest };
+  return { 字頭, 音韻地位: decode音韻編碼(編碼), ...rest };
 }
 
 /**
@@ -47,7 +48,7 @@ function 結果from內部結果(內部結果: 檢索內部結果): 檢索結果 
  */
 export function* iter音韻地位(): IterableIterator<音韻地位> {
   for (const 音韻編碼 of m音韻編碼檢索.keys()) {
-    yield 音韻地位.from編碼(音韻編碼);
+    yield decode音韻編碼(音韻編碼);
   }
 }
 
@@ -85,5 +86,5 @@ export function query字頭(字頭: string): 檢索結果[] {
  * ```
  */
 export function query音韻地位(地位: 音韻地位): 檢索結果[] {
-  return m音韻編碼檢索.get(地位.編碼)?.map(結果from內部結果) ?? [];
+  return m音韻編碼檢索.get(encode音韻編碼(地位))?.map(結果from內部結果) ?? [];
 }

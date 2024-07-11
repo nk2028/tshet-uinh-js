@@ -26,4 +26,5 @@ export const 呼韻搭配 = {
   中立: [...'東冬鍾江模尤侯'],
 } as const;
 
+/** 幫見影組聲母，在三等分ABC類 */
 export const 鈍音母 = [...'幫滂並明見溪羣疑影曉匣云'] as const;

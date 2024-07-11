@@ -1,26 +1,12 @@
 import * as 壓縮 from './壓縮';
 import { 母到清濁, 母到組, 母到音, 韻到攝 } from './拓展音韻屬性';
-import { 必為合口的韻, 必為開口的韻 } from './聲韻搭配';
 import { 呼韻搭配, 所有, 等韻搭配, 鈍音母 } from './音韻屬性常量';
-
-// TODO compatibility
-/** @deprecated */ const 所有母 = 所有.母;
-/** @deprecated */ const 所有呼 = 所有.呼;
-/** @deprecated */ const 所有等 = 所有.等;
-/** @deprecated */ const 所有韻 = 所有.韻;
-/** @deprecated */ const 所有聲 = 所有.聲;
-/** @deprecated */ const 一等韻 = 等韻搭配.一;
-/** @deprecated */ const 二等韻 = 等韻搭配.二;
-/** @deprecated */ const 三等韻 = 等韻搭配.三;
-/** @deprecated */ const 四等韻 = 等韻搭配.四;
-/** @deprecated */ const 一三等韻 = 等韻搭配.一三;
-/** @deprecated */ const 二三等韻 = 等韻搭配.二三;
 
 const 所有音 = [...'脣舌齒牙喉'] as const;
 const 所有攝 = [...'通江止遇蟹臻山效果假宕梗曾流深咸'] as const;
 const 所有組 = [...'幫端知精莊章見影'] as const;
 
-const 檢查 = { 母: 所有母, 等: 所有等, 類: 所有.類, 韻: 所有韻, 音: 所有音, 攝: 所有攝, 組: 所有組, 聲: 所有聲 };
+const 檢查 = { 母: 所有.母, 等: 所有.等, 類: 所有.類, 韻: 所有.韻, 音: 所有音, 攝: 所有攝, 組: 所有組, 聲: 所有.聲 };
 
 const 輕脣韻 = [...'東鍾微虞廢文元陽尤凡'] as const;
 const 次入韻 = [...'祭泰夬廢'] as const;
@@ -28,7 +14,7 @@ const 陰聲韻 = [...'支脂之微魚虞模齊祭泰佳皆夬灰咍廢蕭宵肴
 
 const 鈍音組 = [...'幫見影'] as const;
 
-const pattern = new RegExp(`^([${所有母}])([${所有呼}]?)([${所有等}]?)([${所有.類}]?)([${所有韻}])([${所有聲}])$`, 'u');
+const pattern = new RegExp(`^([${所有.母}])([${所有.呼}]?)([${所有.等}]?)([${所有.類}]?)([${所有.韻}])([${所有.聲}])$`, 'u');
 
 // TODO support lazy error message
 function assert(value: unknown, error: string): asserts value {
@@ -783,27 +769,19 @@ export class 音韻地位 {
    */
   static 驗證(母: string, 呼: string | null, 等: string, 類: string | null, 韻: string, 聲: string): void {
     // 值驗證
-    assert([...所有母].includes(母), `Unexpected 母: ${JSON.stringify(母)}`);
+    assert(所有.母.includes(母), `Unexpected 母: ${JSON.stringify(母)}`);
     assert(呼 === null || 所有.呼.includes(呼), `Unexpected 呼: ${JSON.stringify(呼)}`);
-    assert([...所有等].includes(等), `Unexpected 等: ${JSON.stringify(等)}`);
+    assert(所有.等.includes(等), `Unexpected 等: ${JSON.stringify(等)}`);
     assert(類 === null || 所有.類.includes(類), `Unexpected 類: ${JSON.stringify(類)}`);
-    assert([...所有韻].includes(韻), `Unexpected 韻: ${JSON.stringify(韻)}`);
-    assert([...所有聲].includes(聲), `Unexpected 聲: ${JSON.stringify(聲)}`);
+    assert(所有.韻.includes(韻), `Unexpected 韻: ${JSON.stringify(韻)}`);
+    assert(所有.聲.includes(聲), `Unexpected 聲: ${JSON.stringify(聲)}`);
 
     // 基本搭配驗證
     // 等韻搭配
-    if ([...一等韻].includes(韻)) {
-      assert(等 === '一', `Unexpected 等: ${JSON.stringify(等)}`);
-    } else if ([...二等韻].includes(韻)) {
-      assert(等 === '二', `Unexpected 等: ${JSON.stringify(等)}`);
-    } else if ([...三等韻].includes(韻)) {
-      assert(等 === '三', `Unexpected 等: ${JSON.stringify(等)}`);
-    } else if ([...四等韻].includes(韻)) {
-      assert(等 === '四', `Unexpected 等: ${JSON.stringify(等)}`);
-    } else if ([...一三等韻].includes(韻)) {
-      assert(['一', '三'].includes(等), `Unexpected 等: ${JSON.stringify(等)}`);
-    } else if ([...二三等韻].includes(韻)) {
-      assert(['二', '三'].includes(等), `Unexpected 等: ${JSON.stringify(等)}`);
+    for (const [搭配各等, 搭配各韻] of Object.entries(等韻搭配)) {
+      if (搭配各韻.includes(韻)) {
+        assert([...搭配各等].includes(等), `Unexpected 等 for ${韻}韻: ${等}`);
+      }
     }
 
     // 調韻搭配
@@ -874,15 +852,21 @@ export class 音韻地位 {
     const 聲 = match[6];
 
     if (呼 == null && ![...'幫滂並明'].includes(母)) {
-      if (必為開口的韻.includes(韻)) 呼 = '開';
-      else if (必為合口的韻.includes(韻)) 呼 = '合';
+      for (const 搭配呼 of ['開', '合'] as const) {
+        if (呼韻搭配[搭配呼].includes(韻)) {
+          呼 = 搭配呼;
+          break;
+        }
+      }
     }
 
     if (等 == null) {
-      if ([...一等韻].includes(韻)) 等 = '一';
-      else if ([...二等韻].includes(韻)) 等 = '二';
-      else if ([...三等韻].includes(韻)) 等 = '三';
-      else if ([...四等韻].includes(韻)) 等 = '四';
+      for (const 搭配等 of ['一', '二', '三', '四'] as const) {
+        if (等韻搭配[搭配等].includes(韻)) {
+          等 = 搭配等;
+          break;
+        }
+      }
     }
 
     // TODO 填入類

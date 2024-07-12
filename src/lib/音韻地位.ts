@@ -1,6 +1,6 @@
 import { assert } from './utils';
 import { 母到清濁, 母到組, 母到音, 韻到攝 } from './拓展音韻屬性';
-import { 呼韻搭配, 所有, 等韻搭配, 鈍音母 } from './音韻屬性常量';
+import { 呼韻搭配, 所有, 等母搭配, 等韻搭配, 鈍音母, 類韻搭配 } from './音韻屬性常量';
 
 const 所有音 = [...'脣舌齒牙喉'] as const;
 const 所有攝 = [...'通江止遇蟹臻山效果假宕梗曾流深咸'] as const;
@@ -746,48 +746,99 @@ export class 音韻地位 {
    * @throws 若給定的音韻地位六要素不合法，則拋出異常。
    */
   static 驗證(母: string, 呼: string | null, 等: string, 類: string | null, 韻: string, 聲: string): void {
-    // 值驗證
-    assert(所有.母.includes(母), () => `Unexpected 母: ${JSON.stringify(母)}`);
-    assert(呼 === null || 所有.呼.includes(呼), () => `Unexpected 呼: ${JSON.stringify(呼)}`);
-    assert(所有.等.includes(等), () => `Unexpected 等: ${JSON.stringify(等)}`);
-    assert(類 === null || 所有.類.includes(類), () => `Unexpected 類: ${JSON.stringify(類)}`);
-    assert(所有.韻.includes(韻), () => `Unexpected 韻: ${JSON.stringify(韻)}`);
-    assert(所有.聲.includes(聲), () => `Unexpected 聲: ${JSON.stringify(聲)}`);
+    const reject = (msg: string) => {
+      throw new Error(`invalid 音韻地位 <${母},${呼 || ''},${等},${類 || ''},${韻},${聲}>: ` + msg);
+    };
 
-    // 基本搭配驗證
-    // 等韻搭配
+    // 驗證取值
+    for (const [屬性, 值, nullable] of [
+      ['母', 母],
+      ['呼', 呼, true],
+      ['等', 等],
+      ['類', 類, true],
+      ['韻', 韻],
+      ['聲', 聲],
+    ] as const) {
+      if (!((nullable && 值 === null) || 所有[屬性].includes(值!))) {
+        const suggestion = (
+          {
+            母: { 娘: '孃', 群: '羣' },
+            韻: { 眞: '真', 欣: '殷' },
+          } as Record<string, Record<string, string>>
+        )[屬性]?.[值!];
+        reject(`unrecognized ${屬性}: ${值}` + (suggestion ? ` (did you mean: ${suggestion}?)` : ''));
+      }
+    }
+
+    // 驗證搭配
+    // 順序：從搭配規則從基本到精細
+
+    // 聲（僅韻-聲搭配）
+    聲 === '入' && 陰聲韻.includes(韻) && reject(`unexpected ${韻}韻入聲`);
+
+    // 等、呼、類（基本）
+    // 等-韻
     for (const [搭配各等, 搭配各韻] of Object.entries(等韻搭配)) {
       if (搭配各韻.includes(韻)) {
-        assert([...搭配各等].includes(等), () => `Unexpected 等 for ${韻}韻: ${等}`);
+        ![...搭配各等].includes(等) && reject(`unexpected ${韻}韻${等}等`);
+        break;
       }
     }
-
-    // 調韻搭配
-    if ([...陰聲韻].includes(韻)) {
-      assert(聲 !== '入', () => `Unexpected 入聲 for ${韻}韻`);
-    }
-
-    const 需要呼 = ![...'幫滂並明'].includes(母) && !呼韻搭配.中立.includes(韻);
-    if (需要呼) {
-      assert(呼 !== null, () => `Need 呼 for ${韻}韻`);
+    // 母-呼（基本）、呼-韻
+    if ([...'幫滂並明'].includes(母)) {
+      呼 && reject('unexpected 呼 for 脣音');
+    } else if (呼韻搭配.中立.includes(韻)) {
+      呼 && reject('unexpected 呼 for 開合中立韻');
+    } else if (呼韻搭配.開合.includes(韻)) {
+      呼 || reject('missing 呼');
+    } else {
       for (const 搭配呼 of ['開', '合'] as const) {
         if (呼韻搭配[搭配呼].includes(韻)) {
-          assert(呼 === 搭配呼, () => `Unexpected 呼 for ${韻}韻: ${呼}`);
+          if (呼 === 搭配呼) {
+            break;
+          } else if (呼) {
+            reject(`unexpected ${韻}韻${呼}口`);
+          } else {
+            reject(`missing 呼 (should be ${搭配呼})`);
+          }
         }
       }
+    }
+    // 母-類（基本）、等-類、類-韻（基本）
+    if (等 !== '三') {
+      類 && reject('unexpected 類 for 非三等');
+    } else if (!鈍音母.includes(母)) {
+      類 && reject('unexpected 類 for 銳音聲母');
     } else {
-      assert(呼 === null, () => `呼 should be null for ${母}母${韻}韻`);
+      const [典型搭配類, 搭配類] = 典型類韻搭配(韻, 母, 呼);
+      if (!類) {
+        const suggestion = 典型搭配類.length === 1 ? ` (should be ${典型搭配類}${典型搭配類 !== 搭配類 ? ' typically' : ''})` : '';
+        reject(`missing 類${suggestion}`);
+      } else if (!搭配類.includes(類)) {
+        reject(`unexpected ${韻}韻${類}類`);
+      }
     }
 
-    // FIXME 用具體搭配
-    const 需要類 = 等 === '三' && 鈍音母.includes(母);
-    if (需要類) {
-      assert(類 !== null, () => `Need 類 for ${母}母三等`);
+    // 聲母
+    // 母-韻
+    if ([...'幫滂並明'].includes(母)) {
+      韻 === '嚴' && reject(`unexpected 嚴韻脣音`);
     } else {
-      assert(類 === null, () => `類 should be null for ${母}母${等}等`);
+      韻 === '凡' && reject(`unexpected 凡韻非脣音`);
+    }
+    if ([...'莊初崇生俟'].includes(母)) {
+      呼 === '開' && ['真', '殷'].includes(韻) && reject(`unexpected ${韻}韻開口莊組`);
+    } else {
+      韻 === '臻' && reject(`unexpected 臻韻非莊組`);
+    }
+    // 母-等
+    for (const [搭配等, 搭配母] of Object.entries(等母搭配)) {
+      if (搭配母.includes(母)) {
+        [...搭配等].includes(等) || reject(`unexpected ${母}母${等}等`);
+      }
     }
 
-    // TODO 更多搭配限制
+    // TODO 邊緣搭配
   }
 
   /**
@@ -828,6 +879,7 @@ export class 音韻地位 {
           break;
         }
       }
+      // TODO 依母填入等
     }
 
     // TODO 填入類
@@ -837,6 +889,29 @@ export class 音韻地位 {
 
     return new 音韻地位(母, 呼, 等, 類, 韻, 聲);
   }
+}
+
+/**
+ * 取得韻通常所屬的類，分為「不含邊緣地位」與「含邊緣地位」兩種。
+ * 用於 `音韻地位` 的 `.驗證`、`.from描述`、`.最簡描述`。
+ */
+function 典型類韻搭配(韻: string, 母: string, 呼: string): [string, string] {
+  if (韻 === '陽') {
+    return ['C', 'CA'];
+  } else if (['蒸', '幽'].includes(韻)) {
+    const 含邊緣地位類 = 韻 === '蒸' ? 'CB' : 'AB';
+    if (呼 === '合' || [...'幫滂並明'].includes(母)) {
+      return ['B', 含邊緣地位類];
+    } else {
+      return [含邊緣地位類[0], 含邊緣地位類];
+    }
+  }
+  for (const [搭配類, 搭配韻] of Object.entries(類韻搭配)) {
+    if (搭配韻.includes(韻)) {
+      return [搭配類, 搭配類];
+    }
+  }
+  throw new Error(`unknown 韻: ${韻}`);
 }
 
 /**

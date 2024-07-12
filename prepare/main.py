@@ -37,8 +37,8 @@ def 編碼_from_描述(描述: str) -> str:
 
 
 def fetch_data(
-    commit: str = '8b09156',
-    md5sum: str = 'e795c14d3b1946a02194845313dfffa4',
+    commit: str = 'afe65ed',
+    md5sum: str = '1e08d0ee00f373d91e9b6abb6d755459',
 ):
     if not os.path.exists('prepare/data.csv'):
         status = os.system(
@@ -54,7 +54,7 @@ def fetch_data(
     else:
         md5sum = md5sum.lower()
         if md5sum != actual_checksum:
-            print('Error: checksum failed:')
+            print('Error: checksum failed for data.csv:')
             print(f'  Expected: {md5sum}')
             print(f'  Actual  : {actual_checksum}')
             exit(2)

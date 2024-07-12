@@ -1,6 +1,6 @@
 import { assert } from './utils';
 import { 母到清濁, 母到組, 母到音, 韻到攝 } from './拓展音韻屬性';
-import { 呼韻搭配, 所有, 等母搭配, 等韻搭配, 鈍音母, 類韻搭配 } from './音韻屬性常量';
+import { 呼韻搭配, 所有, 等母搭配, 等韻搭配, 鈍音母 } from './音韻屬性常量';
 
 const 所有音 = [...'脣舌齒牙喉'] as const;
 const 所有攝 = [...'通江止遇蟹臻山效果假宕梗曾流深咸'] as const;
@@ -20,6 +20,35 @@ type Falsy = '' | 0 | false | null | undefined;
 export type 規則<T = unknown> = [unknown, T | 規則<T>][];
 
 export type 音韻屬性 = Partial<Pick<音韻地位, '母' | '呼' | '等' | '類' | '韻' | '聲'>>;
+
+// TODO doc
+export type 邊緣地位指定列表 = readonly string[];
+
+const 已知邊緣地位 = new Set([
+  // 嚴格邊緣地位
+  // 端組二三等
+  '定開三脂去', // 地
+  '端開二庚上', // 打
+  '端開三麻平', // 爹
+  '端開三麻上', // 嗲
+  '定開二佳上', // 箉
+  '端開三幽平', // 丟
+  // 陽韻A類
+  '並三A陽上', // 𩦠
+  // 羣邪俟母非三等（無）
+  // ----
+  // 非嚴格邊緣地位
+  // 云母開口
+  '云開三C之上', // 矣
+  '云開三B仙平', // 焉
+  // 蒸幽韻特殊類
+  '影開三B蒸入', // 抑
+  '溪開三B蒸平', // 硱
+  '溪開三B幽平', // 𠁫
+  '曉開三B幽平', // 烋
+]);
+
+export const _UNCHECKED: 邊緣地位指定列表 = ['@UNCHECKED@'];
 
 /**
  * 《切韻》音系音韻地位。
@@ -171,8 +200,8 @@ export class 音韻地位 {
    * 音韻地位 { '幫四先平' }
    * ```
    */
-  constructor(母: string, 呼: string | null, 等: string, 類: string | null, 韻: string, 聲: string) {
-    音韻地位.驗證(母, 呼, 等, 類, 韻, 聲);
+  constructor(母: string, 呼: string | null, 等: string, 類: string | null, 韻: string, 聲: string, 邊緣地位指定: 邊緣地位指定列表 = []) {
+    音韻地位.驗證(母, 呼, 等, 類, 韻, 聲, 邊緣地位指定);
     this.母 = 母;
     this.呼 = 呼;
     this.等 = 等;
@@ -371,9 +400,9 @@ export class 音韻地位 {
    * '見合三元上'
    * ```
    */
-  調整(調整屬性: 音韻屬性): 音韻地位 {
+  調整(調整屬性: 音韻屬性, 邊緣地位指定: 邊緣地位指定列表 = []): 音韻地位 {
     const { 母 = this.母, 呼 = this.呼, 等 = this.等, 類 = this.類, 韻 = this.韻, 聲 = this.聲 } = 調整屬性;
-    return new 音韻地位(母, 呼, 等, 類, 韻, 聲);
+    return new 音韻地位(母, 呼, 等, 類, 韻, 聲, 邊緣地位指定);
   }
 
   /**
@@ -745,7 +774,15 @@ export class 音韻地位 {
    * @param 聲 聲調：平, 上, 去, 入
    * @throws 若給定的音韻地位六要素不合法，則拋出異常。
    */
-  static 驗證(母: string, 呼: string | null, 等: string, 類: string | null, 韻: string, 聲: string): void {
+  static 驗證(
+    母: string,
+    呼: string | null,
+    等: string,
+    類: string | null,
+    韻: string,
+    聲: string,
+    邊緣地位指定: 邊緣地位指定列表 = [],
+  ): void {
     const reject = (msg: string) => {
       throw new Error(`invalid 音韻地位 <${母},${呼 || ''},${等},${類 || ''},${韻},${聲}>: ` + msg);
     };
@@ -810,7 +847,7 @@ export class 音韻地位 {
     } else if (!鈍音母.includes(母)) {
       類 && reject('unexpected 類 for 銳音聲母');
     } else {
-      const [典型搭配類, 搭配類] = 典型類韻搭配(韻, 母, 呼);
+      const [典型搭配類, 搭配類] = 類搭配(母, 呼, 韻);
       if (!類) {
         const suggestion = 典型搭配類.length === 1 ? ` (should be ${典型搭配類}${典型搭配類 !== 搭配類 ? ' typically' : ''})` : '';
         reject(`missing 類${suggestion}`);
@@ -838,7 +875,36 @@ export class 音韻地位 {
       }
     }
 
-    // TODO 邊緣搭配
+    // 邊緣搭配
+
+    // 為已知邊緣地位，或特別指定跳過檢查
+    if (邊緣地位指定 === _UNCHECKED || 已知邊緣地位.has(母 + (呼 ?? '') + 等 + (類 ?? '') + 韻 + 聲)) {
+      return;
+    }
+
+    const 邊緣地位指定集 = new Set(邊緣地位指定);
+    assert(邊緣地位指定.length === 邊緣地位指定集.size, 'duplicates in 邊緣地位指定');
+
+    for (const [kind, isStrict, condition, errmsg] of [
+      ['端組二三等', true, [...'端透定泥'].includes(母) && ['二', '三'].includes(等), `${母}母${等}等`],
+      ['陽韻A類', true, 韻 === '陽' && 類 === 'A', '陽韻A類'],
+      ['咍韻脣音', true, 韻 === '咍' && [...'幫滂並明'].includes(母), `咍韻脣音`],
+      ['羣邪俟母非三等', true, 等 !== '三' && [...'羣邪俟'].includes(母), `${母}母${等}等`],
+      ['云母開口', false, 母 === '云' && 呼 === '開' && ![...'宵幽侵鹽嚴'].includes(韻), '云母開口'],
+      [
+        '蒸幽韻特殊類',
+        false,
+        類 && ['蒸', '幽'].includes(韻) && 呼 === '開' && ([...'幫滂並明'].includes(母) ? 類 !== 'B' : 類 === 'B'),
+        `${韻}韻${母}母${類}類`,
+      ],
+    ] as const) {
+      if (condition && !邊緣地位指定集.has(kind)) {
+        const suggestion = isStrict ? '' : ` (note: marginal 音韻地位, include '${kind}' in 邊緣地位指定 to allow)`;
+        reject(`unexpected ${errmsg}${suggestion}`);
+      } else if (isStrict && !condition && 邊緣地位指定集.has(kind)) {
+        reject(`expect marginal 音韻地位: ${kind} (note: don't specify it in 邊緣地位指定 unless it describes this 音韻地位)`);
+      }
+    }
   }
 
   /**
@@ -853,7 +919,7 @@ export class 音韻地位 {
    * 音韻地位 { '羣開三A支平' }
    * ```
    */
-  static from描述(音韻描述: string): 音韻地位 {
+  static from描述(音韻描述: string, 邊緣地位指定: 邊緣地位指定列表 = []): 音韻地位 {
     const match = pattern.exec(音韻描述);
 
     const 母 = match[1];
@@ -887,26 +953,36 @@ export class 音韻地位 {
       類 = 'C';
     }
 
-    return new 音韻地位(母, 呼, 等, 類, 韻, 聲);
+    return new 音韻地位(母, 呼, 等, 類, 韻, 聲, 邊緣地位指定);
   }
 }
 
 /**
- * 取得韻通常所屬的類，分為「不含邊緣地位」與「含邊緣地位」兩種。
+ * 取得給定條件下可搭配的類，分為「不含邊緣地位」與「含邊緣地位」兩種。
  * 用於 `音韻地位` 的 `.驗證`、`.from描述`、`.最簡描述`。
  */
-function 典型類韻搭配(韻: string, 母: string, 呼: string): [string, string] {
+function 類搭配(母: string, 呼: string, 韻: string): [string, string] {
   if (韻 === '陽') {
     return ['C', 'CA'];
   } else if (['蒸', '幽'].includes(韻)) {
+    if (呼 === '合') {
+      return ['B', 'B'];
+    }
     const 含邊緣地位類 = 韻 === '蒸' ? 'CB' : 'AB';
-    if (呼 === '合' || [...'幫滂並明'].includes(母)) {
+    if ([...'幫滂並明'].includes(母)) {
       return ['B', 含邊緣地位類];
     } else {
       return [含邊緣地位類[0], 含邊緣地位類];
     }
   }
-  for (const [搭配類, 搭配韻] of Object.entries(類韻搭配)) {
+  for (const [搭配類, 搭配韻] of [
+    ['C', [...'東鍾之微魚虞廢殷元文歌尤嚴凡']],
+    ['AB', [...'支脂祭真仙宵侵鹽']], // 幽 already handled above (same for 蒸 & 陽)
+    ['A', [...'麻清']],
+    ['B', [...'庚']],
+    //['CB', [...'蒸']],
+    //['CA', [...'陽']],
+  ] as const) {
     if (搭配韻.includes(韻)) {
       return [搭配類, 搭配類];
     }

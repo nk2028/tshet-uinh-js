@@ -1,5 +1,5 @@
 import { assert } from './utils';
-import { 音韻地位 } from './音韻地位';
+import { _UNCHECKED, 音韻地位 } from './音韻地位';
 import { 所有, 等韻搭配 } from './音韻屬性常量';
 
 const 編碼表 = [...'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789$_'] as const;
@@ -80,5 +80,5 @@ export function decode音韻編碼(編碼: string): 音韻地位 {
   const 聲序 = 呼類聲序 & 0b11;
   const 聲 = 所有.聲[聲序];
 
-  return new 音韻地位(母, 呼, 等, 類, 韻, 聲);
+  return new 音韻地位(母, 呼, 等, 類, 韻, 聲, _UNCHECKED);
 }

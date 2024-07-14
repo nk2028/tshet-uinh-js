@@ -14,7 +14,7 @@ const 陰聲韻 = [...'支脂之微魚虞模齊祭泰佳皆夬灰咍廢蕭宵肴
 
 const 鈍音組 = [...'幫見影'] as const;
 
-const pattern = new RegExp(`^([${所有.母}])([${所有.呼}]?)([${所有.等}]?)([${所有.類}]?)([${所有.韻}])([${所有.聲}])$`, 'u');
+const pattern描述 = new RegExp(`^([${所有.母}])([${所有.呼}]?)([${所有.等}]?)([${所有.類}]?)([${所有.韻}])([${所有.聲}])$`, 'u');
 
 type Falsy = '' | 0 | false | null | undefined;
 export type 規則<T = unknown> = [unknown, T | 規則<T>][];
@@ -26,6 +26,8 @@ export type 邊緣地位指定列表 = readonly string[];
 
 const 已知邊緣地位 = new Set([
   // 嚴格邊緣地位
+  // 陽韻A類
+  '並三A陽上', // 𩦠
   // 端組二三等
   '定開三脂去', // 地
   '端開二庚上', // 打
@@ -33,8 +35,7 @@ const 已知邊緣地位 = new Set([
   '端開三麻上', // 嗲
   '定開二佳上', // 箉
   '端開三幽平', // 丟
-  // 陽韻A類
-  '並三A陽上', // 𩦠
+  // 咍韻脣音（無）
   // 羣邪俟母非三等（無）
   // ----
   // 非嚴格邊緣地位
@@ -328,36 +329,32 @@ export class 音韻地位 {
   }
 
   /**
-   * 最簡描述
+   * 簡略描述。會省略可由「母」或由「韻」直接確定的「呼」「等」「類」
    * @example
    * ```typescript
    * > 音韻地位 = Qieyun.音韻地位.from描述('幫三C凡入');
-   * > 音韻地位.最簡描述;
+   * > 音韻地位.簡略描述;
    * '幫凡入'
    * > 音韻地位 = Qieyun.音韻地位.from描述('羣開三A支平');
-   * > 音韻地位.最簡描述;
+   * > 音韻地位.簡略描述;
    * '羣開A支平'
    * ```
    */
-  get 最簡描述(): string {
+  get 簡略描述(): string {
     const { 母, 韻, 聲 } = this;
     let { 呼, 等, 類 } = this;
-    if (呼 != null && 呼韻搭配[呼 as '開' | '合'].includes(韻)) {
+    if (類 && 類搭配(母, 呼, 韻)[0] === 類) {
+      類 = null;
+    }
+    if (呼 === '合' && 母 === '云') {
+      呼 = null;
+    } else if (呼 && 呼韻搭配[呼 as '開' | '合'].includes(韻)) {
       呼 = null;
     }
-    if (![...等韻搭配.一三, ...等韻搭配.二三].includes(韻)) {
+    if (等 === '三' && [...'羣邪俟'].includes(母)) {
       等 = null;
-    }
-    if (類) {
-      // TODO 待定
-      if (
-        類 === 'C' ||
-        (韻 === '幽' && 類 === ([...'幫滂並明'].includes(母) ? 'B' : 'A')) ||
-        (韻 === '蒸' && 類 === (呼 === '合' || [...'幫滂並明'].includes(母) ? 'B' : 'C')) ||
-        ['庚B', '清A'].includes(`${韻}${類}`)
-      ) {
-        類 = null;
-      }
+    } else if (等母搭配.三.includes(母) || ![...等韻搭配.一三, ...等韻搭配.二三].includes(韻)) {
+      等 = null;
     }
     return 母 + (呼 || '') + (等 || '') + (類 || '') + 韻 + 聲;
   }
@@ -886,8 +883,8 @@ export class 音韻地位 {
     assert(邊緣地位指定.length === 邊緣地位指定集.size, 'duplicates in 邊緣地位指定');
 
     for (const [kind, isStrict, condition, errmsg] of [
-      ['端組二三等', true, [...'端透定泥'].includes(母) && ['二', '三'].includes(等), `${母}母${等}等`],
       ['陽韻A類', true, 韻 === '陽' && 類 === 'A', '陽韻A類'],
+      ['端組二三等', true, [...'端透定泥'].includes(母) && ['二', '三'].includes(等), `${母}母${等}等`],
       ['咍韻脣音', true, 韻 === '咍' && [...'幫滂並明'].includes(母), `咍韻脣音`],
       ['羣邪俟母非三等', true, 等 !== '三' && [...'羣邪俟'].includes(母), `${母}母${等}等`],
       ['云母開口', false, 母 === '云' && 呼 === '開' && ![...'宵幽侵鹽嚴'].includes(韻), '云母開口'],
@@ -909,7 +906,8 @@ export class 音韻地位 {
 
   /**
    * 將音韻描述或最簡音韻描述轉換為音韻地位。
-   * @param 音韻描述 音韻地位的描述或最簡描述
+   * @param 音韻描述 音韻地位的描述
+   * @param 簡略描述 允許簡略描述
    * @returns 給定的音韻描述或最簡描述對應的音韻地位。
    * @example
    * ```typescript
@@ -919,9 +917,8 @@ export class 音韻地位 {
    * 音韻地位 { '羣開三A支平' }
    * ```
    */
-  static from描述(音韻描述: string, 邊緣地位指定: 邊緣地位指定列表 = []): 音韻地位 {
-    const match = pattern.exec(音韻描述);
-
+  static from描述(音韻描述: string, 簡略描述: boolean = false, 邊緣地位指定: 邊緣地位指定列表 = []): 音韻地位 {
+    const match = pattern描述.exec(音韻描述);
     const 母 = match[1];
     let 呼 = match[2] || null;
     let 等 = match[3] || null;
@@ -929,28 +926,39 @@ export class 音韻地位 {
     const 韻 = match[5];
     const 聲 = match[6];
 
-    if (呼 == null && ![...'幫滂並明'].includes(母)) {
-      for (const 搭配呼 of ['開', '合'] as const) {
-        if (呼韻搭配[搭配呼].includes(韻)) {
-          呼 = 搭配呼;
-          break;
+    if (簡略描述) {
+      if (!呼 && ![...'幫滂並明'].includes(母)) {
+        if (母 === '云' && 呼韻搭配.開合.includes(韻)) {
+          呼 = '合';
+        } else {
+          for (const 搭配呼 of ['開', '合'] as const) {
+            if (呼韻搭配[搭配呼].includes(韻)) {
+              呼 = 搭配呼;
+              break;
+            }
+          }
         }
       }
-    }
 
-    if (等 == null) {
-      for (const 搭配等 of ['一', '二', '三', '四'] as const) {
-        if (等韻搭配[搭配等].includes(韻)) {
-          等 = 搭配等;
-          break;
+      if (!等) {
+        if ([...等母搭配.三, ...'羣邪俟'].includes(母)) {
+          等 = '三';
+        } else {
+          for (const 搭配等 of ['一', '二', '三', '四'] as const) {
+            if (等韻搭配[搭配等].includes(韻)) {
+              等 = 搭配等;
+              break;
+            }
+          }
         }
       }
-      // TODO 依母填入等
-    }
 
-    // TODO 填入類
-    if (類 === null && 等 === '三' && 鈍音母.includes(母) && !['蒸', '幽'].includes('韻')) {
-      類 = 'C';
+      if (!類 && 等 === '三' && 鈍音母.includes(母)) {
+        const [典型搭配類] = 類搭配(母, 呼, 韻);
+        if (典型搭配類.length === 1) {
+          類 = 典型搭配類;
+        }
+      }
     }
 
     return new 音韻地位(母, 呼, 等, 類, 韻, 聲, 邊緣地位指定);
@@ -962,32 +970,40 @@ export class 音韻地位 {
  * 用於 `音韻地位` 的 `.驗證`、`.from描述`、`.最簡描述`。
  */
 function 類搭配(母: string, 呼: string, 韻: string): [string, string] {
-  if (韻 === '陽') {
-    return ['C', 'CA'];
-  } else if (['蒸', '幽'].includes(韻)) {
-    if (呼 === '合') {
-      return ['B', 'B'];
+  const 搭配 = (function 類搭配不計云母(): [string, string] {
+    if (韻 === '陽') {
+      return ['C', 'CA'];
+    } else if (['蒸', '幽'].includes(韻)) {
+      if (呼 === '合') {
+        return ['B', 'B'];
+      }
+      const 含邊緣地位類 = 韻 === '蒸' ? 'CB' : 'AB';
+      if ([...'幫滂並明'].includes(母)) {
+        return ['B', 含邊緣地位類];
+      } else {
+        return [含邊緣地位類[0], 含邊緣地位類];
+      }
     }
-    const 含邊緣地位類 = 韻 === '蒸' ? 'CB' : 'AB';
-    if ([...'幫滂並明'].includes(母)) {
-      return ['B', 含邊緣地位類];
-    } else {
-      return [含邊緣地位類[0], 含邊緣地位類];
+    for (const [搭配類, 搭配韻] of [
+      ['C', [...'東鍾之微魚虞廢殷元文歌尤嚴凡']],
+      ['AB', [...'支脂祭真仙宵侵鹽']], // 幽 already handled above (same for 蒸 & 陽)
+      ['A', [...'麻清']],
+      ['B', [...'庚']],
+      //['CB', [...'蒸']],
+      //['CA', [...'陽']],
+    ] as const) {
+      if (搭配韻.includes(韻)) {
+        return [搭配類, 搭配類];
+      }
     }
+    throw new Error(`unknown 韻: ${韻}`);
+  })();
+  if (母 === '云') {
+    const 搭配類 = 搭配[1].includes('B') ? 'B' : 搭配[1].includes('C') ? 'C' : '';
+    const 典型搭配類 = [...搭配[0]].includes(搭配類) ? 搭配類 : '';
+    return [典型搭配類, 搭配類];
   }
-  for (const [搭配類, 搭配韻] of [
-    ['C', [...'東鍾之微魚虞廢殷元文歌尤嚴凡']],
-    ['AB', [...'支脂祭真仙宵侵鹽']], // 幽 already handled above (same for 蒸 & 陽)
-    ['A', [...'麻清']],
-    ['B', [...'庚']],
-    //['CB', [...'蒸']],
-    //['CA', [...'陽']],
-  ] as const) {
-    if (搭配韻.includes(韻)) {
-      return [搭配類, 搭配類];
-    }
-  }
-  throw new Error(`unknown 韻: ${韻}`);
+  return 搭配;
 }
 
 /**

@@ -849,7 +849,7 @@ export class 音韻地位 {
         const suggestion = 典型搭配類.length === 1 ? ` (should be ${典型搭配類}${典型搭配類 !== 搭配類 ? ' typically' : ''})` : '';
         reject(`missing 類${suggestion}`);
       } else if (!搭配類.includes(類)) {
-        reject(`unexpected ${韻}韻${類}類`);
+        reject(`unexpected ${母}母${韻}韻${類}類`);
       }
     }
 
@@ -919,6 +919,9 @@ export class 音韻地位 {
    */
   static from描述(音韻描述: string, 簡略描述: boolean = false, 邊緣地位指定: 邊緣地位指定列表 = []): 音韻地位 {
     const match = pattern描述.exec(音韻描述);
+    if (!match) {
+      throw new Error(`invalid 描述: ${音韻描述}`);
+    }
     const 母 = match[1];
     let 呼 = match[2] || null;
     let 等 = match[3] || null;

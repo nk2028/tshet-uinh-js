@@ -206,7 +206,31 @@ test('使用「iter音韻地位」函式遍歷所有音韻地位', t => {
   }
 });
 
-// TODO 需實現新版「驗證」
-test.skip('不合法音韻地位', t => {
-  t.throws(() => new 音韻地位('匣', '開', '三', null, '眞', '平'), { message: /重紐.*null/ });
+test('不合法音韻地位', t => {
+  t.throws(
+    () => new 音韻地位('章', '開', '三', null, '眞', '平'),
+    { message: /unrecognized 韻: 眞 \(did you mean: 真\?\)/ },
+    '基本屬性取值有誤',
+  );
+  function testCase(描述: string, expectedMessage: RegExp, testMessage?: string) {
+    t.throws(
+      () => 音韻地位.from描述(描述),
+      { message: expectedMessage },
+      testMessage == null ? undefined : `不合法地位 '${描述}': ${testMessage}`,
+    );
+  }
+  testCase('精開三祭入', /unexpected 祭韻入聲/, '韻聲搭配');
+  testCase('明合一魂平', /unexpected 呼/, '呼搭配（脣音）');
+  testCase('端開一東平', /unexpected 呼/, '呼搭配（開合中立韻）');
+  testCase('章三麻平', /missing 呼/, '呼搭配（分開合韻）');
+  testCase('見合三A幽上', /unexpected 幽韻合口/, '呼搭配（僅開/僅合口韻）');
+  testCase('幫四A先平', /unexpected 類/, '類搭配（等）');
+  testCase('章開三A支平', /unexpected 類/, '類搭配（母）');
+  testCase('明三清上', /missing 類 \(should be A\)/, '類搭配（韻）');
+  testCase('明三陽去', /missing 類 \(should be C typically\)/, '類搭配（韻，可能有邊緣地位）');
+  testCase('幫三B清入', /unexpected 幫母清韻B類/, '類搭配（綜合）');
+  testCase('幫三C嚴入', /unexpected 嚴韻脣音/, '母搭配（凡韻）');
+  testCase('初開三真去', /unexpected 真韻開口莊組/, '母搭配（臻韻）');
+
+  // TODO 邊緣地位
 });

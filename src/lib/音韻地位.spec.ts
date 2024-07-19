@@ -1,7 +1,7 @@
 import test from 'ava';
 
 import { iter音韻地位 } from './解析資料';
-import { 規則, 音韻地位 } from './音韻地位';
+import { 規則, 邊緣地位指定列表, 音韻地位 } from './音韻地位';
 
 // 由音韻地位得出各項音韻屬性
 
@@ -222,7 +222,9 @@ test('不合法音韻地位', t => {
       testMessage == null ? undefined : `不合法地位 '${描述}': ${testMessage}`,
     );
   }
-  testCase('精開三祭入', /unexpected 祭韻入聲/, '韻聲搭配');
+  testCase('精開三祭入', /unexpected 祭韻入聲/, '聲搭配');
+  testCase('莊開二陽平', /unexpected 陽韻二等/, '等搭配（韻）');
+  testCase('定開三脂去', /unexpected 定母三等/, '等搭配（端組）');
   testCase('明合一魂平', /unexpected 呼/, '呼搭配（脣音）');
   testCase('端開一東平', /unexpected 呼/, '呼搭配（開合中立韻）');
   testCase('章三麻平', /missing 呼/, '呼搭配（分開合韻）');
@@ -236,4 +238,34 @@ test('不合法音韻地位', t => {
   testCase('初開三真去', /unexpected 真韻開口莊組/, '母搭配（臻韻）');
 });
 
-// TODO 邊緣地位
+test('邊緣地位', t => {
+  function passes(描述: string, 邊緣地位指定: 邊緣地位指定列表, testMessage?: string) {
+    t.is(
+      音韻地位.from描述(描述, false, 邊緣地位指定).描述,
+      描述,
+      testMessage == null ? undefined : `Should pass (${描述}): ${testMessage}`,
+    );
+  }
+  function throws(描述: string, 邊緣地位指定: 邊緣地位指定列表, expectedMessage: RegExp, testMessage?: string) {
+    t.throws(
+      () => 音韻地位.from描述(描述, false, 邊緣地位指定),
+      { message: expectedMessage },
+      testMessage == null ? undefined : `Should throw (${描述}): ${testMessage}`,
+    );
+  }
+
+  throws('見一東平', ['壞耶'], /unknown type of marginal 音韻地位: 壞耶/, '未知邊緣地位類型');
+
+  // 嚴格邊緣地位
+  passes('定開二佳上', [], '已知邊緣地位');
+
+  throws('透開二佳上', [], /unexpected 透母二等佳韻/, '端組類隔（二等）');
+  throws('端開四清上', [], /unexpected 端母四等清韻/, '端組類隔（四等）');
+  passes('端開四清上', ['端組類隔'], '端組類隔');
+  throws('端開四青上', ['端組類隔'], /\(note: don't specify/, '非相關邊緣地位');
+
+  // 非嚴格邊緣地位
+  throws('云開三C之平', [], /unexpected 云母開口 \(note: marginal 音韻地位/, '云母開口');
+  passes('云開三C之平', ['云母開口'], '云母開口');
+  passes('云開三C之平', ['云母開口', '蒸幽韻特殊類'], '非嚴格音韻地位類型指定');
+});

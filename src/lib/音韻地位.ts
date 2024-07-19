@@ -883,7 +883,7 @@ export class 音韻地位 {
     const 邊緣地位指定集 = new Set(邊緣地位指定);
     assert(邊緣地位指定.length === 邊緣地位指定集.size, 'duplicates in 邊緣地位指定');
 
-    for (const [kind, isStrict, condition, errmsg] of [
+    const marginalTests = [
       ['陽韻A類', true, 韻 === '陽' && 類 === 'A', '陽韻A類'],
       [
         '端組類隔',
@@ -900,7 +900,16 @@ export class 音韻地位 {
         類 && ['蒸', '幽'].includes(韻) && 呼 === '開' && ([...'幫滂並明'].includes(母) ? 類 !== 'B' : 類 === 'B'),
         `${韻}韻${母}母${類}類`,
       ],
-    ] as const) {
+    ] as const;
+
+    const knownKinds: string[] = marginalTests.map(([kind]) => kind);
+    for (const kind of 邊緣地位指定) {
+      if (!knownKinds.includes(kind)) {
+        throw new Error(`unknown type of marginal 音韻地位: ${kind}`);
+      }
+    }
+
+    for (const [kind, isStrict, condition, errmsg] of marginalTests) {
       if (condition && !邊緣地位指定集.has(kind)) {
         const suggestion = isStrict ? '' : ` (note: marginal 音韻地位, include '${kind}' in 邊緣地位指定 to allow)`;
         reject(`unexpected ${errmsg}${suggestion}`);

@@ -405,6 +405,62 @@ export class 音韻地位 {
   }
 
   /**
+   * 韻圖聲母（三十六字母）
+   * @example
+   * ```typescript
+   * > 音韻地位 = Qieyun.音韻地位.from描述('幫三C凡入');
+   * > 音韻地位.韻圖母;
+   * '非'
+   * > 音韻地位 = Qieyun.音韻地位.from描述('常開三清平');
+   * > 音韻地位.韻圖母;
+   * '禪'
+   * > 音韻地位 = Qieyun.音韻地位.from描述('俟開三之上');
+   * > 音韻地位.韻圖等;
+   * '禪'
+   * ```
+   */
+  get 韻圖母(): string {
+    const { 母, 等, 類 } = this;
+    let index: number;
+    if (等 === '三' && 類 === 'C' && (index = [...'幫滂並明'].indexOf(母)) !== -1) {
+      return '非敷奉微'[index];
+    } else if ((index = [...'莊初崇生俟章昌船書常'].indexOf(母)) !== -1) {
+      return '照穿牀審禪'[index % 5];
+    } else if (['云', '以'].includes(母)) {
+      return '喻';
+    } else if (等 === '二' && (index = [...'端透定泥'].indexOf(母)) !== -1) {
+      return '知徹澄孃'[index];
+    }
+    return 母;
+  }
+
+  /**
+   * 韻圖等
+   * @example
+   * ```typescript
+   * > 音韻地位 = Qieyun.音韻地位.from描述('羣開三A支平');
+   * > 音韻地位.韻圖等;
+   * '四'
+   * > 音韻地位 = Qieyun.音韻地位.from描述('常開三清平');
+   * > 音韻地位.韻圖等;
+   * '三'
+   * > 音韻地位 = Qieyun.音韻地位.from描述('俟開三之上');
+   * > 音韻地位.韻圖等;
+   * '二'
+   * ```
+   */
+  get 韻圖等(): string {
+    const { 母, 等, 類 } = this;
+    if ([...'莊初崇生俟'].includes(母)) {
+      return '二';
+    } else if (類 === 'A' || (等 === '三' && [...'精清從心邪以'].includes(母))) {
+      return '四';
+    } else {
+      return 等;
+    }
+  }
+
+  /**
    * 調整該音韻地位的屬性，會驗證調整後地位的合法性，回傳新的物件。
    *
    * **注意**：原物件不會被修改。

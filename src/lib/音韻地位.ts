@@ -28,13 +28,13 @@ const 已知邊緣地位 = new Set([
   // 嚴格邊緣地位
   // 陽韻A類
   '並三A陽上', // 𩦠
-  // 端組二三等
-  '定開三脂去', // 地
+  // 端組類隔
+  '定開四脂去', // 地
   '端開二庚上', // 打
-  '端開三麻平', // 爹
-  '端開三麻上', // 嗲
+  '端開四麻平', // 爹
+  '端開四麻上', // 嗲
   '定開二佳上', // 箉
-  '端開三幽平', // 丟
+  '端開四幽平', // 丟
   // 咍韻脣音（無）
   // 羣邪俟母非三等（無）
   // ----
@@ -811,11 +811,19 @@ export class 音韻地位 {
     聲 === '入' && 陰聲韻.includes(韻) && reject(`unexpected ${韻}韻入聲`);
 
     // 等、呼、類（基本）
+    // 母-等
+    for (const [搭配等, 搭配母] of Object.entries(等母搭配)) {
+      if (搭配母.includes(母)) {
+        [...搭配等].includes(等) || reject(`unexpected ${母}母${等}等`);
+      }
+    }
     // 等-韻
     for (const [搭配各等, 搭配各韻] of Object.entries(等韻搭配)) {
       if (搭配各韻.includes(韻)) {
-        ![...搭配各等].includes(等) && reject(`unexpected ${韻}韻${等}等`);
-        break;
+        if ([...搭配各等].includes(等) || ([...搭配各等].includes('三') && 等 === '四' && [...'端透定泥'].includes(母))) {
+          break;
+        }
+        reject(`unexpected ${韻}韻${等}等`);
       }
     }
     // 母-呼（基本）、呼-韻
@@ -853,7 +861,6 @@ export class 音韻地位 {
       }
     }
 
-    // 聲母
     // 母-韻
     if ([...'幫滂並明'].includes(母)) {
       韻 === '嚴' && reject(`unexpected 嚴韻脣音`);
@@ -864,12 +871,6 @@ export class 音韻地位 {
       呼 === '開' && ['真', '殷'].includes(韻) && reject(`unexpected ${韻}韻開口莊組`);
     } else {
       韻 === '臻' && reject(`unexpected 臻韻非莊組`);
-    }
-    // 母-等
-    for (const [搭配等, 搭配母] of Object.entries(等母搭配)) {
-      if (搭配母.includes(母)) {
-        [...搭配等].includes(等) || reject(`unexpected ${母}母${等}等`);
-      }
     }
 
     // 邊緣搭配
@@ -884,7 +885,12 @@ export class 音韻地位 {
 
     for (const [kind, isStrict, condition, errmsg] of [
       ['陽韻A類', true, 韻 === '陽' && 類 === 'A', '陽韻A類'],
-      ['端組二三等', true, [...'端透定泥'].includes(母) && ['二', '三'].includes(等), `${母}母${等}等`],
+      [
+        '端組類隔',
+        true,
+        [...'端透定泥'].includes(母) && (等 === '二' || (等 === '四' && !等韻搭配.四.includes(韻))),
+        `${母}母${等}等${韻}韻`,
+      ],
       ['咍韻脣音', true, 韻 === '咍' && [...'幫滂並明'].includes(母), `咍韻脣音`],
       ['羣邪俟母非三等', true, 等 !== '三' && [...'羣邪俟'].includes(母), `${母}母${等}等`],
       ['云母開口', false, 母 === '云' && 呼 === '開' && ![...'宵幽侵鹽嚴'].includes(韻), '云母開口'],
@@ -949,7 +955,11 @@ export class 音韻地位 {
         } else {
           for (const 搭配等 of ['一', '二', '三', '四'] as const) {
             if (等韻搭配[搭配等].includes(韻)) {
-              等 = 搭配等;
+              if (搭配等 === '三' && [...'端透定泥'].includes(母)) {
+                等 = '四';
+              } else {
+                等 = 搭配等;
+              }
               break;
             }
           }

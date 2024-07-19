@@ -26,7 +26,7 @@ def 編碼_from_描述(描述: str) -> str:
 
     母序 = 所有母.index(母)
     韻序 = 韻序表.index(韻)
-    if 等 == '三' and 韻 in list('東歌麻庚'):
+    if 韻 in tuple('東歌麻庚') and 等 not in tuple('一二'):
         韻序 += 1
     呼序 = 所有呼.index(呼) + 1 if 呼 else 0
     類序 = 所有類.index(類) + 1 if 類 else 0
@@ -37,8 +37,8 @@ def 編碼_from_描述(描述: str) -> str:
 
 
 def fetch_data(
-    commit: str = 'afe65ed',
-    md5sum: str = '1e08d0ee00f373d91e9b6abb6d755459',
+    commit: str = '78dfb5c',
+    md5sum: str = 'c128dc1953541b6970fba2c49556f077',
 ):
     if not os.path.exists('prepare/data.csv'):
         status = os.system(

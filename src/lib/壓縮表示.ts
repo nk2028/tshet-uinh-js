@@ -23,7 +23,7 @@ const 韻序表 = [
 export function encode音韻編碼(地位: 音韻地位): string {
   const { 母, 呼, 等, 類, 韻, 聲 } = 地位;
   const 母序 = 所有.母.indexOf(母);
-  const 韻序 = 韻序表.indexOf(韻) + +(等 === '三' && [...'東歌麻庚'].includes(韻));
+  const 韻序 = 韻序表.indexOf(韻) + +([...'東歌麻庚'].includes(韻) && !['一', '二'].includes(等));
 
   const 呼序 = 所有.呼.indexOf(呼) + 1;
   const 類序 = 所有.類.indexOf(類) + 1;
@@ -65,6 +65,9 @@ export function decode音韻編碼(編碼: string): 音韻地位 {
   for (const [韻等, 各韻] of Object.entries(等韻搭配)) {
     if (各韻.includes(韻)) {
       等 = 韻等[+(韻序表[韻序] === '＊')];
+      if (等 === '三' && [...'端透定泥'].includes(母)) {
+        等 = '四';
+      }
       break;
     }
   }

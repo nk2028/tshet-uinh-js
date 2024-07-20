@@ -16,8 +16,7 @@ const 鈍音組 = [...'幫見影'] as const;
 
 const pattern描述 = new RegExp(`^([${所有.母}])([${所有.呼}]?)([${所有.等}]?)([${所有.類}]?)([${所有.韻}])([${所有.聲}])$`, 'u');
 
-type Falsy = '' | 0 | false | null | undefined;
-export type 規則<T = unknown> = [unknown, T | 規則<T>][];
+export type 判斷規則列表<T = unknown> = readonly (readonly [unknown, T | 判斷規則列表<T>])[];
 
 export type 音韻屬性 = Partial<Pick<音韻地位, '母' | '呼' | '等' | '類' | '韻' | '聲'>>;
 
@@ -483,7 +482,7 @@ export class 音韻地位 {
    * true
    * ```
    */
-  屬於(表達式: readonly string[], ...參數: unknown[]): boolean;
+  屬於(表達式: TemplateStringsArray, ...參數: unknown[]): boolean;
 
   屬於(表達式: string | readonly string[], ...參數: unknown[]): boolean {
     if (typeof 表達式 === 'string') 表達式 = [表達式];
@@ -518,8 +517,8 @@ export class 音韻地位 {
     // 詞法分析，同時給普通運算元求值（惟函數型運算元留待後面惰性求值）
     type Keyword = '(' | ')' | 'not' | 'and' | 'or' | 'end';
     type Token = Keyword | boolean | LazyParameter;
-    const KEYWORDS: Keyword[] = ['(', ')', 'not', 'and', 'or'];
-    const PATTERNS: RegExp[] = [/^\($/, /^\)$/, /^([!~非]|not)$/i, /^(&+|且|and)$/i, /^(\|+|或|or)$/i];
+    const KEYWORDS = ['(', ')', 'not', 'and', 'or'] as const;
+    const PATTERNS = [/^\($/, /^\)$/, /^([!~非]|not)$/i, /^(&+|且|and)$/i, /^(\|+|或|or)$/i] as const;
     const tokens: [Token, string][] = [];
     for (let i = 0; i < 表達式.length; i++) {
       for (const rawToken of 表達式[i].split(/(&+|\|+|[!~()])|\b(and|or|not)\b|\s+/i).filter(i => i)) {
@@ -675,11 +674,11 @@ export class 音韻地位 {
    * * &#x3000;布林值：直接決定是否跳過本規則
    * * &#x3000;&#x3000;其他：規則永遠不會被跳過（可用作指定後備結果）
    *
-   * 建議使用空字串、`null` 或 `true` 作判斷式以指定後備結果。
+   * 建議使用空字串、`null` 或 `true` 作末項判斷式以指定後備結果。
    *
    * 結果可以是任意傳回值或遞迴規則。
-   * @param error 若為 `true` 或非空字串，在未涵蓋所有條件時會拋出錯誤。
-   * @param fallback 若為 `true`，在遞迴子陣列未涵蓋所有條件時會繼續嘗試母陣列的條件。
+   * @param throws 若為 `true` 或字串，在未涵蓋所有條件時會拋出錯誤。
+   * @param fallThrough 若為 `true`，在遞迴子陣列未涵蓋所有條件時會繼續嘗試母陣列的條件。
    * @returns 自訂值，在未涵蓋所有條件且不使用 `error` 時會回傳 `null`。
    * @throws `未涵蓋所有條件`（或 `error` 參數）, `規則需符合格式`, `無效的表達式`, `表達式為空`, `非預期的運算子`, `非預期的閉括號`, `括號未匹配`
    * @example
@@ -705,18 +704,26 @@ export class 音韻地位 {
    * 'p'
    * ```
    */
-  判斷<T, E = undefined>(規則: 規則<T>, error?: E, fallback?: boolean): E extends Falsy ? T | null : T {
+  判斷<T, E extends boolean | string = false>(
+    規則: 判斷規則列表<T>,
+    throws?: E,
+    fallThrough?: boolean,
+  ): E extends true | string ? T : T | null;
+  判斷<T>(規則: 判斷規則列表<T>, throws: boolean | string = false, fallThrough = false): T | null {
     const Exhaustion = Symbol('Exhaustion');
-    const loop = (所有規則: 規則<T>): T | typeof Exhaustion => {
+    function is規則列表(obj: T | 判斷規則列表<T>): obj is 判斷規則列表<T> {
+      return Array.isArray(obj);
+    }
+    const loop = (所有規則: 判斷規則列表<T>): T | typeof Exhaustion => {
       for (const 規則 of 所有規則) {
         assert(Array.isArray(規則) && 規則.length === 2, '規則需符合格式');
         let 表達式 = 規則[0];
         const 結果 = 規則[1];
         if (typeof 表達式 === 'function') 表達式 = 表達式();
         if (typeof 表達式 === 'string' && 表達式 ? this.屬於(表達式) : 表達式 !== false) {
-          if (!Array.isArray(結果)) return 結果;
+          if (!is規則列表(結果)) return 結果;
           const res = loop(結果);
-          if (res === Exhaustion && fallback) continue;
+          if (res === Exhaustion && fallThrough) continue;
           return res;
         }
       }
@@ -725,8 +732,8 @@ export class 音韻地位 {
 
     const res = loop(規則);
     if (res === Exhaustion) {
-      if (!error) return null;
-      else throw new Error(typeof error === 'string' ? error : '未涵蓋所有條件');
+      if (throws === false) return null;
+      else throw new Error(typeof throws === 'string' ? throws : '未涵蓋所有條件');
     }
     return res;
   }

@@ -1,7 +1,7 @@
 import test from 'ava';
 
 import { iter音韻地位 } from './解析資料';
-import { 規則, 邊緣地位指定列表, 音韻地位 } from './音韻地位';
+import { 邊緣地位指定列表, 音韻地位 } from './音韻地位';
 
 // 由音韻地位得出各項音韻屬性
 
@@ -166,16 +166,16 @@ test('測試判斷式拋異常', t => {
   t.throws(() => 地位.判斷([], '壞耶'), { message: '壞耶' });
 });
 
-test('判斷式 null 與 fallback', t => {
+test('判斷式 null 與 fall through', t => {
   const 地位 = 音韻地位.from描述('幫三C凡入');
 
   t.is(地位.判斷([]), null);
   t.is(地位.判斷([['見母', 42]]), null);
 
-  const 規則: 規則 = [
+  const 規則 = [
     ['幫組', []],
     ['幫母 凡韻', 43],
-  ];
+  ] as const;
   t.is(地位.判斷(規則), null);
   t.throws(() => 地位.判斷(規則, '壞耶'), { message: '壞耶' });
 });

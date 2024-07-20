@@ -3,11 +3,11 @@ import 資料 from '../data/資料';
 import { decode音韻編碼, encode音韻編碼 } from './壓縮表示';
 import { 音韻地位 } from './音韻地位';
 
-type 檢索內部結果 = { 字頭: string; 編碼: string; 反切: string | null; 釋義: string; 韻目原貌: string };
+type 內部檢索結果 = Readonly<{ 字頭: string; 編碼: string; 反切: string | null; 釋義: string; 韻目原貌: string }>;
 export type 檢索結果 = { 字頭: string; 音韻地位: 音韻地位; 反切: string | null; 釋義: string; 韻目原貌: string };
 
-const m字頭檢索 = new Map<string, 檢索內部結果[]>();
-const m音韻編碼檢索 = new Map<string, 檢索內部結果[]>();
+const m字頭檢索 = new Map<string, 內部檢索結果[]>();
+const m音韻編碼檢索 = new Map<string, 內部檢索結果[]>();
 
 function insertInto<K, V>(map: Map<K, V[]>, key: K, value: V) {
   if (!map.has(key)) {
@@ -37,7 +37,7 @@ function insertInto<K, V>(map: Map<K, V[]>, key: K, value: V) {
   }
 })();
 
-function 結果from內部結果(內部結果: 檢索內部結果): 檢索結果 {
+function 結果from內部結果(內部結果: 內部檢索結果): 檢索結果 {
   const { 字頭, 編碼, ...rest } = 內部結果;
   return { 字頭, 音韻地位: decode音韻編碼(編碼), ...rest };
 }

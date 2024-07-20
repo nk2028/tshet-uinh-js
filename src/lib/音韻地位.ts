@@ -1,20 +1,18 @@
 import { assert } from './utils';
 import { 母到清濁, 母到組, 母到音, 韻到攝 } from './拓展音韻屬性';
-import { 呼韻搭配, 所有, 等母搭配, 等韻搭配, 鈍音母 } from './音韻屬性常量';
-
-const 所有音 = [...'脣舌齒牙喉'] as const;
-const 所有攝 = [...'通江止遇蟹臻山效果假宕梗曾流深咸'] as const;
-const 所有組 = [...'幫端知精莊章見影'] as const;
-
-const 檢查 = { 母: 所有.母, 等: 所有.等, 類: 所有.類, 韻: 所有.韻, 音: 所有音, 攝: 所有攝, 組: 所有組, 聲: 所有.聲 };
-
-const 輕脣韻 = [...'東鍾微虞廢文元陽尤凡'] as const;
-const 次入韻 = [...'祭泰夬廢'] as const;
-const 陰聲韻 = [...'支脂之微魚虞模齊祭泰佳皆夬灰咍廢蕭宵肴豪歌麻侯尤幽'] as const;
-
-const 鈍音組 = [...'幫見影'] as const;
+import { 呼韻搭配, 所有, 等母搭配, 等韻搭配, 鈍音母, 陰聲韻 } from './音韻屬性常量';
 
 const pattern描述 = new RegExp(`^([${所有.母}])([${所有.呼}]?)([${所有.等}]?)([${所有.類}]?)([${所有.韻}])([${所有.聲}])$`, 'u');
+
+// for 音韻地位.屬於
+const 檢查 = {
+  ...所有,
+  音: [...'脣舌齒牙喉'] as const,
+  攝: [...'通江止遇蟹臻山效果假宕梗曾流深咸'] as const,
+  組: [...'幫端知精莊章見影'] as const,
+};
+const 次入韻 = [...'祭泰夬廢'] as const;
+const 鈍音組 = [...'幫見影'] as const;
 
 export type 判斷規則列表<T = unknown> = readonly (readonly [unknown, T | 判斷規則列表<T>])[];
 
@@ -488,12 +486,11 @@ export class 音韻地位 {
     if (typeof 表達式 === 'string') 表達式 = [表達式];
 
     /** 普通字串 token 求值 */
-    const { 呼, 等, 類, 韻, 聲, 清濁, 韻別, 組 } = this;
+    const { 呼, 類, 韻, 聲, 清濁, 韻別, 組 } = this;
     const evalToken = (token: string): boolean => {
       let match: RegExpExecArray = null;
       const tryMatch = (pat: RegExp) => !!(match = pat.exec(token));
       if (tryMatch(/^(陰|陽|入)聲韻$/)) return 韻別 === match[1];
-      if (tryMatch(/^輕脣韻$/)) return 輕脣韻.includes(韻) && 等 === '三';
       if (tryMatch(/^次入韻$/)) return 次入韻.includes(韻);
       if (tryMatch(/^仄聲$/)) return 聲 !== '平';
       if (tryMatch(/^舒聲$/)) return 聲 !== '入';

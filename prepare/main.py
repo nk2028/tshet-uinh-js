@@ -102,7 +102,7 @@ def main():
                 sep='',
                 file=fout,
             )
-        print('`;', file=fout)
+        print('` as string;', file=fout)
 
 
 if __name__ == '__main__':

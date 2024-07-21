@@ -56,8 +56,15 @@ test('測試「祇」字對應的音韻地位的各項音韻屬性', t => {
 test('音韻地位.調整', t => {
   const 地位 = 音韻地位.from描述('幫三C元上');
   t.is(地位.調整({ 聲: '平' }).描述, '幫三C元平');
+  t.is(地位.調整('平聲').描述, '幫三C元平');
   t.throws(() => 地位.調整({ 母: '見' }), { message: /missing 呼/ }, '.調整() 會驗證新地位');
   t.is(地位.調整({ 母: '見', 呼: '合' }).描述, '見合三C元上');
+  t.is(地位.調整('見母 合口').描述, '見合三C元上');
+  t.is(地位.調整('仙韻 A類').描述, '幫三A仙上');
+  t.throws(() => 地位.調整('壞耶'), { message: 'unrecognized expression: 壞耶' });
+  t.throws(() => 地位.調整('見影母'), { message: 'unrecognized expression: 見影母' });
+  t.throws(() => 地位.調整('見母 影母'), { message: 'duplicated assignment of 母' });
+  t.throws(() => 地位.調整('見母合口'), { message: 'unrecognized expression: 見母合口' });
   t.is(地位.描述, '幫三C元上', '.調整() 不修改原對象');
 });
 

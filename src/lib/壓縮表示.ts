@@ -9,6 +9,7 @@ const 韻序表 = [
 
 /**
  * 將音韻地位編碼為壓縮格式串。音韻編碼與音韻地位之間存在一一映射關係。
+ * @param 地位 待編碼的音韻地位
  * @returns 音韻地位對應的編碼
  * @example
  * ```typescript
@@ -35,7 +36,7 @@ export function encode音韻編碼(地位: 音韻地位): string {
 
 /**
  * 將音韻編碼解碼回音韻地位。
- * @param 音韻編碼 音韻地位的編碼
+ * @param 編碼 音韻地位的編碼
  * @returns 給定的音韻編碼對應的音韻地位
  * @example
  * ```typescript

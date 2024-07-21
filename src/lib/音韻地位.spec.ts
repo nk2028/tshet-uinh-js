@@ -1,7 +1,7 @@
 import test from 'ava';
 
 import { iter音韻地位 } from './解析資料';
-import { 邊緣地位指定列表, 音韻地位 } from './音韻地位';
+import { 邊緣地位種類指定, 音韻地位 } from './音韻地位';
 
 // 由音韻地位得出各項音韻屬性
 
@@ -239,14 +239,14 @@ test('不合法音韻地位', t => {
 });
 
 test('邊緣地位', t => {
-  function passes(描述: string, 邊緣地位指定: 邊緣地位指定列表, testMessage?: string) {
+  function passes(描述: string, 邊緣地位指定: 邊緣地位種類指定, testMessage?: string) {
     t.is(
       音韻地位.from描述(描述, false, 邊緣地位指定).描述,
       描述,
       testMessage == null ? undefined : `Should pass (${描述}): ${testMessage}`,
     );
   }
-  function throws(描述: string, 邊緣地位指定: 邊緣地位指定列表, expectedMessage: RegExp, testMessage?: string) {
+  function throws(描述: string, 邊緣地位指定: 邊緣地位種類指定, expectedMessage: RegExp, testMessage?: string) {
     t.throws(
       () => 音韻地位.from描述(描述, false, 邊緣地位指定),
       { message: expectedMessage },

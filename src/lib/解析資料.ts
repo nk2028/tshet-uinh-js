@@ -43,8 +43,8 @@ function 結果from內部結果(內部結果: 內部檢索結果): 檢索結果 
 }
 
 /**
- * 所有至少對應一個字頭的音韻地位。
- * @returns 迭代器，所有至少對應一個字頭的音韻地位。
+ * 遍歷內置資料中全部有字之音韻地位。
+ * @returns 迭代器，所有至少對應一個字頭的音韻地位
  */
 export function* iter音韻地位(): IterableIterator<音韻地位> {
   for (const 音韻編碼 of m音韻編碼檢索.keys()) {
@@ -55,9 +55,9 @@ export function* iter音韻地位(): IterableIterator<音韻地位> {
 /**
  * 由字頭查出相應的音韻地位、反切、解釋。
  * @param 字頭 待查找的漢字
- * @returns 陣列。陣列的每一項包含音韻地位和解釋。
+ * @returns 陣列，每一項包含音韻地位和解釋
  *
- * 若字頭不存在，則回傳空陣列。
+ * 若查不到該字，則回傳空陣列。
  * @example
  * ```typescript
  * > Qieyun.資料.query字頭('結');
@@ -75,7 +75,11 @@ export function query字頭(字頭: string): 檢索結果[] {
 }
 
 /**
- * 音韻地位對應的字頭、反切、解釋。
+ * 查詢音韻地位對應的字頭、反切、解釋。
+ *
+ * @param 地位 待查詢的音韻地位
+ *
+ * @returns 陣列，每一項包含音韻地位和解釋
  *
  * 若音韻地位有音無字，則值為空陣列。
  * @example

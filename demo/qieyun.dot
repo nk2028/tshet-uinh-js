@@ -5,19 +5,16 @@ digraph {
     node [shape=plaintext]
     rankdir=LR
 
+    音韻地位 -> 各項音韻屬性 [label="母, 呼, 等, …; 描述, 表達式; 屬於, 判斷"]
+
     漢字 -> 條目 [label="query字頭"]
     條目 -> 詳細資料 [label="反切, 解釋, 韻部原貌"]
 
-    音韻地位 -> 各項音韻屬性 [label="母, 呼, 等, …; 描述, 表達式, 編碼; 屬於"]
-
-    （其他資料） -> 其他體系地位 [label="(處理)" style=dashed]
-
-    { rank=same 條目 音韻地位 其他體系地位 }
+    { rank=same 音韻地位 條目 }
 
     {
         edge[constraint=false]
         音韻地位 -> 條目 [xlabel="query音韻地位"]
         條目 -> 音韻地位 [xlabel="音韻地位"]
-        其他體系地位 -> 音韻地位 [xlabel="適配分析體系"]
     }
 }

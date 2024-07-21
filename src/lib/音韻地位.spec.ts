@@ -1,7 +1,7 @@
 import test from 'ava';
 
 import { iter音韻地位 } from './解析資料';
-import { 邊緣地位種類指定, 音韻地位 } from './音韻地位';
+import { 判斷規則列表, 邊緣地位種類指定, 音韻地位 } from './音韻地位';
 
 // 由音韻地位得出各項音韻屬性
 
@@ -95,7 +95,7 @@ test('測試「法」字對應的音韻地位的屬於（複雜用法）及判�
   t.true(當前音韻地位.屬於`一四等 或 ${當前音韻地位.描述 === '幫三C凡入'}`);
   t.true(當前音韻地位.屬於`${() => '三等'} 或 ${() => '短路〔或〕'}`);
   t.false(當前音韻地位.屬於`非 ${() => '三等'} 且 ${() => '短路〔且〕'}`);
-  t.throws(() => 當前音韻地位.屬於`${() => '三等'} 或 ${'立即求值'}`, { message: 'unreconized test condition: 立即求值' });
+  t.throws(() => 當前音韻地位.屬於`${() => '三等'} 或 ${'立即求值'}`, { message: 'unrecognized test condition: 立即求值' });
   t.is(
     當前音韻地位.判斷(
       [
@@ -139,9 +139,9 @@ test('測試不合法表達式', t => {
   t.throws(() => is`或 一等`, { message: 'expect expression, got: 或' });
   t.throws(() => is`三等 且 (或 一等)`, { message: 'expect expression, got: 或' });
   t.throws(() => is`三等 且 非`, { message: "expect operand or '(', got: end of expression" });
-  t.throws(() => is`桓韻`, { message: '桓韻不存在' });
-  t.throws(() => is`${'桓韻'}`, { message: '桓韻不存在' });
-  t.throws(() => is`三等 或 桓韻`, { message: '桓韻不存在' });
+  t.throws(() => is`桓韻`, { message: 'unknown 韻: 桓' });
+  t.throws(() => is`${'桓韻'}`, { message: 'unknown 韻: 桓' });
+  t.throws(() => is`三等 或 桓韻`, { message: 'unknown 韻: 桓' });
 });
 
 test('測試判斷式拋異常', t => {
@@ -161,9 +161,9 @@ test('測試判斷式拋異常', t => {
         // ...
         ['短路！', ''],
       ]),
-    { message: '促聲不存在' },
+    { message: 'unknown 聲: 促' },
   );
-  t.throws(() => 地位.判斷([], '壞耶'), { message: '壞耶' });
+  t.throws(() => 地位.判斷([] as 判斷規則列表<never>, '壞耶'), { message: '壞耶' });
 });
 
 test('判斷式 null 與 fall through', t => {

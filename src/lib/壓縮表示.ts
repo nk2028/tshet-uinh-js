@@ -26,8 +26,9 @@ export function encode音韻編碼(地位: 音韻地位): string {
   const 母序 = 所有.母.indexOf(母);
   const 韻序 = 韻序表.indexOf(韻) + +([...'東歌麻庚'].includes(韻) && !['一', '二'].includes(等));
 
-  const 呼序 = 所有.呼.indexOf(呼) + 1;
-  const 類序 = 所有.類.indexOf(類) + 1;
+  // NOTE the value `-1` is expected when the argument is `null`
+  const 呼序 = 所有.呼.indexOf(呼!) + 1;
+  const 類序 = 所有.類.indexOf(類!) + 1;
 
   const 呼類聲序 = (呼序 << 4) | (類序 << 2) | 所有.聲.indexOf(聲);
 
@@ -84,5 +85,6 @@ export function decode音韻編碼(編碼: string): 音韻地位 {
   const 聲序 = 呼類聲序 & 0b11;
   const 聲 = 所有.聲[聲序];
 
-  return new 音韻地位(母, 呼, 等, 類, 韻, 聲, _UNCHECKED);
+  // NOTE type assertion safe because the constructor checks it
+  return new 音韻地位(母, 呼, 等!, 類, 韻, 聲, _UNCHECKED);
 }

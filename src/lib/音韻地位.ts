@@ -2,10 +2,14 @@ import { assert } from './utils';
 import { 母到清濁, 母到組, 母到音, 韻到攝 } from './拓展音韻屬性';
 import { 呼韻搭配, 所有, 等母搭配, 等韻搭配, 鈍音母, 陰聲韻 } from './音韻屬性常量';
 
-const pattern描述 = new RegExp(`^([${所有.母}])([${所有.呼}]?)([${所有.等}]?)([${所有.類}]?)([${所有.韻}])([${所有.聲}])$`, 'u');
+const pattern描述 = new RegExp(
+  `^([${所有.母.join('')}])([${所有.呼.join('')}]?)([${所有.等.join('')}]?)` +
+    `([${所有.類.join('')}]?)([${所有.韻.join('')}])([${所有.聲.join('')}])$`,
+  'u',
+);
 
 // for 音韻地位.屬於
-const 檢查 = {
+const 表達式屬性可取值 = {
   ...所有,
   音: [...'脣舌齒牙喉'] as const,
   攝: [...'通江止遇蟹臻山效果假宕梗曾流深咸'] as const,
@@ -17,7 +21,7 @@ const 鈍音組 = [...'幫見影'] as const;
 /**
  * @see {@link 音韻地位.判斷}
  */
-export type 判斷規則列表<T = unknown> = readonly (readonly [unknown, T | 判斷規則列表<T>])[];
+export type 判斷規則列表<T> = readonly (readonly [unknown, T | 判斷規則列表<T>])[];
 
 /**
  * @see {@link 音韻地位.調整}
@@ -345,7 +349,7 @@ export class 音韻地位 {
    */
   get 描述(): string {
     const { 母, 呼, 等, 類, 韻, 聲 } = this;
-    return 母 + (呼 || '') + 等 + (類 || '') + 韻 + 聲;
+    return 母 + (呼 ?? '') + 等 + (類 ?? '') + 韻 + 聲;
   }
 
   /**
@@ -372,11 +376,11 @@ export class 音韻地位 {
       呼 = null;
     }
     if (等 === '三' && [...'羣邪俟'].includes(母)) {
-      等 = null;
+      等 = '';
     } else if (等母搭配.三.includes(母) || ![...等韻搭配.一三, ...等韻搭配.二三].includes(韻)) {
-      等 = null;
+      等 = '';
     }
-    return 母 + (呼 || '') + (等 || '') + (類 || '') + 韻 + 聲;
+    return 母 + (呼 ?? '') + 等 + (類 ?? '') + 韻 + 聲;
   }
 
   /**
@@ -509,27 +513,29 @@ export class 音韻地位 {
     /** 普通字串 token 求值 */
     const { 呼, 類, 韻, 聲, 清濁, 韻別, 組 } = this;
     const evalToken = (token: string): boolean => {
-      let match: RegExpExecArray = null;
-      const tryMatch = (pat: RegExp) => !!(match = pat.exec(token));
-      if (tryMatch(/^(陰|陽|入)聲韻$/)) return 韻別 === match[1];
-      if (tryMatch(/^次入韻$/)) return 次入韻.includes(韻);
-      if (tryMatch(/^仄聲$/)) return 聲 !== '平';
-      if (tryMatch(/^舒聲$/)) return 聲 !== '入';
-      if (tryMatch(/^(開|合)口$/)) return 呼 === match[1];
-      if (tryMatch(/^開合中立$/)) return 呼 === null;
-      if (tryMatch(/^不分類$/)) return 類 === null;
-      if (tryMatch(/^(清|濁)音$/)) return 清濁[1] === match[1];
-      if (tryMatch(/^[全次][清濁]$/)) return 清濁 === match[0];
-      if (tryMatch(/^鈍音$/)) return 鈍音組.includes(組);
-      if (tryMatch(/^銳音$/)) return !鈍音組.includes(組);
-      if (tryMatch(/^(.+?)([母等類韻音攝組聲])$/)) {
+      let match: RegExpExecArray | null = null;
+      if ((match = /^(陰|陽|入)聲韻$/.exec(token))) return 韻別 === match[1];
+      if (/^次入韻$/.exec(token)) return 次入韻.includes(韻);
+      if (/^仄聲$/.exec(token)) return 聲 !== '平';
+      if (/^舒聲$/.exec(token)) return 聲 !== '入';
+      if ((match = /^(開|合)口$/.exec(token))) return 呼 === match[1];
+      if (/^開合中立$/.exec(token)) return 呼 === null;
+      if (/^不分類$/.exec(token)) return 類 === null;
+      if ((match = /^(清|濁)音$/.exec(token))) return 清濁[1] === match[1];
+      if ((match = /^[全次][清濁]$/.exec(token))) return 清濁 === match[0];
+      if (/^鈍音$/.exec(token)) return 鈍音組.includes(組!);
+      if (/^銳音$/.exec(token)) return !鈍音組.includes(組!);
+      if ((match = /^(.+?)([母等類韻音攝組聲])$/.exec(token))) {
         const values = [...match[1]];
-        const check = 檢查[match[2] as keyof typeof 檢查];
-        const invalid = values.filter(i => !check.includes(i)).join('');
-        assert(!invalid, () => invalid + match[2] + '不存在');
-        return values.includes(this[match[2] as keyof typeof 檢查]);
+        const key = match[2] as keyof typeof 表達式屬性可取值;
+        const possibleValues = 表達式屬性可取值[key];
+        const invalidValues = values.filter(i => !possibleValues.includes(i)).join('');
+        if (invalidValues.length) {
+          throw new Error(`unknown ${key}: ${invalidValues}`);
+        }
+        return values.includes(this[key]!);
       }
-      throw new Error(`unreconized test condition: ${token}`);
+      throw new Error(`unrecognized test condition: ${token}`);
     };
 
     // 詞法分析，同時給普通運算元求值（惟函數型運算元留待後面惰性求值）
@@ -571,7 +577,8 @@ export class 音韻地位 {
     type Operator = 'value' | 'not' | 'and' | 'or';
     type SExpr = [Operator, ...Operand[]];
 
-    const parseOrExpr = (required: boolean): SExpr => {
+    function parseOrExpr<T extends boolean = true>(required: T): T extends true ? SExpr : SExpr | null;
+    function parseOrExpr(required: boolean): SExpr | null {
       const firstAndExpr = parseAndExpr(required);
       if (!firstAndExpr) {
         return null;
@@ -587,9 +594,10 @@ export class 音韻地位 {
           return orExpr;
         }
       }
-    };
+    }
 
-    const parseAndExpr = (required: boolean): SExpr => {
+    function parseAndExpr<T extends boolean = true>(required: T): T extends true ? SExpr : SExpr | null;
+    function parseAndExpr(required: boolean): SExpr | null {
       const firstNotExpr = parseNotExpr(required);
       if (!firstNotExpr) {
         return null;
@@ -610,9 +618,10 @@ export class 音韻地位 {
           }
         }
       }
-    };
+    }
 
-    const parseNotExpr = (required: boolean): SExpr => {
+    function parseNotExpr<T extends boolean = true>(required: T): T extends true ? SExpr : SExpr | null;
+    function parseNotExpr(required: boolean): SExpr | null {
       // 非*
       let seenNotOperator = false;
       let negate = false;
@@ -652,7 +661,7 @@ export class 音韻地位 {
       } else {
         return null;
       }
-    };
+    }
 
     const expr = parseOrExpr(true);
     const [token, rawToken] = read();
@@ -839,7 +848,7 @@ export class 音韻地位 {
     邊緣地位種類: 邊緣地位種類指定 = [],
   ): void {
     const reject = (msg: string) => {
-      throw new Error(`invalid 音韻地位 <${母},${呼 || ''},${等},${類 || ''},${韻},${聲}>: ` + msg);
+      throw new Error(`invalid 音韻地位 <${母},${呼 ?? ''},${等},${類 ?? ''},${韻},${聲}>: ` + msg);
     };
 
     // 驗證取值
@@ -851,7 +860,7 @@ export class 音韻地位 {
       ['韻', 韻],
       ['聲', 聲],
     ] as const) {
-      if (!((nullable && 值 === null) || 所有[屬性].includes(值!))) {
+      if (!((值 === null && !!nullable) || 所有[屬性].includes(值!))) {
         const suggestion = (
           {
             母: { 娘: '孃', 群: '羣' },
@@ -890,7 +899,7 @@ export class 音韻地位 {
     } else if (呼韻搭配.中立.includes(韻)) {
       呼 && reject('unexpected 呼 for 開合中立韻');
     } else if (呼韻搭配.開合.includes(韻)) {
-      呼 || reject('missing 呼');
+      呼 ?? reject('missing 呼');
     } else {
       for (const 搭配呼 of ['開', '合'] as const) {
         if (呼韻搭配[搭配呼].includes(韻)) {
@@ -992,7 +1001,7 @@ export class 音韻地位 {
    * 音韻地位 { '羣開三A支平' }
    * ```
    */
-  static from描述(音韻描述: string, 簡略描述: boolean = false, 邊緣地位種類: 邊緣地位種類指定 = []): 音韻地位 {
+  static from描述(音韻描述: string, 簡略描述 = false, 邊緣地位種類: 邊緣地位種類指定 = []): 音韻地位 {
     const match = pattern描述.exec(音韻描述);
     if (!match) {
       throw new Error(`invalid 描述: ${音韻描述}`);
@@ -1043,7 +1052,8 @@ export class 音韻地位 {
       }
     }
 
-    return new 音韻地位(母, 呼, 等, 類, 韻, 聲, 邊緣地位種類);
+    // NOTE type assertion safe because the constructor checks it
+    return new 音韻地位(母, 呼, 等!, 類, 韻, 聲, 邊緣地位種類);
   }
 }
 
@@ -1051,7 +1061,7 @@ export class 音韻地位 {
  * 取得給定條件下可搭配的類，分為「不含邊緣地位」與「含邊緣地位」兩種。
  * 用於 `音韻地位` 的 `.驗證`、`.from描述`、`.簡略描述`。
  */
-function 類搭配(母: string, 呼: string, 韻: string): [string, string] {
+function 類搭配(母: string, 呼: string | null, 韻: string): [string, string] {
   const 搭配 = (function 類搭配不計云母(): [string, string] {
     if (韻 === '陽') {
       return ['C', 'CA'];

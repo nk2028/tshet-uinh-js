@@ -1,6 +1,6 @@
 {
   "name": "qieyun",
-  "version": "0.13.5",
+  "version": "0.15.0-alpha.1",
   "description": "A JavaScript library for the Qieyun phonological system",
   "main": "index.js",
   "types": "types/index.d.ts",
@@ -44,8 +44,8 @@
     "linguistics",
     "middle Chinese"
   ],
-  "author": "Ngiox Khyen 2028 Project",
-  "license": "CC0-1.0",
+  "author": "Project NK2028",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/nk2028/qieyun-js/issues"
   },

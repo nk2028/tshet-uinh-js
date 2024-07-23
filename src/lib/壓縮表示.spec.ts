@@ -20,4 +20,8 @@ test('測試資料內全部音韻地位與編碼雙向轉換', t => {
   }
 });
 
-// TODO 更多測試
+test('測試不合法編碼', t => {
+  t.throws(() => decode音韻編碼('A'), { message: 'Invalid 編碼: "A"' });
+  t.throws(() => decode音韻編碼('@@@'), { message: 'Invalid character in 編碼: "@"' });
+  t.throws(() => decode音韻編碼('mAA'), { message: 'Invalid 母序號: 38' });
+});

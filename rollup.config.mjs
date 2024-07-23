@@ -3,8 +3,6 @@
 import typescript from '@rollup/plugin-typescript';
 
 export default {
-  // FIXME src/entry.js adds default export, but also confuses index.d.ts.
-  // Reverting temporarily to src/index.js
   input: 'src/index.ts',
   output: {
     file: 'index.js',

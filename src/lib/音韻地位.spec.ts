@@ -260,7 +260,9 @@ test('不合法音韻地位', t => {
   testCase('明三陽去', /missing 類 \(should be C typically\)/, '類搭配（韻，可能有邊緣地位）');
   testCase('幫三B清入', /unexpected 幫母清韻B類/, '類搭配（綜合）');
   testCase('幫三C嚴入', /unexpected 嚴韻脣音/, '母搭配（凡韻）');
+  testCase('幫三C之平', /unexpected 之韻脣音/, '母搭配（脣音之韻）');
   testCase('初開三真去', /unexpected 真韻開口莊組/, '母搭配（臻韻）');
+  testCase('知開三庚平', /unexpected 庚韻三等知母/, '母搭配（非莊組銳聲母）');
 });
 
 test('邊緣地位', t => {

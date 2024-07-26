@@ -971,12 +971,14 @@ export class 音韻地位 {
       }
     }
     // 等-韻
-    for (const [搭配各等, 搭配各韻] of Object.entries(等韻搭配)) {
-      if (搭配各韻.includes(韻)) {
-        if ([...搭配各等].includes(等) || ([...搭配各等].includes('三') && 等 === '四' && [...'端透定泥'].includes(母))) {
+    if (等 === '四' && [...'端透定泥'].includes(母) && [...'脂真麻清幽侵'].includes(韻)) {
+      // 允許，但均為邊緣地位
+    } else {
+      for (const [搭配各等, 搭配各韻] of Object.entries(等韻搭配)) {
+        if (搭配各韻.includes(韻)) {
+          [...搭配各等].includes(等) || reject(`unexpected ${韻}韻${等}等`);
           break;
         }
-        reject(`unexpected ${韻}韻${等}等`);
       }
     }
     // 母-呼（基本）、呼-韻
@@ -1016,14 +1018,19 @@ export class 音韻地位 {
 
     // 母-韻
     if ([...'幫滂並明'].includes(母)) {
-      韻 === '嚴' && reject(`unexpected 嚴韻脣音`);
+      [...'之魚殷痕嚴'].includes(韻) && reject(`unexpected ${韻}韻脣音`);
     } else {
       韻 === '凡' && reject(`unexpected 凡韻非脣音`);
     }
     if ([...'莊初崇生俟'].includes(母)) {
+      等 === '三' && ['麻', '清', '幽'].includes(韻) && reject(`unexpected ${韻}韻${韻 === '麻' ? '三等' : ''}莊組`);
       呼 === '開' && ['真', '殷'].includes(韻) && reject(`unexpected ${韻}韻開口莊組`);
     } else {
       韻 === '臻' && reject(`unexpected 臻韻非莊組`);
+      if (!鈍音母.includes(母)) {
+        韻 === '庚' && 等 === '三' && reject(`unexpected 庚韻三等${母}母`);
+        韻 === '蒸' && 呼 === '合' && reject(`unexpected 蒸韻合口${母}母`);
+      }
     }
 
     // 邊緣搭配

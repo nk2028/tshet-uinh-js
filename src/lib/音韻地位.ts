@@ -405,21 +405,21 @@ export class 音韻地位 {
   }
 
   /**
-   * 韻圖聲母（三十六字母）
+   * 三十六字母
    * @example
    * ```typescript
    * > 音韻地位 = Qieyun.音韻地位.from描述('幫三C凡入');
-   * > 音韻地位.韻圖母;
+   * > 音韻地位.字母;
    * '非'
    * > 音韻地位 = Qieyun.音韻地位.from描述('常開三清平');
-   * > 音韻地位.韻圖母;
+   * > 音韻地位.字母;
    * '禪'
    * > 音韻地位 = Qieyun.音韻地位.from描述('俟開三之上');
-   * > 音韻地位.韻圖等;
+   * > 音韻地位.字等;
    * '禪'
    * ```
    */
-  get 韻圖母(): string {
+  get 字母(): string {
     const { 母, 等, 類 } = this;
     let index: number;
     if (等 === '三' && 類 === 'C' && (index = [...'幫滂並明'].indexOf(母)) !== -1) {
@@ -428,8 +428,6 @@ export class 音韻地位 {
       return '照穿牀審禪'[index % 5];
     } else if (['云', '以'].includes(母)) {
       return '喻';
-    } else if (等 === '二' && (index = [...'端透定泥'].indexOf(母)) !== -1) {
-      return '知徹澄孃'[index];
     }
     return 母;
   }

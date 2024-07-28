@@ -4,7 +4,6 @@
     "outDir": "build/test",
     "module": "commonjs",
     "declaration": false,
-    "declarationDir": null,
     "types": ["node"]
   },
   "exclude": []

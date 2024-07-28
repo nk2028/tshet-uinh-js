@@ -10,7 +10,7 @@ yarn.lock
 
 /index.js
 /index.js.map
-/types
+/index.d.ts
 
 /docs
 

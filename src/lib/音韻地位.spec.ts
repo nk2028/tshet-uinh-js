@@ -258,7 +258,7 @@ test('不合法音韻地位', t => {
   testCase('章開三A支平', /unexpected 類/, '類搭配（母）');
   testCase('明三清上', /missing 類 \(should be A\)/, '類搭配（韻）');
   testCase('明三陽去', /missing 類 \(should be C typically\)/, '類搭配（韻，可能有邊緣地位）');
-  testCase('幫三B清入', /unexpected 幫母清韻B類/, '類搭配（綜合）');
+  testCase('幫三B清入', /unexpected 清韻幫母B類/, '類搭配（綜合）');
   testCase('幫三C嚴入', /unexpected 嚴韻脣音/, '母搭配（凡韻）');
   testCase('幫三C之平', /unexpected 之韻脣音/, '母搭配（脣音之韻）');
   testCase('初開三真去', /unexpected 真韻開口莊組/, '母搭配（臻韻）');
@@ -284,10 +284,12 @@ test('邊緣地位', t => {
   throws('見一東平', ['壞耶'], /unknown type of marginal 音韻地位: 壞耶/, '未知邊緣地位類型');
 
   // 嚴格邊緣地位
-  passes('定開二佳上', [], '已知邊緣地位');
+  passes('定開四脂去', [], '已知邊緣地位「地」');
+  passes('定開二佳上', [], '已知邊緣地位「箉」');
+  passes('端四尤平', [], '已知資料外邊緣地位「丟」');
 
-  throws('透開二佳上', [], /unexpected 透母二等佳韻/, '端組類隔（二等）');
-  throws('端開四清上', [], /unexpected 端母四等清韻/, '端組類隔（四等）');
+  throws('透開二佳上', [], /unexpected 佳韻二等透母/, '端組類隔（二等）');
+  throws('端開四清上', [], /unexpected 清韻四等端母/, '端組類隔（四等）');
   passes('端開四清上', ['端組類隔'], '端組類隔');
   throws('端開四青上', ['端組類隔'], /\(note: don't specify/, '非相關邊緣地位');
 
@@ -299,4 +301,9 @@ test('邊緣地位', t => {
   // 蒸幽韻特殊類
   throws('明三A幽去', [], /unexpected 幽韻明母A類 \(note: marginal 音韻地位/, '幽韻脣音A類');
   passes('明三A幽去', ['蒸幽韻特殊類'], '幽韻脣音A類');
+
+  // 端組類隔
+  throws('泥開四陽上', [], /unexpected 陽韻四等泥母/, '端組類隔（陽韻）');
+  passes('泥開四陽上', ['端組類隔'], '端組類隔（陽韻）');
+  throws('端開四庚上', ['端組類隔'], /unexpected 庚韻四等端母/, '庚三完全不允許端四');
 });

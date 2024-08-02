@@ -56,7 +56,7 @@ const 已知邊緣地位 = new Set([
   '端開四麻平', // 爹
   '端開四麻上', // 嗲
   '定開二佳上', // 箉
-  '端開四幽平', // 丟
+  '端四尤平', // 丟
   // 咍韻脣音（無）
   // 羣邪俟母非三等（無）
   // ----
@@ -971,14 +971,14 @@ export class 音韻地位 {
       }
     }
     // 等-韻
-    if (等 === '四' && [...'端透定泥'].includes(母) && [...'脂真麻清幽侵'].includes(韻)) {
-      // 允許，但均為邊緣地位
-    } else {
-      for (const [搭配各等, 搭配各韻] of Object.entries(等韻搭配)) {
-        if (搭配各韻.includes(韻)) {
-          [...搭配各等].includes(等) || reject(`unexpected ${韻}韻${等}等`);
+    for (const [搭配各等, 搭配各韻] of Object.entries(等韻搭配)) {
+      if (搭配各韻.includes(韻)) {
+        if ([...搭配各等].includes(等)) {
+          break;
+        } else if (搭配各等.includes('三') && 等 === '四' && [...'端透定泥'].includes(母)) {
           break;
         }
+        reject(`unexpected ${韻}韻${等}等`);
       }
     }
     // 母-呼（基本）、呼-韻
@@ -1012,7 +1012,7 @@ export class 音韻地位 {
         const suggestion = 典型搭配類.length === 1 ? ` (should be ${典型搭配類}${典型搭配類 !== 搭配類 ? ' typically' : ''})` : '';
         reject(`missing 類${suggestion}`);
       } else if (!搭配類.includes(類)) {
-        reject(`unexpected ${母}母${韻}韻${類}類`);
+        reject(`unexpected ${韻}韻${母}母${類}類`);
       }
     }
 
@@ -1028,7 +1028,7 @@ export class 音韻地位 {
     } else {
       韻 === '臻' && reject(`unexpected 臻韻非莊組`);
       if (!鈍音母.includes(母)) {
-        韻 === '庚' && 等 === '三' && reject(`unexpected 庚韻三等${母}母`);
+        韻 === '庚' && 等 !== '二' && reject(`unexpected 庚韻${等}等${母}母`);
         韻 === '蒸' && 呼 === '合' && reject(`unexpected 蒸韻合口${母}母`);
       }
     }
@@ -1049,7 +1049,7 @@ export class 音韻地位 {
         '端組類隔',
         true,
         [...'端透定泥'].includes(母) && (等 === '二' || (等 === '四' && !等韻搭配.四.includes(韻))),
-        `${母}母${等}等${韻}韻`,
+        `${韻}韻${等}等${母}母`,
       ],
       ['咍韻脣音', true, 韻 === '咍' && [...'幫滂並明'].includes(母), `咍韻脣音`],
       ['羣邪俟母非三等', true, 等 !== '三' && [...'羣邪俟'].includes(母), `${母}母${等}等`],

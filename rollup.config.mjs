@@ -1,7 +1,6 @@
 // @ts-check
 
 import typescript from '@rollup/plugin-typescript';
-import dts from 'rollup-plugin-dts';
 
 export default [
   {
@@ -19,13 +18,5 @@ export default [
         outputToFilesystem: false,
       }),
     ],
-  },
-  {
-    input: 'build/esnext/index.d.ts',
-    output: {
-      file: 'index.d.ts',
-      format: 'es',
-    },
-    plugins: [dts()],
   },
 ];

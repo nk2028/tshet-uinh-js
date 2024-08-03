@@ -1,8 +1,8 @@
-name: Package
+name: Publish
 
 on:
   release:
-    types: [created]
+    types: [published]
 
 jobs:
   publish:
@@ -25,6 +25,13 @@ jobs:
     - name: Test
       run: npm test
     - name: Publish to npm
-      run: npm publish
+      shell: bash
+      run: |
+        if [[ "$IS_BETA" ]]; then
+          npm publish --tag beta
+        else
+          npm publish
+        fi
       env:
         NODE_AUTH_TOKEN: ${{ secrets.npm_token }}
+        IS_BETA: ${{ github.event.release.prerelease && '1' || '' }}

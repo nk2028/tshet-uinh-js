@@ -149,6 +149,7 @@ test('測試不合法表達式', t => {
   t.throws(() => is`桓韻`, { message: 'unknown 韻: 桓' });
   t.throws(() => is`${'桓韻'}`, { message: 'unknown 韻: 桓' });
   t.throws(() => is`三等 或 桓韻`, { message: 'unknown 韻: 桓' });
+  t.throws(() => is`重紐A類`, { message: 'unknown 類: 重, 紐' });
 });
 
 test('測試判斷式拋異常', t => {

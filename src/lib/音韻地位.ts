@@ -615,9 +615,9 @@ export class 音韻地位 {
         const values = [...match[1]];
         const key = match[2] as keyof typeof 表達式屬性可取值;
         const possibleValues = 表達式屬性可取值[key];
-        const invalidValues = values.filter(i => !possibleValues.includes(i)).join('');
+        const invalidValues = values.filter(i => !possibleValues.includes(i));
         if (invalidValues.length) {
-          throw new Error(`unknown ${key}: ${invalidValues}`);
+          throw new Error(`unknown ${key}: ${invalidValues.join(', ')}`);
         }
         return values.includes(this[key]!);
       }

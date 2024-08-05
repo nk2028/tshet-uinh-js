@@ -4,17 +4,20 @@ digraph {
     edge [fontname="Noto Sans Mono CJK HK"]
     node [shape=plaintext]
     rankdir=LR
+    nodesep=0.375
 
     音韻地位 -> 各項音韻屬性 [label="母, 呼, 等, …; 描述, 表達式; 屬於, 判斷"]
+    條目 -> 詳細資料 [label="反切, 釋義, 韻目原貌"]
 
-    漢字 -> 條目 [label="query字頭"]
-    條目 -> 詳細資料 [label="反切, 解釋, 韻部原貌"]
-
-    { rank=same 音韻地位 條目 }
+    { rank=same 音韻地位 條目 漢字 }
 
     {
         edge[constraint=false]
+        
         音韻地位 -> 條目 [xlabel="query音韻地位"]
         條目 -> 音韻地位 [xlabel="音韻地位"]
+        
+        漢字 -> 條目 [xlabel="query字頭"]
+        條目 -> 漢字 [xlabel="字頭"]
     }
 }

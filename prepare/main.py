@@ -90,7 +90,7 @@ def main():
             d.setdefault(編碼 + 反切 + 韻目原貌, []).append((字頭, 字頭又作, 釋義))
 
     os.makedirs('src/data', exist_ok=True)
-    with open('src/data/資料.ts', 'w', newline='') as fout:
+    with open('src/data/廣韻.ts', 'w', newline='') as fout:
         print('export default `\\', file=fout)
         for key, 各條目 in d.items():
             print(

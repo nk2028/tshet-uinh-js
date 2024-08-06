@@ -1,7 +1,7 @@
 import test from 'ava';
 
 import { decode音韻編碼, encode音韻編碼 } from './壓縮表示';
-import { iter音韻地位 } from './解析資料';
+import { iter音韻地位 } from './資料';
 import { 音韻地位 } from './音韻地位';
 
 test('測試音韻編碼', t => {

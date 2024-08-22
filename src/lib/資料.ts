@@ -45,17 +45,15 @@ function insertInto<K, V, T extends Map<K, V[]> = Map<K, V[]>>(map: T, key: KeyO
 }
 
 (function 早期廣韻外字() {
-  const 字頭 = '韻';
-  const 編碼 = encode音韻編碼(音韻地位.from描述('云合三B真去'));
-  const record = {
-    字頭,
-    編碼,
-    反切: '爲捃',
-    釋義: '為捃反音和一',
-    來源: { 文獻: '王三' as const, 韻目: '震' },
-  };
-  insertInto(m字頭檢索, 字頭, record);
-  insertInto(m音韻編碼檢索, 編碼, record);
+  for (const [字頭, 描述, 反切, 釋義, 韻目] of [
+    ['韻', '云合三B真去', '爲捃', '為捃反音和一', '震'],
+    ['忘', '明三C陽平', '武方', '遺又武放不記曰忘', '陽'],
+  ] as const) {
+    const 編碼 = encode音韻編碼(音韻地位.from描述(描述));
+    const record = { 字頭, 編碼, 反切, 釋義, 來源: { 文獻: '王三' as const, 韻目 } };
+    insertInto(m字頭檢索, 字頭, record);
+    insertInto(m音韻編碼檢索, 編碼, record);
+  }
 })();
 
 (function 解析廣韻資料() {

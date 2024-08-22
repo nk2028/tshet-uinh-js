@@ -74,7 +74,6 @@ function prependValuesInto<K, V, T extends Map<K, V[]> = Map<K, V[]>>(map: T, ke
 
 (function 早期廣韻外字() {
   const by字頭 = new Map<string, 內部檢索結果[]>();
-  const by編碼 = new Map<string, 內部檢索結果[]>();
   for (const [字頭, 描述, 反切, 釋義, 韻目] of [
     ['韻', '云合三B真去', '爲捃', '為捃反音和一', '震'],
     ['忘', '明三C陽平', '武方', '遺又武放不記曰忘', '陽'],
@@ -82,14 +81,11 @@ function prependValuesInto<K, V, T extends Map<K, V[]> = Map<K, V[]>>(map: T, ke
     const 編碼 = encode音韻編碼(音韻地位.from描述(描述));
     const record = { 字頭, 編碼, 反切, 釋義, 來源: { 文獻: '王三' as const, 韻目 } };
     insertInto(by字頭, 字頭, record);
-    insertInto(by編碼, 編碼, record);
+    insertInto(m音韻編碼檢索, 編碼, record);
   }
 
   for (const [字頭, 各條目] of by字頭.entries()) {
     prependValuesInto(m字頭檢索, 字頭, 各條目);
-  }
-  for (const [編碼, 各條目] of by編碼.entries()) {
-    prependValuesInto(m音韻編碼檢索, 編碼, 各條目);
   }
 })();
 

@@ -77,6 +77,13 @@ export default tseslint.config(
           allowNumber: true,
         },
       ],
+
+      '@typescript-eslint/no-unused-expressions': [
+        'error',
+        {
+          allowShortCircuit: true,
+        },
+      ],
     },
   },
   prettierConfig,

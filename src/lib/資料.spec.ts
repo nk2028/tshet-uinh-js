@@ -1,4 +1,4 @@
-import { readFileSync } from 'fs';
+import { readFileSync } from 'node:fs';
 
 import test from 'ava';
 
@@ -79,7 +79,7 @@ test('查詢來源', t => {
 });
 
 test('根據原資料檔查詢所有字頭', t => {
-  for (const line of readFileSync('prepare/data.csv', { encoding: 'utf8' }).split('\n').slice(1, -1)) {
+  for (const line of readFileSync('prepare/data.csv', { encoding: 'utf8' }).trimEnd().split('\n').slice(1)) {
     const [, , 韻目原貌, 地位描述1, 原反切1, 字頭1, 字頭又作1, 原釋義1, 釋義補充1] = line.split(',');
     if (!地位描述1) {
       continue;

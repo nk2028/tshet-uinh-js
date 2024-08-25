@@ -1,3 +1,4 @@
+from collections.abc import Iterable
 import csv
 import hashlib
 import os
@@ -77,27 +78,76 @@ def list_地位編碼():
 def main():
     fetch_data()
 
-    d = {}
+    韻目原貌by原書小韻: dict[int, str] = {}
+    原書小韻音韻: dict[int, dict[str, tuple[str, str]]] = {}
+    原書小韻內容: dict[int, list[tuple[str, Iterable[str], str, str]]] = {}
     with open('prepare/data.csv') as fin:
         next(fin)
+        max原書小韻號: int = 0
+        cur音韻: dict[str, tuple[str, str]] = None
+        cur內容: list[tuple[str, Iterable[str], str, str]] = None
         for row in csv.reader(fin):
-            (_, _, 韻目原貌, 描述, 反切, 字頭, 字頭又作, 釋義, 釋義補充) = row
-            if 描述 == '':
-                continue
-            反切 = 反切 or '@@'  # placeholder
-            釋義 = 釋義 if not 釋義補充 else f'{釋義}（{釋義補充}）'
-            編碼 = 編碼_from_描述(描述)
-            d.setdefault(編碼 + 反切 + 韻目原貌, []).append((字頭, 字頭又作, 釋義))
+            (
+                小韻號,
+                _,
+                韻目原貌,
+                音韻地位描述,
+                反切,
+                字頭,
+                字頭又作,
+                釋義,
+                釋義補充,
+            ) = row
 
-    os.makedirs('src/data', exist_ok=True)
-    with open('src/data/廣韻.ts', 'w', newline='') as fout:
+            if 小韻號[-1].isalpha():
+                原書小韻號, 小韻細分 = int(小韻號[:-1]), 小韻號[-1]
+            else:
+                原書小韻號, 小韻細分 = int(小韻號), ''
+
+            if 原書小韻號 != max原書小韻號:
+                assert 原書小韻號 == max原書小韻號 + 1
+                max原書小韻號 = 原書小韻號
+                韻目原貌by原書小韻[原書小韻號] = 韻目原貌
+                原書小韻音韻[原書小韻號] = cur音韻 = {}
+                原書小韻內容[原書小韻號] = cur內容 = []
+
+            assert 韻目原貌 == 韻目原貌by原書小韻[原書小韻號]
+
+            音韻編碼 = 編碼_from_描述(音韻地位描述) if 音韻地位描述 else '@@@'
+            if 小韻細分 in cur音韻:
+                assert cur音韻[小韻細分] == (音韻編碼, 反切)
+            else:
+                cur音韻[小韻細分] = (音韻編碼, 反切)
+
+            cur內容.append(
+                (字頭, 字頭又作, 小韻細分, 釋義 + (釋義補充 and f'（{釋義補充}）'))
+            )
+
+    for 原書小韻號, 各音韻信息 in 原書小韻音韻.items():
+        各細分 = tuple(各音韻信息.keys())
+        if len(各細分) == 1:
+            assert 各細分[0] == ''
+        else:
+            assert 1 < len(各細分) <= 26
+            assert 各細分 == tuple(chr(ord('a') + i) for i in range(len(各細分)))
+
+    os.makedirs('src/data/raw', exist_ok=True)
+    with open('src/data/raw/廣韻.ts', 'w', newline='') as fout:
         print('export default `\\', file=fout)
-        for key, 各條目 in d.items():
+        cur韻目 = None
+        for 原書小韻號 in range(1, max原書小韻號 + 1):
+            韻目 = 韻目原貌by原書小韻[原書小韻號]
+            if 韻目 != cur韻目:
+                print(f'#{韻目}', file=fout)
+                cur韻目 = 韻目
             print(
-                key,
+                ''.join(
+                    音韻編碼 + (反切 or '@@')
+                    for 音韻編碼, 反切 in 原書小韻音韻[原書小韻號].values()
+                ),
                 '|'.join(
-                    字頭 + ''.join('+' + ch for ch in 字頭又作) + 釋義
-                    for 字頭, 字頭又作, 釋義 in 各條目
+                    字頭 + ''.join('+' + ch for ch in 字頭又作) + 小韻細分 + 釋義
+                    for 字頭, 字頭又作, 小韻細分, 釋義 in 原書小韻內容[原書小韻號]
                 ),
                 sep='',
                 file=fout,

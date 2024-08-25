@@ -17,4 +17,4 @@ yarn.lock
 /prepare/data.csv
 /prepare/v2.csv
 
-/src/data/廣韻.ts
+/src/data/raw/

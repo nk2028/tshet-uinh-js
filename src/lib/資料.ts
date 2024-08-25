@@ -1,7 +1,12 @@
-import 資料 from '../data/廣韻';
+import type { 廣韻來源 } from '../data/廣韻';
+import * as 廣韻impl from '../data/廣韻impl';
 
+import { insertInto, prependValuesInto } from './utils';
 import { decode音韻編碼, encode音韻編碼 } from './壓縮表示';
 import { 音韻地位 } from './音韻地位';
+
+export * as 廣韻 from '../data/廣韻';
+export type { 廣韻來源 } from '../data/廣韻';
 
 type 內部檢索結果 = Readonly<{ 字頭: string; 編碼: string; 反切: string | null; 釋義: string; 來源: 來源類型 | null }>;
 
@@ -14,72 +19,40 @@ export interface 檢索結果 {
   來源: 來源類型 | null;
 }
 export type 來源類型 = 廣韻來源 | 王三來源;
-export interface 廣韻來源 {
-  文獻: '廣韻';
-  韻目: string;
-  // TODO 小韻號等
-}
 export interface 王三來源 {
   文獻: '王三';
+  小韻號: string;
   韻目: string;
-  // TODO 小韻號等
 }
 
 const m字頭檢索 = new Map<string, 內部檢索結果[]>();
 const m音韻編碼檢索 = new Map<string, 內部檢索結果[]>();
 
-// NOTE This is for ensuring *invariance*(-ish) on the type of the map of `insertInto`.
-// This way, the type of `map` (`T`) is inferred first, then the other two arguments will be checked against it, rather than the types of
-// `key` and `value` dictating what the map should be like (because TypeScript sees `map` as *covariant* by default, which is not suitable
-// for mutable operations like insertion).
-type KeyOfMap<T> = T extends Map<infer K, unknown> ? K : never;
-type ValueOfMap<T> = T extends Map<unknown, infer V> ? V : never;
-type ArrayElement<T> = T extends (infer U)[] ? U : never;
-
-function insertInto<K, V, T extends Map<K, V[]> = Map<K, V[]>>(map: T, key: KeyOfMap<T>, value: ArrayElement<ValueOfMap<T>>) {
-  if (!map.has(key)) {
-    map.set(key, [value]);
-  } else {
-    map.get(key)!.push(value);
-  }
-}
-
-function prependValuesInto<K, V, T extends Map<K, V[]> = Map<K, V[]>>(map: T, key: KeyOfMap<T>, values: ValueOfMap<T>) {
-  if (!map.has(key)) {
-    map.set(key, [...values]);
-  } else {
-    map.set(key, [...values, ...map.get(key)!]);
-  }
-}
-
-(function 解析廣韻資料() {
-  const patternOuter = /([\w$]{3})(..)(.)(.*?\n)/gu;
-  for (const [, 編碼, maybe反切, 韻目原貌, 各條目] of 資料.matchAll(patternOuter)) {
-    // '@@' is a placeholder in the original data to indicate that there is no 反切
-    const 反切 = maybe反切 === '@@' ? null : maybe反切;
-
-    const patternInner = /(.)((?:\+.)*)(.*?)[|\n]/gu;
-    for (const [, 字頭, 字頭又作, 釋義] of 各條目.matchAll(patternInner)) {
-      const record = { 字頭, 編碼, 反切, 釋義, 來源: { 文獻: '廣韻' as const, 韻目: 韻目原貌 } };
-
-      insertInto(m字頭檢索, 字頭, record);
-      for (const [, 別體] of 字頭又作.matchAll(/\+(.)/g)) {
-        insertInto(m字頭檢索, 別體, record);
+(function 廣韻索引() {
+  for (const 原書小韻 of 廣韻impl.by原書小韻.values()) {
+    for (const 廣韻條目 of 原書小韻) {
+      if (廣韻條目.音韻編碼 === null) {
+        continue;
       }
-
-      insertInto(m音韻編碼檢索, 編碼, record);
+      const { 字頭, 字頭又作, 音韻編碼: 編碼, 小韻號, 韻目原貌, ...rest } = 廣韻條目;
+      const 條目 = { 字頭, 編碼, ...rest, 來源: { 文獻: '廣韻' as const, 小韻號, 韻目: 韻目原貌 } };
+      insertInto(m字頭檢索, 字頭, 條目);
+      for (const 別體 of 字頭又作) {
+        insertInto(m字頭檢索, 別體, 條目);
+      }
+      insertInto(m音韻編碼檢索, 編碼, 條目);
     }
   }
 })();
 
 (function 早期廣韻外字() {
   const by字頭 = new Map<string, 內部檢索結果[]>();
-  for (const [字頭, 描述, 反切, 釋義, 韻目] of [
-    ['韻', '云合三B真去', '爲捃', '為捃反音和一', '震'],
-    ['忘', '明三C陽平', '武方', '遺又武放不記曰忘', '陽'],
+  for (const [字頭, 描述, 反切, 釋義, 小韻號, 韻目] of [
+    ['忘', '明三C陽平', '武方', '遺又武放不記曰忘', '797', '陽'],
+    ['韻', '云合三B真去', '爲捃', '為捃反音和一', '2420', '震'],
   ] as const) {
     const 編碼 = encode音韻編碼(音韻地位.from描述(描述));
-    const record = { 字頭, 編碼, 反切, 釋義, 來源: { 文獻: '王三' as const, 韻目 } };
+    const record = { 字頭, 編碼, 反切, 釋義, 來源: { 文獻: '王三' as const, 小韻號, 韻目 } };
     insertInto(by字頭, 字頭, record);
     insertInto(m音韻編碼檢索, 編碼, record);
   }
@@ -123,7 +96,7 @@ export function* iter音韻地位(): IterableIterator<音韻地位> {
  *   音韻地位: 音韻地位 { '見開四先入' },
  *   反切: '古屑',
  *   釋義: '締也古屑切十五',
- *   來源: { 文獻: '廣韻', 韻目: '屑' },
+ *   來源: { 文獻: '廣韻', 小韻號: '3469', 韻目: '屑' },
  * } ]
  * > Qieyun.資料.query字頭('冷');
  * [
@@ -132,21 +105,21 @@ export function* iter音韻地位(): IterableIterator<音韻地位> {
  *     音韻地位: 音韻地位 { '來開四青平' },
  *     反切: '郎丁',
  *     釋義: '冷凙吳人云冰凌又力頂切',
- *     來源: { 文獻: '廣韻', 韻目: '青' },
+ *     來源: { 文獻: '廣韻', 小韻號: '939', 韻目: '青' },
  *   },
  *   {
  *     字頭: '冷',
  *     音韻地位: 音韻地位 { '來開二庚上' },
  *     反切: '魯打',
  *     釋義: '寒也魯打切又魯頂切一',
- *     來源: { 文獻: '廣韻', 韻目: '梗' },
+ *     來源: { 文獻: '廣韻', 小韻號: '1872', 韻目: '梗' },
  *   },
  *   {
  *     字頭: '冷',
  *     音韻地位: 音韻地位 { '來開四青上' },
  *     反切: '力鼎',
  *     釋義: '寒也又姓前趙錄有徐州刺史冷道字安義又盧打切',
- *     來源: { 文獻: '廣韻', 韻目: '迥' },
+ *     來源: { 文獻: '廣韻', 小韻號: '1915', 韻目: '迥' },
  *   },
  * ]
  * ```
@@ -172,7 +145,7 @@ export function query字頭(字頭: string): 檢索結果[] {
  *   音韻地位: 音韻地位 { ''影開二銜去' },
  *   反切: null,
  *   解釋: '叫呼仿佛𪒠然自得音黯去聲一',
- *   來源: { 文獻: '廣韻', 韻目: '鑑' },
+ *   來源: { 文獻: '廣韻', 小韻號: '3177', 韻目: '鑑' },
  * } ]
  * ```
  */

@@ -42,9 +42,9 @@ export function encode音韻編碼(地位: 音韻地位): string {
  * @example
  * ```typescript
  * > Qieyun.壓縮表示.decode音韻編碼('A9P');
- * 音韻地位 { '幫三C凡入' }
+ * 音韻地位<幫三C凡入>
  * > Qieyun.壓縮表示.decode音韻編碼('fFU');
- * 音韻地位 { '羣開三A支平' }
+ * 音韻地位<羣開三A支平>
  * ```
  */
 export function decode音韻編碼(編碼: string): 音韻地位 {

@@ -219,13 +219,13 @@ export class 音韻地位 {
    * @example
    * ```typescript
    * > new Qieyun.音韻地位('幫', null, '三', 'C', '凡', '入');
-   * 音韻地位 { '幫三C凡入' }
+   * 音韻地位<幫三C凡入>
    * > new Qieyun.音韻地位('羣', '開', '三', 'A', '支', '平');
-   * 音韻地位 { '羣開三A支平' }
+   * 音韻地位<羣開三A支平>
    * > new Qieyun.音韻地位('章', '開', '三', null, '支', '平');
-   * 音韻地位 { '章開三支平' }
+   * 音韻地位<章開三支平>
    * > new Qieyun.音韻地位('幫', null, '四', null, '先', '平');
-   * 音韻地位 { '幫四先平' }
+   * 音韻地位<幫四先平>
    * ```
    */
   constructor(母: string, 呼: string | null, 等: string, 類: string | null, 韻: string, 聲: string, 邊緣地位種類: 邊緣地位種類指定 = []) {
@@ -872,6 +872,20 @@ export class 音韻地位 {
     return this.描述 === other.描述;
   }
 
+  /** 同 {@link 描述} */
+  toString(): string {
+    return this.描述;
+  }
+
+  /** @ignore 用於 Object.prototype.toString */
+  readonly [Symbol.toStringTag] = '音韻地位';
+
+  /** @ignore 僅用於 Node.js 呈現格式 */
+  [Symbol.for('nodejs.util.inspect.custom')](...args: unknown[]): string {
+    const stylize = (...x: unknown[]) => (args[1] as { stylize(...x: unknown[]): string }).stylize(...x);
+    return `音韻地位<${stylize(this.描述, 'string')}>`;
+  }
+
   /**
    * 驗證給定的音韻地位六要素是否合法。
    *
@@ -1090,11 +1104,11 @@ export class 音韻地位 {
    * @example
    * ```typescript
    * > Qieyun.音韻地位.from描述('幫三C凡入');
-   * 音韻地位 { '幫三C凡入' }
+   * 音韻地位<幫三C凡入>
    *  > Qieyun.音韻地位.from描述('幫凡入', true);
-   * 音韻地位 { '幫三C凡入' }
+   * 音韻地位<幫三C凡入>
    * > Qieyun.音韻地位.from描述('羣開三A支平');
-   * 音韻地位 { '羣開三A支平' }
+   * 音韻地位<羣開三A支平>
    * ```
    */
   static from描述(音韻描述: string, 簡略描述 = false, 邊緣地位種類: 邊緣地位種類指定 = []): 音韻地位 {

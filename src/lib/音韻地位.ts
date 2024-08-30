@@ -15,7 +15,6 @@ const 表達式屬性可取值 = {
   攝: [...'通江止遇蟹臻山效果假宕梗曾流深咸'] as const,
   組: [...'幫端知精莊章見影'] as const,
 };
-const 次入韻 = [...'祭泰夬廢'] as const;
 const 鈍音組 = [...'幫見影'] as const;
 
 /**
@@ -536,7 +535,6 @@ export class 音韻地位 {
    *   * 清濁：`全清`, `次清`, `全濁`, `次濁`, `清音`, `濁音`
    *   * 韻別：`陰聲韻`, `陽聲韻`, `入聲韻`
    * * 其他表達式：
-   *   * `次入韻`：祭泰夬廢韻
    *   * `仄聲`：上去入聲
    *   * `舒聲`：平上去聲
    *   * `鈍音`：幫見影組
@@ -600,11 +598,10 @@ export class 音韻地位 {
     if (typeof 表達式 === 'string') 表達式 = [表達式];
 
     /** 普通字串 token 求值 */
-    const { 呼, 類, 韻, 聲, 清濁, 韻別, 組 } = this;
+    const { 呼, 類, 聲, 清濁, 韻別, 組 } = this;
     const evalToken = (token: string): boolean => {
       let match: RegExpExecArray | null = null;
       if ((match = /^(陰|陽|入)聲韻$/.exec(token))) return 韻別 === match[1];
-      if (/^次入韻$/.exec(token)) return 次入韻.includes(韻);
       if (/^仄聲$/.exec(token)) return 聲 !== '平';
       if (/^舒聲$/.exec(token)) return 聲 !== '入';
       if ((match = /^(開|合)口$/.exec(token))) return 呼 === match[1];

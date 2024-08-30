@@ -48,15 +48,9 @@ test('查詢「過」字。「過」字有兩讀', t => {
   t.is(res.length, 2);
 });
 
-test('查詢不存在的字，沒有讀音', t => {
-  const res = query字頭('!');
+test('查詢資料不包含的字，沒有讀音', t => {
+  const res = query字頭('韓'); // 《廣韻》字頭作「𩏑」，同時釋義注「亦作韓」
   t.is(res.length, 0);
-});
-
-test('查詢「韓」字。「韓」是《廣韻》「亦作」字頭', t => {
-  const res = query字頭('韓');
-  t.is(res.length, 1);
-  t.is(res[0].字頭, '𩏑');
 });
 
 test('查詢來源', t => {
@@ -80,7 +74,7 @@ test('查詢來源', t => {
 
 test('根據原資料檔查詢所有字頭', t => {
   for (const line of readFileSync('prepare/data.csv', { encoding: 'utf8' }).trimEnd().split('\n').slice(1)) {
-    const [, , 韻目原貌, 地位描述1, 原反切1, 字頭1, 字頭又作1, 原釋義1, 釋義補充1] = line.split(',');
+    const [, , 韻目原貌, 地位描述1, 原反切1, 字頭1, 原釋義1, 釋義補充1] = line.split(',');
     if (!地位描述1) {
       continue;
     }
@@ -88,8 +82,8 @@ test('根據原資料檔查詢所有字頭', t => {
     const 釋義1 = 原釋義1 + (釋義補充1 && `（${釋義補充1}）`);
     const 音韻地位1 = 音韻地位.from描述(地位描述1);
 
-    const query = (查詢字頭: string) =>
-      query字頭(查詢字頭).some(({ 字頭: 字頭2, 音韻地位: 音韻地位2, 反切: 反切2, 釋義: 釋義2, 來源 }) => {
+    t.true(
+      query字頭(字頭1).some(({ 字頭: 字頭2, 音韻地位: 音韻地位2, 反切: 反切2, 釋義: 釋義2, 來源 }) => {
         return (
           字頭1 === 字頭2 &&
           音韻地位1.等於(音韻地位2) &&
@@ -98,11 +92,8 @@ test('根據原資料檔查詢所有字頭', t => {
           來源?.文獻 === '廣韻' &&
           來源.韻目 === 韻目原貌
         );
-      });
-
-    t.true(query(字頭1), line);
-    for (const 別體 of [...字頭又作1]) {
-      t.true(query(別體));
-    }
+      }),
+      line,
+    );
   }
 });

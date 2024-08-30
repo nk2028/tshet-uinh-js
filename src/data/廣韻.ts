@@ -106,9 +106,7 @@ export function* iter原書小韻(): IterableIterator<廣韻條目[]> {
 }
 
 function 條目from內部條目(內部條目: impl.內部廣韻條目): 廣韻條目 {
-  const { 字頭, 字頭又作, 音韻編碼, 小韻號, 韻目原貌, ...rest } = 內部條目;
-  // eslint-disable-next-line @typescript-eslint/no-unused-expressions -- explicitly ignore this property
-  字頭又作;
+  const { 字頭, 音韻編碼, 小韻號, 韻目原貌, ...rest } = 內部條目;
   return {
     字頭,
     音韻地位: 音韻編碼 === null ? null : decode音韻編碼(音韻編碼),

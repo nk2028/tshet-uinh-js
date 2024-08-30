@@ -1,4 +1,5 @@
-from collections.abc import Iterable
+#!/usr/bin/env python3
+
 import csv
 import hashlib
 import os
@@ -38,8 +39,8 @@ def 編碼_from_描述(描述: str) -> str:
 
 
 def fetch_data(
-    commit: str = '0f4a928',
-    md5sum: str = '1341c933317800c56b0715485aec1911',
+    commit: str = '1f1c085',
+    md5sum: str = '92d1e840e7b118bc6b541c5aa5c9db8c',
 ):
     if not os.path.exists('prepare/data.csv'):
         status = os.system(
@@ -80,12 +81,12 @@ def main():
 
     韻目原貌by原書小韻: dict[int, str] = {}
     原書小韻音韻: dict[int, dict[str, tuple[str, str]]] = {}
-    原書小韻內容: dict[int, list[tuple[str, Iterable[str], str, str]]] = {}
+    原書小韻內容: dict[int, list[tuple[str, str, str]]] = {}
     with open('prepare/data.csv') as fin:
         next(fin)
         max原書小韻號: int = 0
         cur音韻: dict[str, tuple[str, str]] = None
-        cur內容: list[tuple[str, Iterable[str], str, str]] = None
+        cur內容: list[tuple[str, str, str]] = None
         for row in csv.reader(fin):
             (
                 小韻號,
@@ -94,7 +95,6 @@ def main():
                 音韻地位描述,
                 反切,
                 字頭,
-                字頭又作,
                 釋義,
                 釋義補充,
             ) = row
@@ -119,9 +119,7 @@ def main():
             else:
                 cur音韻[小韻細分] = (音韻編碼, 反切)
 
-            cur內容.append(
-                (字頭, 字頭又作, 小韻細分, 釋義 + (釋義補充 and f'（{釋義補充}）'))
-            )
+            cur內容.append((字頭, 小韻細分, 釋義 + (釋義補充 and f'（{釋義補充}）')))
 
     for 原書小韻號, 各音韻信息 in 原書小韻音韻.items():
         各細分 = tuple(各音韻信息.keys())
@@ -146,8 +144,8 @@ def main():
                     for 音韻編碼, 反切 in 原書小韻音韻[原書小韻號].values()
                 ),
                 '|'.join(
-                    字頭 + ''.join('+' + ch for ch in 字頭又作) + 小韻細分 + 釋義
-                    for 字頭, 字頭又作, 小韻細分, 釋義 in 原書小韻內容[原書小韻號]
+                    字頭 + 小韻細分 + 釋義
+                    for 字頭, 小韻細分, 釋義 in 原書小韻內容[原書小韻號]
                 ),
                 sep='',
                 file=fout,

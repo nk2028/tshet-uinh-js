@@ -34,12 +34,9 @@ const m音韻編碼檢索 = new Map<string, 內部檢索結果[]>();
       if (廣韻條目.音韻編碼 === null) {
         continue;
       }
-      const { 字頭, 字頭又作, 音韻編碼: 編碼, 小韻號, 韻目原貌, ...rest } = 廣韻條目;
+      const { 字頭, 音韻編碼: 編碼, 小韻號, 韻目原貌, ...rest } = 廣韻條目;
       const 條目 = { 字頭, 編碼, ...rest, 來源: { 文獻: '廣韻' as const, 小韻號, 韻目: 韻目原貌 } };
       insertInto(m字頭檢索, 字頭, 條目);
-      for (const 別體 of 字頭又作) {
-        insertInto(m字頭檢索, 別體, 條目);
-      }
       insertInto(m音韻編碼檢索, 編碼, 條目);
     }
   }

@@ -50,7 +50,7 @@ test('對照 iter原書小韻 與 iter條目', t => {
 test('對照原資料檔與 iter條目', t => {
   const 條目iter = 廣韻.iter條目();
   for (const line of readFileSync('prepare/data.csv', { encoding: 'utf8' }).trimEnd().split('\n').slice(1)) {
-    const [小韻號, , 韻目原貌, 地位描述, 反切, 字頭, , 釋義, 釋義補充] = line.split(',');
+    const [小韻號, , 韻目原貌, 地位描述, 反切, 字頭, 釋義, 釋義補充] = line.split(',');
 
     const next = 條目iter.next();
     t.falsy(next.done);

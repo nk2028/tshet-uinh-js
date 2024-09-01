@@ -1,29 +1,29 @@
-# qieyun
+# TshetUinh.js
 
-[![](https://badge.fury.io/js/qieyun.svg)](https://www.npmjs.com/package/qieyun) [![](https://data.jsdelivr.com/v1/package/npm/qieyun/badge)](https://www.jsdelivr.com/package/npm/qieyun) [![](https://github.com/nk2028/qieyun-js/workflows/Package/badge.svg)](https://github.com/nk2028/qieyun-js/actions?query=workflow%3A%22Package%22) [![](https://api.codeclimate.com/v1/badges/fb728b8ee3531bd96e5a/maintainability)](https://codeclimate.com/github/nk2028/qieyun-js/maintainability)
+[![](https://badge.fury.io/js/tshet-uinh.svg)](https://www.npmjs.com/package/tshet-uinh) [![](https://data.jsdelivr.com/v1/package/npm/tshet-uinh/badge)](https://www.jsdelivr.com/package/npm/tshet-uinh) [![](https://github.com/nk2028/tshet-uinh-js/workflows/Package/badge.svg)](https://github.com/nk2028/tshet-uinh-js/actions?query=workflow%3A%22Package%22) [![](https://api.codeclimate.com/v1/badges/fb728b8ee3531bd96e5a/maintainability)](https://codeclimate.com/github/nk2028/tshet-uinh-js/maintainability)
 
-A JavaScript library for the Qieyun phonological system
+A JavaScript library for the Qieyun (Tshet-uinh) phonological system
 
-![library overview](https://raw.githubusercontent.com/nk2028/qieyun-js/5958e48/demo/qieyun.png)
+![library overview](https://raw.githubusercontent.com/nk2028/tshet-uinh-js/5958e48/demo/qieyun.png)
 
 ## Usage
 
 Browser:
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/qieyun@0.15.0"></script>
+<script src="https://cdn.jsdelivr.net/npm/tshet-uinh@0.15.0"></script>
 ```
 
 Node.js:
 
 ```sh
-$ npm install qieyun
+$ npm install tshet-uinh
 ```
 
 ```javascript
-> import Qieyun from 'qieyun';
+> import TshetUinh from 'tshet-uinh';
 ```
 
 ## Documentation
 
-See [here](https://nk2028.shn.hk/qieyun-js/).
+See [here](https://nk2028.shn.hk/tshet-uinh-js/).

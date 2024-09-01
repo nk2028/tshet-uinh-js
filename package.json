@@ -1,6 +1,6 @@
 {
-  "name": "qieyun",
-  "version": "0.15.0-beta.6",
+  "name": "tshet-uinh",
+  "version": "0.15.0-beta.7",
   "description": "A JavaScript library for the Qieyun phonological system",
   "main": "index.js",
   "types": "index.d.ts",
@@ -37,20 +37,20 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/nk2028/qieyun-js.git"
+    "url": "git+https://github.com/nk2028/tshet-uinh-js.git"
   },
   "keywords": [
     "Qieyun",
     "historical linguistics",
     "linguistics",
-    "middle Chinese"
+    "Middle Chinese"
   ],
   "author": "Project NK2028",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/nk2028/qieyun-js/issues"
+    "url": "https://github.com/nk2028/tshet-uinh-js/issues"
   },
-  "homepage": "https://github.com/nk2028/qieyun-js#readme",
+  "homepage": "https://github.com/nk2028/tshet-uinh-js#readme",
   "devDependencies": {
     "@ava/typescript": "^5.0.0",
     "@eslint/eslintrc": "^3.1.0",

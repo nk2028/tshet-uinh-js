@@ -49,7 +49,7 @@ export function iter小韻號(): IterableIterator<string> {
  * @returns 該小韻所有條目。若小韻號不存在，回傳 `undefined`。
  * @example
  * ```typescript
- * > Qieyun.資料.廣韻.get小韻('3708b');
+ * > TshetUinh.資料.廣韻.get小韻('3708b');
  * [
  *   {
  *     字頭: '抑',

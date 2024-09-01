@@ -116,10 +116,10 @@ export class 音韻地位 {
    * 聲母
    * @example
    * ```typescript
-   * > 音韻地位 = Qieyun.音韻地位.from描述('幫三C凡入');
+   * > 音韻地位 = TshetUinh.音韻地位.from描述('幫三C凡入');
    * > 音韻地位.母;
    * '幫'
-   * > 音韻地位 = Qieyun.音韻地位.from描述('羣開三A支平');
+   * > 音韻地位 = TshetUinh.音韻地位.from描述('羣開三A支平');
    * > 音韻地位.母;
    * '羣'
    * ```
@@ -130,10 +130,10 @@ export class 音韻地位 {
    * 呼
    * @example
    * ```typescript
-   * > 音韻地位 = Qieyun.音韻地位.from描述('幫三C凡入');
+   * > 音韻地位 = TshetUinh.音韻地位.from描述('幫三C凡入');
    * > 音韻地位.呼;
    * null
-   * > 音韻地位 = Qieyun.音韻地位.from描述('羣開三A支平');
+   * > 音韻地位 = TshetUinh.音韻地位.from描述('羣開三A支平');
    * > 音韻地位.呼;
    * '開'
    * ```
@@ -144,10 +144,10 @@ export class 音韻地位 {
    * 等
    * @example
    * ```typescript
-   * > 音韻地位 = Qieyun.音韻地位.from描述('幫三C凡入');
+   * > 音韻地位 = TshetUinh.音韻地位.from描述('幫三C凡入');
    * > 音韻地位.等;
    * '三'
-   * > 音韻地位 = Qieyun.音韻地位.from描述('羣開三A支平');
+   * > 音韻地位 = TshetUinh.音韻地位.from描述('羣開三A支平');
    * > 音韻地位.等;
    * '三'
    * ```
@@ -160,16 +160,16 @@ export class 音韻地位 {
    * - C 類為非前元音
    * @example
    * ```typescript
-   * > 音韻地位 = Qieyun.音韻地位.from描述('幫三C凡入');
+   * > 音韻地位 = TshetUinh.音韻地位.from描述('幫三C凡入');
    * > 音韻地位.類;
    * 'C'
-   * > 音韻地位 = Qieyun.音韻地位.from描述('羣開三A支平');
+   * > 音韻地位 = TshetUinh.音韻地位.from描述('羣開三A支平');
    * > 音韻地位.類;
    * 'A'
-   * > 音韻地位 = Qieyun.音韻地位.from描述('章開三支平');
+   * > 音韻地位 = TshetUinh.音韻地位.from描述('章開三支平');
    * > 音韻地位.類;
    * null
-   * > 音韻地位 = Qieyun.音韻地位.from描述('幫四先平');
+   * > 音韻地位 = TshetUinh.音韻地位.from描述('幫四先平');
    * > 音韻地位.類;
    * null
    * ```
@@ -180,10 +180,10 @@ export class 音韻地位 {
    * 韻（舉平以賅上去入，唯祭、泰、夬、廢例外）
    * @example
    * ```typescript
-   * > 音韻地位 = Qieyun.音韻地位.from描述('幫三C凡入');
+   * > 音韻地位 = TshetUinh.音韻地位.from描述('幫三C凡入');
    * > 音韻地位.韻;
    * '凡'
-   * > 音韻地位 = Qieyun.音韻地位.from描述('羣開三A支平');
+   * > 音韻地位 = TshetUinh.音韻地位.from描述('羣開三A支平');
    * > 音韻地位.韻;
    * '支'
    * ```
@@ -194,10 +194,10 @@ export class 音韻地位 {
    * 聲調
    * @example
    * ```typescript
-   * > 音韻地位 = Qieyun.音韻地位.from描述('幫三C凡入');
+   * > 音韻地位 = TshetUinh.音韻地位.from描述('幫三C凡入');
    * > 音韻地位.聲;
    * '入'
-   * > 音韻地位 = Qieyun.音韻地位.from描述('羣開三A支平');
+   * > 音韻地位 = TshetUinh.音韻地位.from描述('羣開三A支平');
    * > 音韻地位.聲;
    * '平'
    * ```
@@ -217,13 +217,13 @@ export class 音韻地位 {
    * @throws 待建立之音韻地位會透過{@link 驗證}檢驗音節合法性，不合法則拋出異常
    * @example
    * ```typescript
-   * > new Qieyun.音韻地位('幫', null, '三', 'C', '凡', '入');
+   * > new TshetUinh.音韻地位('幫', null, '三', 'C', '凡', '入');
    * 音韻地位<幫三C凡入>
-   * > new Qieyun.音韻地位('羣', '開', '三', 'A', '支', '平');
+   * > new TshetUinh.音韻地位('羣', '開', '三', 'A', '支', '平');
    * 音韻地位<羣開三A支平>
-   * > new Qieyun.音韻地位('章', '開', '三', null, '支', '平');
+   * > new TshetUinh.音韻地位('章', '開', '三', null, '支', '平');
    * 音韻地位<章開三支平>
-   * > new Qieyun.音韻地位('幫', null, '四', null, '先', '平');
+   * > new TshetUinh.音韻地位('幫', null, '四', null, '先', '平');
    * 音韻地位<幫四先平>
    * ```
    */
@@ -244,10 +244,10 @@ export class 音韻地位 {
    *
    * @example
    * ```typescript
-   * > 音韻地位 = Qieyun.音韻地位.from描述('幫三C凡入');
+   * > 音韻地位 = TshetUinh.音韻地位.from描述('幫三C凡入');
    * > 音韻地位.清濁;
    * '全清'
-   * > 音韻地位 = Qieyun.音韻地位.from描述('羣開三A支平');
+   * > 音韻地位 = TshetUinh.音韻地位.from描述('羣開三A支平');
    * > 音韻地位.清濁;
    * '全濁'
    * ```
@@ -267,10 +267,10 @@ export class 音韻地位 {
    *
    * @example
    * ```typescript
-   * > 音韻地位 = Qieyun.音韻地位.from描述('幫三C凡入');
+   * > 音韻地位 = TshetUinh.音韻地位.from描述('幫三C凡入');
    * > 音韻地位.音;
    * '脣'
-   * > 音韻地位 = Qieyun.音韻地位.from描述('羣開三A支平');
+   * > 音韻地位 = TshetUinh.音韻地位.from描述('羣開三A支平');
    * > 音韻地位.音;
    * '牙'
    * ```
@@ -284,10 +284,10 @@ export class 音韻地位 {
    * 攝
    * @example
    * ```typescript
-   * > 音韻地位 = Qieyun.音韻地位.from描述('幫三C凡入');
+   * > 音韻地位 = TshetUinh.音韻地位.from描述('幫三C凡入');
    * > 音韻地位.攝;
    * '咸'
-   * > 音韻地位 = Qieyun.音韻地位.from描述('羣開三A支平');
+   * > 音韻地位 = TshetUinh.音韻地位.from描述('羣開三A支平');
    * > 音韻地位.攝;
    * '止'
    * ```
@@ -301,10 +301,10 @@ export class 音韻地位 {
    * 韻別（陰聲韻、陽聲韻、入聲韻）
    * @example
    * ```typescript
-   * > 音韻地位 = Qieyun.音韻地位.from描述('幫三C凡入');
+   * > 音韻地位 = TshetUinh.音韻地位.from描述('幫三C凡入');
    * > 音韻地位.韻別;
    * '入'
-   * > 音韻地位 = Qieyun.音韻地位.from描述('羣開三A支平');
+   * > 音韻地位 = TshetUinh.音韻地位.from描述('羣開三A支平');
    * > 音韻地位.韻別;
    * '陰'
    * ```
@@ -318,10 +318,10 @@ export class 音韻地位 {
    * 組
    * @example
    * ```typescript
-   * > 音韻地位 = Qieyun.音韻地位.from描述('幫三C凡入');
+   * > 音韻地位 = TshetUinh.音韻地位.from描述('幫三C凡入');
    * > 音韻地位.組;
    * '幫'
-   * > 音韻地位 = Qieyun.音韻地位.from描述('羣開三A支平');
+   * > 音韻地位 = TshetUinh.音韻地位.from描述('羣開三A支平');
    * > 音韻地位.組;
    * '見'
    * ```
@@ -335,16 +335,16 @@ export class 音韻地位 {
    * 描述
    * @example
    * ```typescript
-   * > 音韻地位 = Qieyun.音韻地位.from描述('幫三C凡入');
+   * > 音韻地位 = TshetUinh.音韻地位.from描述('幫三C凡入');
    * > 音韻地位.描述;
    * '幫三C凡入'
-   * > 音韻地位 = Qieyun.音韻地位.from描述('羣開三A支平');
+   * > 音韻地位 = TshetUinh.音韻地位.from描述('羣開三A支平');
    * > 音韻地位.描述;
    * '羣開三A支平'
-   * > 音韻地位 = Qieyun.音韻地位.from描述('章開三支平');
+   * > 音韻地位 = TshetUinh.音韻地位.from描述('章開三支平');
    * > 音韻地位.描述;
    * '章開三支平'
-   * > 音韻地位 = Qieyun.音韻地位.from描述('幫四先平');
+   * > 音韻地位 = TshetUinh.音韻地位.from描述('幫四先平');
    * > 音韻地位.描述;
    * '幫四先平'
    * ```
@@ -360,10 +360,10 @@ export class 音韻地位 {
    * **注意**：此項尚未成為穩定功能，不要依賴其輸出值。
    * @example
    * ```typescript
-   * > 音韻地位 = Qieyun.音韻地位.from描述('幫三C凡入');
+   * > 音韻地位 = TshetUinh.音韻地位.from描述('幫三C凡入');
    * > 音韻地位.簡略描述;
    * '幫凡入'
-   * > 音韻地位 = Qieyun.音韻地位.from描述('羣開三A支平');
+   * > 音韻地位 = TshetUinh.音韻地位.from描述('羣開三A支平');
    * > 音韻地位.簡略描述;
    * '羣開A支平'
    * ```
@@ -391,10 +391,10 @@ export class 音韻地位 {
    * 表達式，可用於{@link 屬於}函數
    * @example
    * ```typescript
-   * > 音韻地位 = Qieyun.音韻地位.from描述('幫三C凡入');
+   * > 音韻地位 = TshetUinh.音韻地位.from描述('幫三C凡入');
    * > 音韻地位.表達式;
    * '幫母 開合中立 三等 C類 凡韻 入聲'
-   * > 音韻地位 = Qieyun.音韻地位.from描述('羣開三A支平');
+   * > 音韻地位 = TshetUinh.音韻地位.from描述('羣開三A支平');
    * > 音韻地位.表達式;
    * '羣母 開口 三等 A類 支韻 平聲'
    * ```
@@ -410,13 +410,13 @@ export class 音韻地位 {
    * 三十六字母
    * @example
    * ```typescript
-   * > 音韻地位 = Qieyun.音韻地位.from描述('幫三C凡入');
+   * > 音韻地位 = TshetUinh.音韻地位.from描述('幫三C凡入');
    * > 音韻地位.字母;
    * '非'
-   * > 音韻地位 = Qieyun.音韻地位.from描述('常開三清平');
+   * > 音韻地位 = TshetUinh.音韻地位.from描述('常開三清平');
    * > 音韻地位.字母;
    * '禪'
-   * > 音韻地位 = Qieyun.音韻地位.from描述('俟開三之上');
+   * > 音韻地位 = TshetUinh.音韻地位.from描述('俟開三之上');
    * > 音韻地位.字等;
    * '禪'
    * ```
@@ -438,13 +438,13 @@ export class 音韻地位 {
    * 韻圖等
    * @example
    * ```typescript
-   * > 音韻地位 = Qieyun.音韻地位.from描述('羣開三A支平');
+   * > 音韻地位 = TshetUinh.音韻地位.from描述('羣開三A支平');
    * > 音韻地位.韻圖等;
    * '四'
-   * > 音韻地位 = Qieyun.音韻地位.from描述('常開三清平');
+   * > 音韻地位 = TshetUinh.音韻地位.from描述('常開三清平');
    * > 音韻地位.韻圖等;
    * '三'
-   * > 音韻地位 = Qieyun.音韻地位.from描述('俟開三之上');
+   * > 音韻地位 = TshetUinh.音韻地位.from描述('俟開三之上');
    * > 音韻地位.韻圖等;
    * '二'
    * ```
@@ -478,7 +478,7 @@ export class 音韻地位 {
    * @returns 新的 `音韻地位`，其中會含有指定的修改值
    * @example
    * ```typescript
-   * > 音韻地位 = Qieyun.音韻地位.from描述('幫三C元上');
+   * > 音韻地位 = TshetUinh.音韻地位.from描述('幫三C元上');
    * > 音韻地位.調整({ 聲: '平' }).描述
    * '幫三C元平'
    * > 音韻地位.調整('平聲').描述
@@ -554,7 +554,7 @@ export class 音韻地位 {
    * @throws 若表達式為空、不合語法、或限定條件不合法，則拋出異常。
    * @example
    * ```typescript
-   * > 音韻地位 = Qieyun.音韻地位.from描述('幫三C凡入');
+   * > 音韻地位 = TshetUinh.音韻地位.from描述('幫三C凡入');
    * > 音韻地位.屬於`章母`; // 標籤模板語法（表達式為字面值時推荐）
    * false
    * > 音韻地位.屬於('章母'); // 一般形式
@@ -587,7 +587,7 @@ export class 音韻地位 {
    * @throws 若表達式為空、不合語法、或限定條件不合法，則拋出異常。
    * @example
    * ```typescript
-   * > 音韻地位 = Qieyun.音韻地位.from描述('幫三凡入');
+   * > 音韻地位 = TshetUinh.音韻地位.from描述('幫三凡入');
    * > 音韻地位.屬於`一四等 或 ${音韻地位.描述 === '幫三凡入'}`;
    * true
    * ```
@@ -796,7 +796,7 @@ export class 音韻地位 {
    * @throws `未涵蓋所有條件`（或 `error` 參數之文字），或套用至 `.屬於` 時出現的異常
    * @example
    * ```typescript
-   * > 音韻地位 = Qieyun.音韻地位.from描述('幫三C凡入');
+   * > 音韻地位 = TshetUinh.音韻地位.from描述('幫三C凡入');
    * > 音韻地位.判斷([
    * >   ['遇果假攝 或 支脂之佳韻', ''],
    * >   ['蟹攝 或 微韻', 'i'],
@@ -857,8 +857,8 @@ export class 音韻地位 {
    * @returns 若相等，則回傳 `true`；否則回傳 `false`。
    * @example
    * ```typescript
-   * > a = Qieyun.音韻地位.from描述('羣開三A支平');
-   * > b = Qieyun.音韻地位.from描述('羣開三A支平');
+   * > a = TshetUinh.音韻地位.from描述('羣開三A支平');
+   * > b = TshetUinh.音韻地位.from描述('羣開三A支平');
    * > a === b;
    * false
    * > a.等於(b);
@@ -1100,11 +1100,11 @@ export class 音韻地位 {
    * @returns 給定的音韻描述或最簡描述對應的音韻地位
    * @example
    * ```typescript
-   * > Qieyun.音韻地位.from描述('幫三C凡入');
+   * > TshetUinh.音韻地位.from描述('幫三C凡入');
    * 音韻地位<幫三C凡入>
-   *  > Qieyun.音韻地位.from描述('幫凡入', true);
+   *  > TshetUinh.音韻地位.from描述('幫凡入', true);
    * 音韻地位<幫三C凡入>
-   * > Qieyun.音韻地位.from描述('羣開三A支平');
+   * > TshetUinh.音韻地位.from描述('羣開三A支平');
    * 音韻地位<羣開三A支平>
    * ```
    */

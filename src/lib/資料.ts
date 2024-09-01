@@ -87,7 +87,7 @@ export function* iter音韻地位(): IterableIterator<音韻地位> {
  * 若查不到該字，則回傳空陣列。
  * @example
  * ```typescript
- * > Qieyun.資料.query字頭('結');
+ * > TshetUinh.資料.query字頭('結');
  * [ {
  *   字頭: '結',
  *   音韻地位: 音韻地位<見開四先入>,
@@ -95,7 +95,7 @@ export function* iter音韻地位(): IterableIterator<音韻地位> {
  *   釋義: '締也古屑切十五',
  *   來源: { 文獻: '廣韻', 小韻號: '3469', 韻目: '屑' },
  * } ]
- * > Qieyun.資料.query字頭('冷');
+ * > TshetUinh.資料.query字頭('冷');
  * [
  *   {
  *     字頭: '冷',
@@ -135,8 +135,8 @@ export function query字頭(字頭: string): 檢索結果[] {
  * 若音韻地位有音無字，則值為空陣列。
  * @example
  * ```typescript
- * > 地位 = Qieyun.音韻地位.from描述('影開二銜去');
- * > Qieyun.資料.query音韻地位(地位);
+ * > 地位 = TshetUinh.音韻地位.from描述('影開二銜去');
+ * > TshetUinh.資料.query音韻地位(地位);
  * [ {
  *   字頭: '𪒠',
  *   音韻地位: 音韻地位<影開二銜去>,

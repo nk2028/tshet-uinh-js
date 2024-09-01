@@ -3,8 +3,8 @@
  *
  * @example
  * ```typescript
- * > const { 分開合韻, 合口韻 } = Qieyun.表達式;
- * > const 地位 = Qieyun.音韻地位.from描述('羣合三C文平');
+ * > const { 分開合韻, 合口韻 } = TshetUinh.表達式;
+ * > const 地位 = TshetUinh.音韻地位.from描述('羣合三C文平');
  * > 地位.屬於`${分開合韻} 非 ${開合中立韻}`
  * true
  * ```

@@ -13,11 +13,11 @@ const 韻序表 = [
  * @returns 音韻地位對應的編碼
  * @example
  * ```typescript
- * > 音韻地位 = Qieyun.音韻地位.from描述('幫三C凡入');
- * > Qieyun.壓縮表示.encode音韻編碼(音韻地位);
+ * > 音韻地位 = TshetUinh.音韻地位.from描述('幫三C凡入');
+ * > TshetUinh.壓縮表示.encode音韻編碼(音韻地位);
  * 'A9P'
- * > 音韻地位 = Qieyun.音韻地位.from描述('羣開三A支平');
- * > Qieyun.壓縮表示.encode音韻編碼(音韻地位);
+ * > 音韻地位 = TshetUinh.音韻地位.from描述('羣開三A支平');
+ * > TshetUinh.壓縮表示.encode音韻編碼(音韻地位);
  * 'fFU'
  * ```
  */
@@ -41,9 +41,9 @@ export function encode音韻編碼(地位: 音韻地位): string {
  * @returns 給定的音韻編碼對應的音韻地位
  * @example
  * ```typescript
- * > Qieyun.壓縮表示.decode音韻編碼('A9P');
+ * > TshetUinh.壓縮表示.decode音韻編碼('A9P');
  * 音韻地位<幫三C凡入>
- * > Qieyun.壓縮表示.decode音韻編碼('fFU');
+ * > TshetUinh.壓縮表示.decode音韻編碼('fFU');
  * 音韻地位<羣開三A支平>
  * ```
  */

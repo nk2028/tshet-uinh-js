@@ -9,7 +9,7 @@ export default [
       file: 'index.js',
       format: 'umd',
       sourcemap: true,
-      name: 'Qieyun',
+      name: 'TshetUinh',
       exports: 'named',
     },
     plugins: [

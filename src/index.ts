@@ -1,4 +1,4 @@
-export * from './Qieyun';
+export * from './TshetUinh';
 
-import * as Qieyun from './Qieyun';
-export default Qieyun;
+import * as TshetUinh from './TshetUinh';
+export default TshetUinh;

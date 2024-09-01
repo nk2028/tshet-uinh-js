@@ -1,1 +1,1 @@
-dot -Tpng demo/qieyun.dot > demo/qieyun.png
+dot -Tpng demo/overview.dot > demo/overview.png

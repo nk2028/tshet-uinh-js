@@ -44,7 +44,7 @@ def fetch_data(
 ):
     if not os.path.exists('prepare/data.csv'):
         status = os.system(
-            f'curl -LsSo prepare/data.csv https://raw.githubusercontent.com/nk2028/qieyun-data/{commit}/%E9%9F%BB%E6%9B%B8/%E5%BB%A3%E9%9F%BB.csv'
+            f'curl -LsSo prepare/data.csv https://raw.githubusercontent.com/nk2028/tshet-uinh-data/{commit}/%E9%9F%BB%E6%9B%B8/%E5%BB%A3%E9%9F%BB.csv'
         )
         assert status == 0, f'Error: curl exited with status code {status}'
     # NOTE `file_digest` requires Python 3.11+

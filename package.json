@@ -2,12 +2,23 @@
   "name": "tshet-uinh",
   "version": "0.15.1",
   "description": "A JavaScript library for the Qieyun phonological system",
-  "main": "index.js",
-  "types": "index.d.ts",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "browser": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "require": "./dist/index.cjs",
+      "import": "./dist/index.mjs",
+      "browser": "./dist/index.js"
+    }
+  },
   "scripts": {
     "build": "run-p build:*",
     "build:rollup": "rollup -c",
-    "build:types": "npm-dts generate",
+    "build:types": "dts-bundle-generator --no-check -o dist/index.d.ts src/index.ts",
     "build:test": "tsc -p tsconfig.test.json",
     "fix": "run-s fix:*",
     "fix:format": "prettier 'src/**/*.ts' --write",
@@ -40,10 +51,11 @@
     "url": "git+https://github.com/nk2028/tshet-uinh-js.git"
   },
   "keywords": [
-    "Qieyun",
-    "historical linguistics",
+    "historical-linguistics",
     "linguistics",
-    "Middle Chinese"
+    "middle-chinese",
+    "tshet-uinh",
+    "qieyun"
   ],
   "author": "Project NK2028",
   "license": "MIT",
@@ -60,11 +72,11 @@
     "@types/eslint__js": "^8.42.3",
     "ava": "^6.1.3",
     "cz-conventional-changelog": "^3.0.1",
+    "dts-bundle-generator": "^9.5.1",
     "eslint": "^8.57.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-eslint-comments": "^3.2.0",
     "eslint-plugin-import": "^2.29.1",
-    "npm-dts": "^1.3.13",
     "npm-run-all": "^4.1.5",
     "nyc": "^17.0.0",
     "open-cli": "^8.0.0",
@@ -77,11 +89,7 @@
     "typescript-eslint": "^8.3.0"
   },
   "files": [
-    "index.js",
-    "index.js.map",
-    "index.d.ts",
-    "LICENSE",
-    "README.md"
+    "dist"
   ],
   "ava": {
     "failFast": true,

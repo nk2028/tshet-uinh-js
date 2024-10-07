@@ -15,7 +15,6 @@ const 表達式屬性可取值 = {
   攝: [...'通江止遇蟹臻山效果假宕梗曾流深咸'] as const,
   組: [...'幫端知精莊章見影'] as const,
 };
-const 鈍音組 = [...'幫見影'] as const;
 
 /**
  * @see {@link 音韻地位.判斷}
@@ -592,19 +591,19 @@ export class 音韻地位 {
     if (typeof 表達式 === 'string') 表達式 = [表達式];
 
     /** 普通字串 token 求值 */
-    const { 呼, 類, 聲, 清濁, 韻別, 組 } = this;
+    const { 母, 呼, 類, 聲, 清濁, 韻別 } = this;
     const evalToken = (token: string): boolean => {
       let match: RegExpExecArray | null = null;
       if ((match = /^(陰|陽|入)聲韻$/.exec(token))) return 韻別 === match[1];
-      if (/^仄聲$/.exec(token)) return 聲 !== '平';
-      if (/^舒聲$/.exec(token)) return 聲 !== '入';
+      if (token === '仄聲') return 聲 !== '平';
+      if (token === '舒聲') return 聲 !== '入';
       if ((match = /^(開|合)口$/.exec(token))) return 呼 === match[1];
       if (/^開合中立$/.exec(token)) return 呼 === null;
       if (/^不分類$/.exec(token)) return 類 === null;
       if ((match = /^(清|濁)音$/.exec(token))) return 清濁[1] === match[1];
       if ((match = /^[全次][清濁]$/.exec(token))) return 清濁 === match[0];
-      if (/^鈍音$/.exec(token)) return 鈍音組.includes(組!);
-      if (/^銳音$/.exec(token)) return !鈍音組.includes(組!);
+      if (token === '鈍音') return 鈍音母.includes(母);
+      if (token === '銳音') return !鈍音母.includes(母);
       if ((match = /^(.+?)([母等類韻音攝組聲])$/.exec(token))) {
         const values = [...match[1]];
         const key = match[2] as keyof typeof 表達式屬性可取值;

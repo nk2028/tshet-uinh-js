@@ -23,14 +23,14 @@ const 韻序表 = [
  */
 export function encode音韻編碼(地位: 音韻地位): string {
   const { 母, 呼, 等, 類, 韻, 聲 } = 地位;
-  const 母序 = 所有.母.indexOf(母);
+  const 母序 = [...所有.母].indexOf(母);
   const 韻序 = 韻序表.indexOf(韻) + +([...'東歌麻庚'].includes(韻) && !['一', '二'].includes(等));
 
   // NOTE the value `-1` is expected when the argument is `null`
-  const 呼序 = 所有.呼.indexOf(呼!) + 1;
-  const 類序 = 所有.類.indexOf(類!) + 1;
+  const 呼序 = [...所有.呼].indexOf(呼!) + 1;
+  const 類序 = [...所有.類].indexOf(類!) + 1;
 
-  const 呼類聲序 = (呼序 << 4) | (類序 << 2) | 所有.聲.indexOf(聲);
+  const 呼類聲序 = (呼序 << 4) | (類序 << 2) | [...所有.聲].indexOf(聲);
 
   return 編碼表[母序] + 編碼表[韻序] + 編碼表[呼類聲序];
 }
@@ -55,8 +55,8 @@ export function decode音韻編碼(編碼: string): 音韻地位 {
     assert(index !== -1, () => `Invalid character in 編碼: ${JSON.stringify(ch)}`);
     return index;
   });
-  assert(母序 < 所有.母.length, () => `Invalid 母序號: ${母序}`);
-  const 母 = 所有.母[母序];
+  assert(母序 < [...所有.母].length, () => `Invalid 母序號: ${母序}`);
+  const 母 = [...所有.母][母序];
 
   assert(韻序 < 韻序表.length, () => `Invalid 韻序號: ${韻序}`);
   let 韻 = 韻序表[韻序];
@@ -65,7 +65,7 @@ export function decode音韻編碼(編碼: string): 音韻地位 {
   }
   let 等: string;
   for (const [韻等, 各韻] of Object.entries(等韻搭配)) {
-    if (各韻.includes(韻)) {
+    if (各韻.has(韻)) {
       等 = 韻等[+(韻序表[韻序] === '＊')];
       if (等 === '三' && [...'端透定泥'].includes(母)) {
         等 = '四';
@@ -75,15 +75,15 @@ export function decode音韻編碼(編碼: string): 音韻地位 {
   }
 
   const 呼序 = 呼類聲序 >> 4;
-  assert(呼序 <= 所有.呼.length, () => `Invalid 呼序號: ${呼序}`);
-  const 呼 = 呼序 ? 所有.呼[呼序 - 1] : null;
+  assert(呼序 <= [...所有.呼].length, () => `Invalid 呼序號: ${呼序}`);
+  const 呼 = 呼序 ? [...所有.呼][呼序 - 1] : null;
 
   const 類序 = (呼類聲序 >> 2) & 0b11;
-  assert(類序 <= 所有.類.length, () => `Invalid 類序號: ${類序}`);
-  const 類 = 類序 ? 所有.類[類序 - 1] : null;
+  assert(類序 <= [...所有.類].length, () => `Invalid 類序號: ${類序}`);
+  const 類 = 類序 ? [...所有.類][類序 - 1] : null;
 
   const 聲序 = 呼類聲序 & 0b11;
-  const 聲 = 所有.聲[聲序];
+  const 聲 = [...所有.聲][聲序];
 
   // NOTE type assertion safe because the constructor checks it
   return new 音韻地位(母, 呼, 等!, 類, 韻, 聲, _UNCHECKED);

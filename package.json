@@ -40,10 +40,11 @@
     "url": "git+https://github.com/nk2028/tshet-uinh-js.git"
   },
   "keywords": [
-    "Qieyun",
-    "historical linguistics",
+    "historical-linguistics",
     "linguistics",
-    "Middle Chinese"
+    "middle-chinese",
+    "tshet-uinh",
+    "qieyun"
   ],
   "author": "Project NK2028",
   "license": "MIT",

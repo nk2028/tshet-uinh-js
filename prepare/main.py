@@ -130,8 +130,7 @@ def main():
             assert 各細分 == tuple(chr(ord('a') + i) for i in range(len(各細分)))
 
     os.makedirs('src/data/raw', exist_ok=True)
-    with open('src/data/raw/廣韻.ts', 'w', newline='') as fout:
-        print('export default `\\', file=fout)
+    with open('src/data/raw/廣韻.txt', 'w', newline='') as fout:
         cur韻目 = None
         for 原書小韻號 in range(1, max原書小韻號 + 1):
             韻目 = 韻目原貌by原書小韻[原書小韻號]
@@ -150,7 +149,6 @@ def main():
                 sep='',
                 file=fout,
             )
-        print('` as string;', file=fout)
 
 
 if __name__ == '__main__':

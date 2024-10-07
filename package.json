@@ -3,8 +3,18 @@
   "version": "0.15.1",
   "description": "A JavaScript library for the Qieyun phonological system",
   "type": "module",
-  "main": "index.js",
-  "types": "index.d.ts",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "browser": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "require": "./dist/index.cjs",
+      "import": "./dist/index.mjs",
+      "browser": "./dist/index.js"
+    }
+  },
   "scripts": {
     "build": "run-p build:*",
     "build:rollup": "rollup -c",
@@ -79,11 +89,7 @@
     "typescript-eslint": "^8.3.0"
   },
   "files": [
-    "index.js",
-    "index.js.map",
-    "index.d.ts",
-    "LICENSE",
-    "README.md"
+    "dist"
   ],
   "ava": {
     "failFast": true,

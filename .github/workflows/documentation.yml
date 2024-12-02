@@ -25,7 +25,9 @@ jobs:
     - name: Build
       run: npm run build
     - name: Build documentation
-      run: npm run doc:html
+      run: |
+        npm run doc:html
+        ./inject_cf_analytics.sh
     - name: Publish
       run: |
         # Create a temporary directory

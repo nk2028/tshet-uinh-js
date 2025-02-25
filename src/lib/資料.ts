@@ -1,73 +1,79 @@
-import type { 廣韻來源 } from '../data/廣韻';
+import { 內部切韻條目, 字頭詳情, 條目from內部條目, 資料條目CommonFields, 資料條目Methods } from '../data/common';
+import { 切韻條目 } from '../data/切韻';
+import { 廣韻條目 } from '../data/廣韻';
 import * as 廣韻impl from '../data/廣韻impl';
+import { 內部廣韻條目 } from '../data/廣韻impl';
 
-import { insertInto, prependValuesInto } from './utils';
+import { insertInto, insertValuesInto, prependValuesInto } from './utils';
 import { decode音韻編碼, encode音韻編碼 } from './壓縮表示';
 import { 音韻地位 } from './音韻地位';
 
+export * as 切韻 from '../data/切韻';
 export * as 廣韻 from '../data/廣韻';
-export type { 廣韻來源 } from '../data/廣韻';
 
-type 內部檢索結果 = Readonly<{ 字頭: string; 編碼: string; 反切: string | null; 釋義: string; 來源: 來源類型 | null }>;
+export type { 上下文條目 } from '../data/common';
 
-export interface 檢索結果 {
-  字頭: string;
-  音韻地位: 音韻地位;
-  /** 反切，若未用反切注音（如「音某字某聲」）則為 `null` */
-  反切: string | null;
-  釋義: string;
-  來源: 來源類型 | null;
-}
-export type 來源類型 = 廣韻來源 | 王三來源;
-export interface 王三來源 {
-  文獻: '王三';
-  小韻號: string;
-  韻目: string;
-}
+export interface 資料條目Common extends 資料條目CommonFields, 資料條目Methods {}
 
-const m字頭檢索 = new Map<string, 內部檢索結果[]>();
-const m音韻編碼檢索 = new Map<string, 內部檢索結果[]>();
+export type 資料條目 = 切韻條目 | 廣韻條目;
 
-(function 廣韻索引() {
+type 內部條目 = 內部切韻條目 | 內部廣韻條目;
+
+const m字頭檢索 = new Map<string, 內部條目[]>();
+const m音韻編碼檢索 = new Map<string, 內部條目[]>();
+
+(function 建立廣韻索引() {
+  const by原貌 = new Map<string, 內部條目[]>();
   for (const 原書小韻 of 廣韻impl.by原書小韻.values()) {
-    for (const 廣韻條目 of 原書小韻) {
-      if (廣韻條目.音韻編碼 === null) {
-        continue;
+    for (const 條目 of 原書小韻) {
+      insertInto(m音韻編碼檢索, 條目.音韻編碼, 條目);
+      const [字頭原貌, 字頭校正] = 字頭詳情(條目.字頭);
+      if (字頭校正) {
+        insertInto(m字頭檢索, 字頭校正, 條目);
       }
-      const { 字頭, 音韻編碼: 編碼, 小韻號, 韻目原貌, ...rest } = 廣韻條目;
-      const 條目 = { 字頭, 編碼, ...rest, 來源: { 文獻: '廣韻' as const, 小韻號, 韻目: 韻目原貌 } };
-      insertInto(m字頭檢索, 字頭, 條目);
-      insertInto(m音韻編碼檢索, 編碼, 條目);
+      if (字頭原貌 && 字頭原貌 !== 字頭校正) {
+        insertInto(by原貌, 字頭原貌, 條目);
+      }
     }
+  }
+  for (const [字頭原貌, 各條目] of by原貌.entries()) {
+    insertValuesInto(m字頭檢索, 字頭原貌, 各條目);
   }
 })();
 
-(function 早期廣韻外字() {
-  const by字頭 = new Map<string, 內部檢索結果[]>();
-  for (const [字頭, 描述, 反切, 釋義, 小韻號, 韻目] of [
-    ['忘', '明三C陽平', '武方', '遺又武放不記曰忘', '797', '陽'],
-    ['韻', '云合三B真去', '爲捃', '為捃反音和一', '2420', '震'],
+// NOTE
+// 此為臨時補充字音（以及作為將來《切韻》資料功能支持的測試）。
+// 等到切韻資料準備好後，會換成完整資料。
+// 小韻號、對應廣韻小韻號亦均為暫定編號，完整資料中會修正。
+(function 字音補充() {
+  const by字頭 = new Map<string, 內部條目[]>();
+  for (const [描述, 字頭, 小韻號, 小韻字號, 對應廣韻小韻號, 韻目, 反切, 釋義] of [
+    ['明三C陽平', '忘', '768暫定', '4', '822', '陽', '武方', '又武放反'],
+    ['云合三B真去', '韻', '2259暫定', '1', '27085暫定', '震', '爲捃', '永賮反一'],
   ] as const) {
-    const 編碼 = encode音韻編碼(音韻地位.from描述(描述));
-    const record = { 字頭, 編碼, 反切, 釋義, 來源: { 文獻: '王三' as const, 小韻號, 韻目 } };
+    const 音韻編碼 = encode音韻編碼(音韻地位.from描述(描述));
+    const record: 內部切韻條目 = {
+      來源: '切韻',
+      音韻編碼,
+      字頭,
+      字頭說明: null,
+      小韻號,
+      小韻字號,
+      對應廣韻小韻號,
+      韻目,
+      反切,
+      直音: null,
+      釋義,
+      釋義上下文: null,
+    };
     insertInto(by字頭, 字頭, record);
-    insertInto(m音韻編碼檢索, 編碼, record);
+    insertInto(m音韻編碼檢索, 音韻編碼, record);
   }
 
   for (const [字頭, 各條目] of by字頭.entries()) {
     prependValuesInto(m字頭檢索, 字頭, 各條目);
   }
 })();
-
-function 結果from內部結果(內部結果: 內部檢索結果): 檢索結果 {
-  const { 字頭, 編碼, 來源, ...rest } = 內部結果;
-  return {
-    字頭,
-    音韻地位: decode音韻編碼(編碼),
-    ...rest,
-    來源: 來源 ? { ...來源 } : null,
-  };
-}
 
 /**
  * 遍歷內置資料中全部有字之音韻地位。
@@ -79,6 +85,7 @@ export function* iter音韻地位(): IterableIterator<音韻地位> {
   }
 }
 
+// TODO(docs) 更新示例
 /**
  * 由字頭查出相應的音韻地位、反切、解釋。
  * @param 字頭 待查找的漢字
@@ -121,8 +128,8 @@ export function* iter音韻地位(): IterableIterator<音韻地位> {
  * ]
  * ```
  */
-export function query字頭(字頭: string): 檢索結果[] {
-  return m字頭檢索.get(字頭)?.map(結果from內部結果) ?? [];
+export function query字頭(字頭: string): 資料條目[] {
+  return m字頭檢索.get(字頭)?.map(條目from內部條目) ?? [];
 }
 
 /**
@@ -146,6 +153,6 @@ export function query字頭(字頭: string): 檢索結果[] {
  * } ]
  * ```
  */
-export function query音韻地位(地位: 音韻地位): 檢索結果[] {
-  return m音韻編碼檢索.get(encode音韻編碼(地位))?.map(結果from內部結果) ?? [];
+export function query音韻地位(地位: 音韻地位): 資料條目[] {
+  return m音韻編碼檢索.get(encode音韻編碼(地位))?.map(條目from內部條目) ?? [];
 }

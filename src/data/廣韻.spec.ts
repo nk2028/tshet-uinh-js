@@ -17,11 +17,9 @@ test('檢索廣韻小韻', t => {
   const 原書小韻3708 = 廣韻.get原書小韻(3708)!;
   t.is(原書小韻3708.length, 17);
   t.deepEqual([...collect字頭(小韻3708a), ...collect字頭(小韻3708b)].sort(), collect字頭(原書小韻3708).sort());
-
-  const 小韻597 = 廣韻.get小韻('597')!;
-  t.deepEqual(collect字頭(小韻597), ['𤜼']);
-  t.is(小韻597[0].音韻地位, null);
 });
+
+// TODO(tests): 釋義上下文
 
 test('原書小韻總數', t => {
   t.is(廣韻.原書小韻總數, 3874);
@@ -37,12 +35,7 @@ test('對照 iter原書小韻 與 iter條目', t => {
       t.falsy(next.done);
       const 條目2 = (next as IteratorYieldResult<廣韻.廣韻條目>).value;
 
-      t.is(條目1.來源.小韻號, 條目2.來源.小韻號);
-      t.is(條目1.來源.韻目, 條目2.來源.韻目);
-      t.is(條目1.音韻地位?.描述, 條目2.音韻地位?.描述);
-      t.is(條目1.反切, 條目2.反切);
-      t.is(條目1.字頭, 條目2.字頭);
-      t.is(條目1.釋義, 條目2.釋義);
+      t.deepEqual(條目1, 條目2);
     }
   }
 });
@@ -50,16 +43,19 @@ test('對照 iter原書小韻 與 iter條目', t => {
 test('對照原資料檔與 iter條目', t => {
   const 條目iter = 廣韻.iter條目();
   for (const line of readFileSync('prepare/data.csv', { encoding: 'utf8' }).trimEnd().split('\n').slice(1)) {
-    const [小韻號, , 韻目原貌, 地位描述, 反切, 字頭, 釋義, 釋義補充] = line.split(',');
+    const [小韻號, 小韻字號, 韻目, 地位描述, 反切, 直音, 字頭, 字頭說明, 釋義] = line.split(',');
 
     const next = 條目iter.next();
     t.falsy(next.done);
     const 條目 = (next as IteratorYieldResult<廣韻.廣韻條目>).value;
-    t.is(條目.來源.小韻號, 小韻號);
-    t.is(條目.來源.韻目, 韻目原貌);
-    t.is(條目.音韻地位?.描述 ?? '', 地位描述);
+    t.is(條目.小韻號, 小韻號);
+    t.is(條目.小韻字號, 小韻字號);
+    t.is(條目.韻目, 韻目);
+    t.is(條目.音韻地位.描述, 地位描述);
     t.is(條目.反切, 反切 || null);
+    t.is(條目.直音, 直音 || null);
     t.is(條目.字頭, 字頭);
-    t.is(條目.釋義, 釋義 + (釋義補充 && `（${釋義補充}）`));
+    t.is(條目.字頭說明, 字頭說明 || null);
+    t.is(條目.釋義, 釋義 || null);
   }
 });

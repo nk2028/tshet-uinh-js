@@ -20,10 +20,18 @@ export function insertInto<K, V, T extends Map<K, V[]> = Map<K, V[]>>(map: T, ke
   }
 }
 
+export function insertValuesInto<K, V, T extends Map<K, V[]> = Map<K, V[]>>(map: T, key: KeyOfMap<T>, values: ValueOfMap<T>) {
+  if (!map.has(key)) {
+    map.set(key, [...values]);
+  } else {
+    map.get(key)!.push(...values);
+  }
+}
+
 export function prependValuesInto<K, V, T extends Map<K, V[]> = Map<K, V[]>>(map: T, key: KeyOfMap<T>, values: ValueOfMap<T>) {
   if (!map.has(key)) {
     map.set(key, [...values]);
   } else {
-    map.set(key, [...values, ...map.get(key)!]);
+    map.get(key)!.unshift(...values);
   }
 }

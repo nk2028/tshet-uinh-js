@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import csv
+from dataclasses import dataclass
 import hashlib
 import os
 import re
@@ -39,8 +40,8 @@ def 編碼_from_描述(描述: str) -> str:
 
 
 def fetch_data(
-    commit: str = '1f1c085',
-    md5sum: str = '92d1e840e7b118bc6b541c5aa5c9db8c',
+    commit: str = '965d863',
+    md5sum: str = '5b509d1e9f1431445ece78fb871f7d58',
 ):
     if not os.path.exists('prepare/data.csv'):
         status = os.system(
@@ -69,34 +70,52 @@ def list_地位編碼():
     with open('prepare/data.csv') as fin:
         for row in csv.DictReader(fin):
             描述 = row['音韻地位']
-            if 描述 == '' or 描述 in all_codes:
+            if 描述 in all_codes:
                 continue
             all_codes[描述] = 編碼_from_描述(描述)
     for 描述, 編碼 in sorted(all_codes.items(), key=lambda x: x[1]):
         print(編碼, 描述)
 
 
+@dataclass
+class 條目Record:
+    字頭: str
+    字頭說明: str
+    小韻細分: str
+    釋義參照: str
+    釋義: str
+
+    def compact_string(self):
+        說明 = f'【{self.字頭說明}】' if self.字頭說明 else ''
+        參照 = {'': '', '上': '+', '下': '-'}[self.釋義參照]
+        return f'{self.字頭}{說明}:{self.小韻細分}{參照}{self.釋義}'
+
+
 def main():
     fetch_data()
 
     韻目原貌by原書小韻: dict[int, str] = {}
-    原書小韻音韻: dict[int, dict[str, tuple[str, str]]] = {}
-    原書小韻內容: dict[int, list[tuple[str, str, str]]] = {}
+    原書小韻音韻: dict[int, dict[str, tuple[str, str, str]]] = {}
+    原書小韻內容: dict[int, list[條目Record]] = {}
     with open('prepare/data.csv') as fin:
         next(fin)
         max原書小韻號: int = 0
         cur音韻: dict[str, tuple[str, str]] = None
-        cur內容: list[tuple[str, str, str]] = None
+        cur內容: list[條目Record] = None
+        cur原書字號: int = 0
+        cur增字號: int = 0
         for row in csv.reader(fin):
             (
                 小韻號,
-                _,
+                小韻字號,
                 韻目原貌,
                 音韻地位描述,
                 反切,
+                直音,
                 字頭,
+                字頭說明,
                 釋義,
-                釋義補充,
+                釋義參照,
             ) = row
 
             if 小韻號[-1].isalpha():
@@ -110,16 +129,25 @@ def main():
                 韻目原貌by原書小韻[原書小韻號] = 韻目原貌
                 原書小韻音韻[原書小韻號] = cur音韻 = {}
                 原書小韻內容[原書小韻號] = cur內容 = []
+                cur原書字號 = 0
+                cur增字號 = 0
+
+            if 字頭.startswith('［') and 字頭.endswith('］'):
+                cur增字號 += 1
+            else:
+                cur原書字號 += 1
+                cur增字號 = 0
+            assert 小韻字號 == str(cur原書字號) + (f'a{cur增字號}' if cur增字號 else '')
 
             assert 韻目原貌 == 韻目原貌by原書小韻[原書小韻號]
 
-            音韻編碼 = 編碼_from_描述(音韻地位描述) if 音韻地位描述 else '@@@'
+            音韻編碼 = 編碼_from_描述(音韻地位描述)
             if 小韻細分 in cur音韻:
-                assert cur音韻[小韻細分] == (音韻編碼, 反切)
+                assert cur音韻[小韻細分] == (音韻編碼, 反切, 直音)
             else:
-                cur音韻[小韻細分] = (音韻編碼, 反切)
+                cur音韻[小韻細分] = (音韻編碼, 反切, 直音)
 
-            cur內容.append((字頭, 小韻細分, 釋義 + (釋義補充 and f'（{釋義補充}）')))
+            cur內容.append(條目Record(字頭, 字頭說明, 小韻細分, 釋義參照, 釋義))
 
     for 原書小韻號, 各音韻信息 in 原書小韻音韻.items():
         各細分 = tuple(各音韻信息.keys())
@@ -139,14 +167,12 @@ def main():
                 print(f'#{韻目}', file=fout)
                 cur韻目 = 韻目
             print(
-                ''.join(
-                    音韻編碼 + (反切 or '@@')
-                    for 音韻編碼, 反切 in 原書小韻音韻[原書小韻號].values()
-                ),
                 '|'.join(
-                    字頭 + 小韻細分 + 釋義
-                    for 字頭, 小韻細分, 釋義 in 原書小韻內容[原書小韻號]
+                    音韻編碼 + 反切 + (f'={直音}' if 直音 else '')
+                    for 音韻編碼, 反切, 直音 in 原書小韻音韻[原書小韻號].values()
                 ),
+                ';',
+                '|'.join(條目.compact_string() for 條目 in 原書小韻內容[原書小韻號]),
                 sep='',
                 file=fout,
             )

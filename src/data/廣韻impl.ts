@@ -91,10 +91,9 @@ function generate釋義上下文(各條目: 內部廣韻條目[], 各釋義參�
     if (forDeletions && !各條目.slice(pos, pos + len).some(isDeletion)) {
       continue;
     }
-    const 上下文: 上下文條目[] = 各條目.slice(pos, pos + len).map(條目 => {
-      const { 字頭, 字頭說明, 小韻字號, 釋義 } = 條目;
-      return { 字頭, 字頭說明, 小韻字號, 釋義 };
-    });
+    const 上下文: 上下文條目[] = 各條目
+      .slice(pos, pos + len)
+      .map(({ 字頭, 字頭說明, 小韻字號, 釋義 }) => ({ 字頭, 字頭說明, 小韻字號, 釋義 }));
     for (const idx of indices.slice(pos, pos + len)) {
       if (forDeletions && !isDeletion(各條目[idx])) {
         continue;

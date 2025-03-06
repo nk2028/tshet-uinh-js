@@ -1,4 +1,5 @@
 import { readFileSync } from 'node:fs';
+import * as util from 'node:util';
 
 import test from 'ava';
 
@@ -19,10 +20,32 @@ test('檢索廣韻小韻', t => {
   t.deepEqual([...collect字頭(小韻3708a), ...collect字頭(小韻3708b)].sort(), collect字頭(原書小韻3708).sort());
 });
 
-// TODO(tests): 釋義上下文
-
 test('原書小韻總數', t => {
   t.is(廣韻.原書小韻總數, 3874);
+});
+
+test('釋義上下文', t => {
+  const 原書小韻 = 廣韻.get原書小韻(949)!;
+  t.is(原書小韻[7].字頭, '菱');
+
+  const 上下文 = 原書小韻[7].釋義上下文;
+  t.not(上下文, null);
+  t.is(上下文!.length, 3);
+  t.deepEqual(
+    上下文!.map(x => x.字頭),
+    ['蔆', '菱', '䔖'],
+  );
+
+  t.deepEqual(原書小韻[6].釋義上下文, 上下文);
+  t.deepEqual(原書小韻[8].釋義上下文, 上下文);
+});
+
+test('釋義上下文（若有）長度至少為 2', t => {
+  for (const 條目 of 廣韻.iter條目()) {
+    if (條目.釋義上下文) {
+      t.true(條目.釋義上下文.length >= 2, util.inspect(條目));
+    }
+  }
 });
 
 test('對照 iter原書小韻 與 iter條目', t => {

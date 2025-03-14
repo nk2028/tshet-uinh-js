@@ -59,51 +59,55 @@ export interface 資料條目Methods {
   /**
    * 取得條目的字頭原貌及校正。
    *
-   * 注意有極少數反切原本用字不詳，故可能含有「？」（全形問號）。
-   *
-   * @returns 格式為 `[原貌, 校正]`：
-   * - 若字頭無校勘，則原貌與校正相同
-   * - 若為應補字，則僅有校正，而原貌為 `null`
-   * - 若為應刪字，則僅有原貌，而校正為 `null`
-   * - 若為校勘字，則原貌與校正不同
+   * @returns 格式為 `[原貌, ...校勘]`：
+   * - 首項為原貌；若為應補字，則原貌為空串 `''`
+   * - 校勘各項（通常沒有或僅一項）為含校勘符號的校正字，可用 `.slice(1, -1)` 取得當中的字；
+   *   若為應刪字，則校勘部分僅含一項，為 `'｛｝'`
    *
    * @example
    * ```typescript
    * > let 條目 = TshetUinh.資料.query字頭('結');
    * [ { 字頭: '結', ... }]
    * > 條目[0].字頭詳情();
-   * [ '結', '結' ]
+   * [ '結' ]
    *
    * > TshetUinh.資料.query字頭('嬹').find(({ 音韻地位 }) => 音韻地位.聲 === '平');
    * { 字頭: '［嬹］', ... }
    * > 條目.字頭詳情();
-   * [ null, '嬹' ]
+   * [ '', '［嬹］' ]
    *
    * > TshetUinh.資料.query字頭('𤜼');
    * [ { 字頭: '｛𤜼｝', ... }]
    * > 條目[0].字頭詳情();
-   * [ '𤜼', null ]
+   * [ '𤜼', '｛｝' ]
    *
    * > TshetUinh.資料.query字頭('𤿎').find({ 小韻號 } => 小韻號 === '141');
    * { 字頭: '𤿎〈𢻹〉', ... }
    * > 條目.字頭詳情();
-   * [ '𤿎', '𢻹' ]
+   * [ '𤿎', '〈𢻹〉' ]
    * ```
    */
-  字頭詳情(): [string | null, string | null];
-  /** 字頭原貌。@see {@link 字頭詳情} */
+  字頭詳情(): string[];
+  /**
+   * 字頭原貌。若條目為應補字（原書底本所無），則為 `null`。
+   * @see {@link 字頭詳情}
+   */
   字頭原貌(): string | null;
-  /** 字頭校正。@see {@link 字頭詳情} */
+  /**
+   * 字頭校正。若條目為應刪字，則為 `null`。
+   * @see {@link 字頭詳情}
+   */
   字頭校正(): string | null;
   /**
    * 取得條目的反切原貌及校正。
    *
-   * @returns 格式為 `[上字詳情, 下字詳情]`，兩項均為列表：
-   * - 首項為原貌（若為脫字則為空串）
-   * - 其後各項（通常為一項，若分多步改換/訛誤，則為多項）為含校勘標記的校正字；
-   *   含校勘標記是為了指明用字變動的性質（同音切替換/近音切替換/訛字），可用 `.slice(1, -1)` 取得其中的字
+   * 注意有個別反切原本用字或訛變過程不詳，故校勘中可能含有「？」（全形問號）。
    *
-   * 此外，若 `.反切` 非 `null`，該回傳結果的 `.flat().join('')` 會與 `.反切` 相同（反切為 `null` 時則回傳 `['', '']`）。
+   * @returns 列表（通常為兩項），一項表示一個字的原貌及校勘，亦為列表，形如 `[原貌, ...校勘]`：
+   * - 首項為原貌；若原書底本中為脫字，則為空串
+   * - 其後各項（通常為沒有或僅一項，若分多步改換/訛誤，則為多項）為含校勘標記的校正字；
+   *   含校勘標記是為了指明用字變動的性質（同音切替換/近音切替換/訛字），可用 `.slice(1, -1)` 取得其中的字；
+   *   若為衍字（罕見），則校勘部分僅一項，為 `'｛｝'`
    *
    * @example
    * ```typescript
@@ -128,14 +132,14 @@ export interface 資料條目Methods {
    * [ [ '居' ], [ '列', '（？）' ] ]
    * ```
    */
-  反切詳情(): [string[], string[]];
+  反切詳情(): string[][];
   /**
    * 反切原貌。
    * @see {@link 反切詳情}
    */
   反切原貌(): string | null;
   /**
-   * 反切校正。注意有極少數反切原本用字不詳，故可能含有「？」（全形問號）。
+   * 反切校正。注意有個別反切原本用字不詳，故可能含有「？」（全形問號）。
    * @see {@link 反切詳情}
    * @example
    * ```typescript
@@ -150,7 +154,7 @@ export interface 資料條目Methods {
    * '居？'
    *
    * > 條目 = TshetUinh.資料.query字頭('𤜼');
-   * [ { 字頭: '𤜼', 反切: '［崇〈？〉玄〈？〉］', ... }]
+   * [ { 字頭: '｛𤜼｝', 反切: '崇〈？〉玄〈？〉', ... }]
    * > 條目[0].反切校正();
    * '？？'
    * ```
@@ -161,69 +165,68 @@ export interface 資料條目Methods {
 export interface 資料條目Common extends 資料條目CommonFields, 資料條目Methods {}
 
 const 資料條目methods: 資料條目Methods = {
-  字頭詳情(this: 資料條目Common): [string | null, string | null] {
-    return 字頭詳情(this.字頭);
+  字頭詳情(this: 資料條目Common): string[] {
+    return parse字頭詳情(this.字頭);
   },
   字頭原貌(this: 資料條目Common): string | null {
-    return this.字頭詳情()[0];
+    return this.字頭詳情()[0] || null;
   },
   字頭校正(this: 資料條目Common): string | null {
-    return this.字頭詳情()[1];
+    const 詳情 = this.字頭詳情();
+    return 詳情.length === 1 ? 詳情[0] : 詳情[詳情.length - 1].slice(1, -1) || null;
   },
-  反切詳情(this: 資料條目Common): [string[], string[]] {
-    return 反切詳情(this.反切);
+  反切詳情(this: 資料條目Common): string[][] {
+    return this.反切 ? parse反切詳情(this.反切) : [];
   },
   反切原貌(this: 資料條目Common): string | null {
-    return this.反切?.replace(/［.］|〈.〉|〘.〙|（.）|｟.｠/g, '') ?? null;
+    return this.反切?.replace(/［.］|〈.〉|〘.〙|（.）|｟.｠|｛|｝/g, '') ?? null;
   },
   反切校正(this: 資料條目Common): string | null {
     if (!this.反切) {
       return null;
     }
-    const [上字, 下字] = this.反切詳情();
-    return [上字, 下字].map(chs => (chs.length === 1 ? chs[0] : chs[chs.length - 1].slice(1, -1))).join('');
+    return this.反切詳情()
+      .map(chs => (chs.length === 1 ? chs[0] : chs[chs.length - 1].slice(1, -1)))
+      .join('');
   },
 };
 
-export function 字頭詳情(字頭: string): [string | null, string | null] {
-  if (字頭.startsWith('［')) {
-    return [null, 字頭.slice(1, -1)];
-  } else if (字頭.startsWith('｛')) {
-    return [字頭.slice(1, -1), null];
-  } else if (字頭.endsWith('〉')) {
-    return 字頭.slice(0, -1).split('〈') as [string, string];
-  } else {
-    return [字頭, 字頭];
-  }
+export function parse反切詳情(反切: string): string[][] {
+  // NOTE 目前資料中反切無 IDS 字，故可直接用 `...` 折分單字
+  return parse詳情([...反切]);
+}
+export function parse字頭詳情(字頭: string): string[] {
+  // NOTE 目前資料中字頭有 IDS 字，但必定為單字
+  return parse詳情(字頭.split(/([［］｛｝〈〉])/).filter(x => x))[0];
 }
 
-export function 反切詳情(反切: string | null): [string[], string[]] {
-  if (!反切) {
-    return [[''], ['']];
-  }
-  const res: string[][] = [];
-  const chs = [...反切];
+function parse詳情(chars: string[]): string[][] {
+  const result: string[][] = [];
   let i = 0;
-  while (i < chs.length) {
-    const ch = chs[i];
+  while (i < chars.length) {
+    const ch = chars[i];
     switch (ch) {
       case '［':
-        res.push(['', chs.slice(i, i + 3).join('')]);
+        result.push(['', chars.slice(i, i + 3).join('')]);
+        i += 3;
+        break;
+      case '｛':
+        result.push([chars[i + 1], '｛｝']);
         i += 3;
         break;
       case '〈':
       case '〘':
       case '（':
       case '｟':
-        res[res.length - 1].push(chs.slice(i, i + 3).join(''));
+        result[result.length - 1].push(chars.slice(i, i + 3).join(''));
         i += 3;
         break;
       default:
-        res.push([ch]);
+        result.push([ch]);
         i += 1;
     }
   }
-  return res as [string[], string[]];
+  return result;
 }
 
 export type 內部條目Common = Omit<資料條目CommonFields, '音韻地位'> & { 音韻編碼: string };

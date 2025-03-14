@@ -1,4 +1,4 @@
-import { 內部切韻條目, 字頭詳情, 條目from內部條目 } from '../data/common';
+import { parse字頭詳情, 內部切韻條目, 條目from內部條目 } from '../data/common';
 import { 切韻條目 } from '../data/切韻';
 import { 廣韻條目 } from '../data/廣韻';
 import * as 廣韻impl from '../data/廣韻impl';
@@ -25,11 +25,15 @@ const m音韻編碼檢索 = new Map<string, 內部條目[]>();
   for (const 原書小韻 of 廣韻impl.by原書小韻.values()) {
     for (const 條目 of 原書小韻) {
       insertInto(m音韻編碼檢索, 條目.音韻編碼, 條目);
-      const [字頭原貌, 字頭校正] = 字頭詳情(條目.字頭);
-      if (字頭校正) {
-        insertInto(m字頭檢索, 字頭校正, 條目);
+      const 各校勘 = parse字頭詳情(條目.字頭).reverse();
+      const 字頭原貌 = 各校勘.pop();
+      for (const 校勘 of 各校勘) {
+        const 字 = 校勘.slice(1, -1);
+        if (字) {
+          insertInto(m字頭檢索, 字, 條目);
+        }
       }
-      if (字頭原貌 && 字頭原貌 !== 字頭校正) {
+      if (字頭原貌) {
         insertInto(by原貌, 字頭原貌, 條目);
       }
     }

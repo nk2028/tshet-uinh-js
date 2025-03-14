@@ -2,7 +2,7 @@ import { readFileSync } from 'node:fs';
 
 import test from 'ava';
 
-import { 字頭詳情 } from '../data/common';
+import { parse字頭詳情 } from '../data/common';
 
 import { iter音韻地位, query字頭, query音韻地位, 資料條目 } from './資料';
 import { 音韻地位 } from './音韻地位';
@@ -20,6 +20,7 @@ test('查「拯」字的音切，「拯」字有直音，無反切', t => {
   t.is(res.length, 1);
   t.is(res[0].反切, null);
   t.is(res[0].直音, '蒸上聲');
+  t.deepEqual(res[0].反切詳情(), []);
 });
 
 test('查同地位不同反切', t => {
@@ -43,7 +44,7 @@ test('查詢「之」字', t => {
   const res = query字頭('之');
   t.is(res.length, 1);
   t.is(res[0].字頭, '之');
-  t.deepEqual(res[0].字頭詳情(), ['之', '之']);
+  t.deepEqual(res[0].字頭詳情(), ['之']);
   t.is(res[0].音韻地位.描述, '章開三之平');
   t.is(res[0].釋義, '適也往也閒也亦姓出姓苑止而切四');
 });
@@ -55,14 +56,14 @@ test('查詢「過」字。「過」字有兩讀', t => {
 
 test('查詢含校勘的字（應補、應刪）', t => {
   for (const [條目, 字頭, 詳情, 說明] of [
-    [query字頭('𤜼')[0], '｛𤜼｝', ['𤜼', null], '「犳」（章開三陽入）之訛字'],
-    [query字頭('嬹').find(({ 音韻地位 }) => 音韻地位.聲 === '平'), '［嬹］', [null, '嬹'], null],
+    [query字頭('𤜼')[0], '｛𤜼｝', ['𤜼', '｛｝'], '「犳」（章開三陽入）之訛字'],
+    [query字頭('嬹').find(({ 音韻地位 }) => 音韻地位.聲 === '平'), '［嬹］', ['', '［嬹］'], null],
   ] as const) {
     t.not(條目, undefined);
     t.is(條目!.字頭, 字頭);
     t.deepEqual(條目!.字頭詳情(), 詳情);
-    t.is(條目!.字頭原貌(), 詳情[0]);
-    t.is(條目!.字頭校正(), 詳情[1]);
+    t.is(條目!.字頭原貌(), 詳情[0] || null);
+    t.is(條目!.字頭校正(), 詳情[1].slice(1, -1) || null);
     t.is(條目!.字頭說明, 說明);
   }
 });
@@ -77,9 +78,18 @@ test('查詢含校勘的字（校）', t => {
 
   t.deepEqual(條目1, 條目2);
   t.is(條目1!.字頭, '𤿎〈𢻹〉');
-  t.deepEqual(條目1!.字頭詳情(), ['𤿎', '𢻹']);
+  t.deepEqual(條目1!.字頭詳情(), ['𤿎', '〈𢻹〉']);
   t.is(條目1!.字頭原貌(), '𤿎');
   t.is(條目1!.字頭校正(), '𢻹');
+});
+
+test('.字頭詳情 與 .字頭 對應', t => {
+  for (const 地位 of iter音韻地位()) {
+    for (const 條目 of query音韻地位(地位)) {
+      const 詳情 = 條目.字頭詳情();
+      t.is((詳情[1] === '｛｝' ? [`｛${詳情[0]}｝`] : 詳情).join(''), 條目.字頭);
+    }
+  }
 });
 
 test('查詢含校勘的反切', t => {
@@ -107,20 +117,26 @@ test('查詢含校勘的反切', t => {
 test('.反切詳情 與 .反切 內容對應', t => {
   for (const 地位 of iter音韻地位()) {
     for (const 條目 of query音韻地位(地位)) {
-      t.is(條目.反切詳情().flat().join(''), 條目.反切 ?? '');
+      t.is(
+        條目
+          .反切詳情()
+          .flatMap(字詳情 => (字詳情[1] === '｛｝' ? [`｛${字詳情[0]}｝`] : 字詳情))
+          .join(''),
+        條目.反切 ?? '',
+      );
     }
   }
 });
 
-test('.反切原貌 與 .反切詳情 內容對應', t => {
+test('.反切詳情 與 .反切原貌 內容對應', t => {
   for (const 地位 of iter音韻地位()) {
     for (const 條目 of query音韻地位(地位)) {
       t.is(
-        條目.反切原貌(),
         條目
           .反切詳情()
           .map(x => x[0])
           .join('') || null,
+        條目.反切原貌(),
       );
     }
   }
@@ -170,13 +186,14 @@ test('根據原資料檔查詢所有字頭', t => {
       );
     }
 
-    const [字頭原貌, 字頭校正] = 字頭詳情(字頭1);
-
-    if (字頭校正) {
-      t.true(query字頭(字頭校正).some(isEqual), line);
+    const [字頭原貌, ...各校勘] = parse字頭詳情(字頭1);
+    if (字頭原貌) {
+      t.true(query字頭(字頭原貌).some(isEqual), `${字頭原貌}: ${line}`);
     }
-    if (字頭原貌 && 字頭原貌 !== 字頭校正) {
-      t.true(query字頭(字頭原貌).some(isEqual), line);
+    for (const 校勘 of 各校勘) {
+      if (校勘 !== '｛｝') {
+        t.true(query字頭(校勘.slice(1, -1)).some(isEqual), `${校勘}: ${line}`);
+      }
     }
   }
 });

@@ -44,7 +44,7 @@ export function iter小韻號(): IterableIterator<string> {
  *     反切: '於力（棘）',
  *     直音: null,
  *     釋義: '按也說文作𢑏从反印',
- *     釋義上下文: null,
+ *     釋義上下文: null
  *   },
  *   {
  *     來源: '廣韻',
@@ -57,8 +57,8 @@ export function iter小韻號(): IterableIterator<string> {
  *     反切: '於力（棘）',
  *     直音: null,
  *     釋義: '地名',
- *     釋義上下文: null,
- *   },
+ *     釋義上下文: null
+ *   }
  * ]
  * ```
  */

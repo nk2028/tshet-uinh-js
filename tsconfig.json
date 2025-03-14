@@ -2,7 +2,9 @@
   "compilerOptions": {
     "incremental": true,
     "target": "es2020",
-    "outDir": "build/esnext",
+    // NOTE Rollup complains about "outDir" for some reason (to be investigated)
+    //"outDir": "build/esnext",
+    "tsBuildInfoFile": "build/tsconfig.tsbuildinfo",
     "rootDir": "src",
     "moduleResolution": "node",
     "module": "esnext",

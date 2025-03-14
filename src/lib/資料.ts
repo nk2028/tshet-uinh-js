@@ -11,7 +11,7 @@ import { 音韻地位 } from './音韻地位';
 export * as 切韻 from '../data/切韻';
 export * as 廣韻 from '../data/廣韻';
 
-export type { 資料條目Common, 上下文條目 } from '../data/common';
+export type { 上下文條目, 資料條目Common } from '../data/common';
 
 export type 資料條目 = 切韻條目 | 廣韻條目;
 
@@ -49,10 +49,12 @@ const m音韻編碼檢索 = new Map<string, 內部條目[]>();
 // 小韻號、對應廣韻小韻號亦均為暫定編號，完整資料中會修正。
 (function 字音補充() {
   const by字頭 = new Map<string, 內部條目[]>();
-  for (const [描述, 字頭, 小韻號, 小韻字號, 對應廣韻小韻號, 韻目, 反切, 釋義] of [
-    ['明三C陽平', '忘', '774', '4', '822', '陽', '武方', '又武放反'],
-    ['云合三B真去', '韻', '2275', '1', '32419', '震', '爲捃', '永賮反一'],
-  ] as const) {
+  for (
+    const [描述, 字頭, 小韻號, 小韻字號, 對應廣韻小韻號, 韻目, 反切, 釋義] of [
+      ['明三C陽平', '忘', '774', '4', '822', '陽', '武方', '又武放反'],
+      ['云合三B真去', '韻', '2275', '1', '32419', '震', '爲捃', '永賮反一'],
+    ] as const
+  ) {
     const 音韻編碼 = encode音韻編碼(音韻地位.from描述(描述));
     const record: 內部切韻條目 = {
       來源: '切韻',

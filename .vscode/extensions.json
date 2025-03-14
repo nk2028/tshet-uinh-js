@@ -3,6 +3,6 @@
     "dbaeumer.vscode-eslint",
     "eamodio.gitlens",
     "streetsidesoftware.code-spell-checker",
-    "esbenp.prettier-vscode",
+    "dprint.dprint",
   ]
 }

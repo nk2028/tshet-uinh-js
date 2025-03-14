@@ -1,0 +1,21 @@
+{
+  "typescript": {
+    "arrowFunction.useParentheses": "preferNone",
+    "lineWidth": 140,
+    "quoteStyle": "preferSingle",
+    "quoteProps": "consistent"
+  },
+  "json": {
+  },
+  "markdown": {
+  },
+  "excludes": [
+    "**/node_modules",
+    "**/*-lock.json"
+  ],
+  "plugins": [
+    "https://plugins.dprint.dev/typescript-0.94.0.wasm",
+    "https://plugins.dprint.dev/json-0.20.0.wasm",
+    "https://plugins.dprint.dev/markdown-0.18.0.wasm"
+  ]
+}

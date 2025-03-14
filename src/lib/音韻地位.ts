@@ -3,8 +3,8 @@ import { 母到清濁, 母到組, 母到音, 韻到攝 } from './拓展音韻屬
 import { 呼韻搭配, 所有, 等母搭配, 等韻搭配, 鈍音母, 陰聲韻 } from './音韻屬性常量';
 
 const pattern描述 = new RegExp(
-  `^([${所有.母.join('')}])([${所有.呼.join('')}]?)([${所有.等.join('')}]?)` +
-    `([${所有.類.join('')}]?)([${所有.韻.join('')}])([${所有.聲.join('')}])$`,
+  `^([${所有.母.join('')}])([${所有.呼.join('')}]?)([${所有.等.join('')}]?)`
+    + `([${所有.類.join('')}]?)([${所有.韻.join('')}])([${所有.聲.join('')}])$`,
   'u',
 );
 
@@ -825,7 +825,7 @@ export class 音韻地位 {
         assert(Array.isArray(規則) && 規則.length === 2, '規則需符合格式');
         let 表達式 = 規則[0];
         const 結果 = 規則[1];
-        if (typeof 表達式 === 'function') 表達式 = 表達式();
+        if (typeof 表達式 === 'function') 表達式 = (表達式 as () => unknown)();
         if (typeof 表達式 === 'string' && 表達式 ? this.屬於(表達式) : 表達式 !== false) {
           if (!is規則列表(結果)) return 結果;
           const res = loop(結果);
@@ -945,14 +945,16 @@ export class 音韻地位 {
     };
 
     // 驗證取值
-    for (const [屬性, 值, nullable] of [
-      ['母', 母],
-      ['呼', 呼, true],
-      ['等', 等],
-      ['類', 類, true],
-      ['韻', 韻],
-      ['聲', 聲],
-    ] as const) {
+    for (
+      const [屬性, 值, nullable] of [
+        ['母', 母],
+        ['呼', 呼, true],
+        ['等', 等],
+        ['類', 類, true],
+        ['韻', 韻],
+        ['聲', 聲],
+      ] as const
+    ) {
       if (!((值 === null && !!nullable) || 所有[屬性].includes(值!))) {
         const suggestion = (
           {
@@ -1158,14 +1160,16 @@ export class 音韻地位 {
  */
 function 類搭配(母: string, 韻: string): [string, string] {
   let 搭配: [string, string] | null = null;
-  for (const [搭配類, 搭配韻] of [
-    ['C', [...'東鍾之微魚虞廢殷元文歌尤嚴凡']],
-    ['AB', [...'支脂祭真仙宵麻幽侵鹽']],
-    ['A', [...'清']],
-    ['B', [...'庚']],
-    ['BC', [...'蒸']],
-    ['CA', [...'陽']],
-  ] as const) {
+  for (
+    const [搭配類, 搭配韻] of [
+      ['C', [...'東鍾之微魚虞廢殷元文歌尤嚴凡']],
+      ['AB', [...'支脂祭真仙宵麻幽侵鹽']],
+      ['A', [...'清']],
+      ['B', [...'庚']],
+      ['BC', [...'蒸']],
+      ['CA', [...'陽']],
+    ] as const
+  ) {
     if (搭配韻.includes(韻)) {
       搭配 = [搭配類 === 'CA' ? 'C' : 搭配類, 搭配類];
       break;

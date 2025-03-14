@@ -1,67 +1,52 @@
 // @ts-check
 
-import { dirname } from 'path';
-import { fileURLToPath } from 'url';
-
-import { FlatCompat } from '@eslint/eslintrc';
-import eslint from '@eslint/js';
-import prettierConfig from 'eslint-config-prettier';
-import eslintCommentsPlugin from 'eslint-plugin-eslint-comments';
-import * as importPlugin from 'eslint-plugin-import';
+import comments from '@eslint-community/eslint-plugin-eslint-comments/configs';
+import js from '@eslint/js';
+// @ts-ignore -- import is valid
+import importPlugin from 'eslint-plugin-import';
 import tseslint from 'typescript-eslint';
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
-
-const compat = new FlatCompat({
-  baseDirectory: __dirname,
-});
-
 export default tseslint.config(
+  { ignores: ['index.js'] },
   {
     files: ['src/**/*.?(c|m)js', '*.?(c|m)js', 'src/**/*.ts'],
-    ignores: ['index.js'],
     extends: [
-      eslint.configs.recommended,
-      ...compat.extends('plugin:eslint-comments/recommended'),
-      ...compat.extends('plugin:import/typescript'),
+      js.configs.recommended,
+      // @ts-ignore -- type is valid
+      comments.recommended,
     ],
-    plugins: {
-      'eslint-comments': eslintCommentsPlugin,
-      'import': importPlugin,
-    },
     rules: {
-      'eslint-comments/disable-enable-pair': ['error', { allowWholeFile: true }],
-      'eslint-comments/no-unused-disable': 'error',
-
-      'import/order': [
-        'error',
-        {
-          'newlines-between': 'always',
-          'alphabetize': { order: 'asc' },
-        },
-      ],
-
-      'sort-imports': [
-        'error',
-        {
-          ignoreDeclarationSort: true,
-          ignoreCase: true,
-        },
-      ],
+      '@eslint-community/eslint-comments/disable-enable-pair': ['error', { allowWholeFile: true }],
+      '@eslint-community/eslint-comments/no-unused-disable': 'error',
     },
   },
+  // TODO Make eslint-plugin-import work with JS files (like this one)
   {
     files: ['src/**/*.ts'],
     extends: [
-      //...tseslint.configs.recommended,
-      //...tseslint.configs.recommendedTypeChecked,
-      ...tseslint.configs.strictTypeChecked,
-      ...tseslint.configs.stylisticTypeChecked,
+      importPlugin.flatConfigs.recommended,
+      importPlugin.flatConfigs.typescript,
+      // ...tseslint.configs.recommended,
+      ...tseslint.configs.recommendedTypeChecked,
+      // ...tseslint.configs.strictTypeChecked,
+      // ...tseslint.configs.stylisticTypeChecked,
     ],
     languageOptions: {
       parserOptions: {
         project: './tsconfig.test.json',
-        tsconfigRootDir: __dirname,
+        // projectService: {
+        //   defaultProject: './tsconfig.test.json',
+        // },
+        tsconfigRootDir: import.meta.dirname,
+      },
+    },
+    settings: {
+      'import/parsers': {
+        '@typescript-eslint/parser': ['.ts', '.tsx'],
+      },
+      'import/resolver': {
+        typescript: true,
+        node: true,
       },
     },
     rules: {
@@ -84,7 +69,14 @@ export default tseslint.config(
           allowShortCircuit: true,
         },
       ],
+
+      'import/order': [
+        'error',
+        {
+          'newlines-between': 'always',
+          'alphabetize': { order: 'asc' },
+        },
+      ],
     },
   },
-  prettierConfig,
 );

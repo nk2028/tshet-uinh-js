@@ -822,6 +822,7 @@ export class 音韻地位 {
     }
     const loop = (所有規則: 判斷規則列表<T>): T | typeof Exhaustion => {
       for (const 規則 of 所有規則) {
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- user-provided value may violate this
         assert(Array.isArray(規則) && 規則.length === 2, '規則需符合格式');
         let 表達式 = 規則[0];
         const 結果 = 規則[1];
@@ -960,7 +961,7 @@ export class 音韻地位 {
           {
             母: { 娘: '孃', 群: '羣' },
             韻: { 眞: '真', 欣: '殷' },
-          } as Record<string, Record<string, string>>
+          } as Record<string, Record<string, string> | undefined>
         )[屬性]?.[值!];
         reject(`unrecognized ${屬性}: ${值}` + (suggestion ? ` (did you mean: ${suggestion}?)` : ''));
       }

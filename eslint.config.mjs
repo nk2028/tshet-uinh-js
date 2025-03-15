@@ -20,16 +20,18 @@ export default tseslint.config(
       '@eslint-community/eslint-comments/no-unused-disable': 'error',
     },
   },
-  // TODO Make eslint-plugin-import work with JS files (like this one)
+  // TODO Make eslint-plugin-import work with JS files (like this one).
+  // ...or maybe just ditch this plugin? Part of its functionality is provided by dprint
+  // (sorting imports, but not grouping or adding newlines in between).
   {
     files: ['src/**/*.ts'],
     extends: [
       importPlugin.flatConfigs.recommended,
       importPlugin.flatConfigs.typescript,
       // ...tseslint.configs.recommended,
-      ...tseslint.configs.recommendedTypeChecked,
-      // ...tseslint.configs.strictTypeChecked,
-      // ...tseslint.configs.stylisticTypeChecked,
+      // ...tseslint.configs.recommendedTypeChecked,
+      ...tseslint.configs.strictTypeChecked,
+      ...tseslint.configs.stylisticTypeChecked,
     ],
     languageOptions: {
       parserOptions: {
@@ -42,7 +44,7 @@ export default tseslint.config(
     },
     settings: {
       'import/parsers': {
-        '@typescript-eslint/parser': ['.ts', '.tsx'],
+        '@typescript-eslint/parser': ['.ts'],
       },
       'import/resolver': {
         typescript: true,
@@ -50,25 +52,22 @@ export default tseslint.config(
       },
     },
     rules: {
-      '@typescript-eslint/explicit-module-boundary-types': 'off',
-
       '@typescript-eslint/no-non-null-assertion': 'off',
-      '@typescript-eslint/no-unnecessary-condition': 'off',
       '@typescript-eslint/restrict-template-expressions': [
         'error',
         {
-          allowBoolean: true,
-          allowNullish: true,
-          allowNumber: true,
+          // use `recommended` defaults instead of `strict` defaults
         },
       ],
-
       '@typescript-eslint/no-unused-expressions': [
         'error',
         {
           allowShortCircuit: true,
         },
       ],
+      // NOTE Currently there is no way to allow just strings AND string literals,
+      // so unfortunately this rule has to be turned off entirely.
+      '@typescript-eslint/no-misused-spread': 'off',
 
       'import/order': [
         'error',

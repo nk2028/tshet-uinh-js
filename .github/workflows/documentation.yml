@@ -4,9 +4,16 @@ on:
   release:
     types: [published]
 
+permissions:
+  pages: write
+  id-token: write
+
 jobs:
   publish:
     if: ${{ !github.event.release.prerelease }}
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
@@ -28,39 +35,11 @@ jobs:
       run: |
         npm run doc:html
         ./inject_cf_analytics.sh
-    - name: Publish
-      run: |
-        # Create a temporary directory
-        export temp_dir=`mktemp -d -p ~`
-
-        (
-        # Preserve .git
-        mv .git $temp_dir
-        cd $temp_dir
-
-        # Switch branch
-        git fetch
-        git checkout gh-pages
-        )
-
-        (
-        # Go to docs directory
-        cd docs
-
-        # Set no Jekyll
-        touch .nojekyll
-
-        # Move .git
-        mv $temp_dir/.git .
-
-        # Set commit identity
-        git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-        git config user.name "github-actions[bot]"
-
-        # Publish
-        git add .
-        if [ -n "$(git status --porcelain)" ]; then
-          git commit -m "Publish `TZ='Asia/Hong_Kong' date`"
-          git push -f origin gh-pages
-        fi
-        )
+        touch docs/.nojekyll
+    - name: Upload Artifact
+      uses: actions/upload-pages-artifact@v3
+      with:
+        path: "./docs"
+    - name: Deploy to GitHub Pages
+      id: deployment
+      uses: actions/deploy-pages@v4

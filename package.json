@@ -16,9 +16,6 @@
     "test:lint": "eslint src",
     "test:format": "dprint check --list-different src/**/*.ts",
     "test:unit": "nyc --silent ava",
-    "check-cli": "run-s test diff-integration-tests check-integration-tests",
-    "check-integration-tests": "run-s check-integration-test:*",
-    "diff-integration-tests": "mkdir -p diff && rm -rf diff/test && cp -r test diff/test && rm -rf diff/test/test-*/.git && cd diff && git init --quiet && git add -A && git commit --quiet --no-verify --allow-empty -m 'WIP' && echo '\\n\\nCommitted most recent integration test output in the \"diff\" directory. Review the changes with \"cd diff && git diff HEAD\" or your preferred git diff viewer.'",
     "watch:build-tests": "tsc -p tsconfig.test.json -w",
     "watch:test": "nyc --silent ava --watch",
     "cov": "run-s build test:unit cov:html cov:lcov && open-cli coverage/index.html",
@@ -40,10 +37,10 @@
     "url": "git+https://github.com/nk2028/tshet-uinh-js.git"
   },
   "keywords": [
-    "Qieyun",
-    "historical linguistics",
+    "historical-linguistics",
     "linguistics",
-    "Middle Chinese"
+    "middle-chinese",
+    "qieyun"
   ],
   "author": "Project NK2028",
   "license": "MIT",
@@ -78,9 +75,7 @@
   "files": [
     "index.js",
     "index.js.map",
-    "index.d.ts",
-    "LICENSE",
-    "README.md"
+    "index.d.ts"
   ],
   "ava": {
     "failFast": true,

@@ -1,4 +1,4 @@
-import type { 資料條目Common } from '../lib/資料';
+import type { 資料條目Common } from './common';
 
 export interface 切韻條目 extends 資料條目Common {
   來源: '切韻';

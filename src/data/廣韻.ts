@@ -1,6 +1,4 @@
-import type { 資料條目Common } from '../lib/資料';
-
-import { 條目from內部條目 } from './common';
+import { 條目from內部條目, 資料條目Common } from './common';
 import * as impl from './廣韻impl';
 
 export interface 廣韻條目 extends 資料條目Common {

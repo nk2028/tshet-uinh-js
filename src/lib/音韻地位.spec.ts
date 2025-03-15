@@ -1,6 +1,7 @@
 import test from 'ava';
 
-import { iter音韻地位 } from './資料';
+import { iter音韻地位 } from '../data/資料';
+
 import { 判斷規則列表, 邊緣地位種類指定, 音韻地位 } from './音韻地位';
 
 // 由音韻地位得出各項音韻屬性

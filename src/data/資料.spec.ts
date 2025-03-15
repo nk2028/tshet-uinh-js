@@ -2,10 +2,10 @@ import { readFileSync } from 'node:fs';
 
 import test from 'ava';
 
-import { parse字頭詳情 } from '../data/common';
+import { 音韻地位 } from '../lib/音韻地位';
 
+import { parse字頭詳情 } from './common';
 import { iter音韻地位, query字頭, query音韻地位, 資料條目 } from './資料';
-import { 音韻地位 } from './音韻地位';
 
 test('查「東」字的反切', t => {
   const 字頭 = '東';

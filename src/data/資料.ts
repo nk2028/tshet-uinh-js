@@ -1,17 +1,17 @@
-import { parse字頭詳情, 內部切韻條目, 條目from內部條目 } from '../data/common';
-import { 切韻條目 } from '../data/切韻';
-import { 廣韻條目 } from '../data/廣韻';
-import * as 廣韻impl from '../data/廣韻impl';
-import { 內部廣韻條目 } from '../data/廣韻impl';
+import { insertInto, insertValuesInto, prependValuesInto } from '../lib/utils';
+import { decode音韻編碼, encode音韻編碼 } from '../lib/壓縮表示';
+import { 音韻地位 } from '../lib/音韻地位';
 
-import { insertInto, insertValuesInto, prependValuesInto } from './utils';
-import { decode音韻編碼, encode音韻編碼 } from './壓縮表示';
-import { 音韻地位 } from './音韻地位';
+import { parse字頭詳情, 內部切韻條目, 條目from內部條目 } from './common';
+import { 切韻條目 } from './切韻';
+import { 廣韻條目 } from './廣韻';
+import * as 廣韻impl from './廣韻impl';
+import { 內部廣韻條目 } from './廣韻impl';
 
-export * as 切韻 from '../data/切韻';
-export * as 廣韻 from '../data/廣韻';
+export * as 切韻 from './切韻';
+export * as 廣韻 from './廣韻';
 
-export type { 上下文條目, 資料條目Common } from '../data/common';
+export type { 上下文條目, 資料條目Common } from './common';
 
 export type 資料條目 = 切韻條目 | 廣韻條目;
 

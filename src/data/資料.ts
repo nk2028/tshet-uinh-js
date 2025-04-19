@@ -1,5 +1,6 @@
 import { insertInto, insertValuesInto, prependValuesInto } from '../lib/utils';
-import { decode音韻編碼, encode音韻編碼 } from '../lib/壓縮表示';
+import { encode音韻編碼 } from '../lib/壓縮表示';
+import { decode音韻編碼unchecked } from '../lib/壓縮表示internal';
 import { 音韻地位 } from '../lib/音韻地位';
 
 import { parse字頭詳情, 內部切韻條目, 條目from內部條目 } from './common';
@@ -85,7 +86,8 @@ const m音韻編碼檢索 = new Map<string, 內部條目[]>();
  */
 export function* iter音韻地位(): IterableIterator<音韻地位> {
   for (const 音韻編碼 of m音韻編碼檢索.keys()) {
-    yield decode音韻編碼(音韻編碼);
+    // NOTE 音韻地位s in the builtin data are guaranteed to be valid
+    yield decode音韻編碼unchecked(音韻編碼);
   }
 }
 

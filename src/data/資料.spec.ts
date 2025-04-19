@@ -2,7 +2,7 @@ import { readFileSync } from 'node:fs';
 
 import test from 'ava';
 
-import { 音韻地位 } from '../lib/音韻地位';
+import { _UNCHECKED, 音韻地位 } from '../lib/音韻地位';
 
 import { parse字頭詳情 } from './common';
 import { iter音韻地位, query字頭, query音韻地位, 資料條目 } from './資料';
@@ -168,6 +168,14 @@ test('查詢來源文獻信息', t => {
     query字頭('忘').find(({ 音韻地位 }) => 音韻地位.屬於('平聲')),
     { 來源: '切韻', 韻目: '陽' },
   );
+});
+
+test('資料中全部音韻地位均合法', t => {
+  for (const { 母, 呼, 等, 類, 韻, 聲 } of iter音韻地位()) {
+    t.notThrows(() => {
+      音韻地位.驗證(母, 呼, 等, 類, 韻, 聲, _UNCHECKED);
+    });
+  }
 });
 
 test('根據原資料檔查詢所有字頭', t => {

@@ -1,4 +1,4 @@
-import { decode音韻編碼 } from '../lib/壓縮表示';
+import { decode音韻編碼unchecked } from '../lib/壓縮表示internal';
 import type { 音韻地位 } from '../lib/音韻地位';
 
 import type { 切韻條目 } from './切韻';
@@ -239,7 +239,8 @@ export function 條目from內部條目<T extends 內部切韻條目 | 內部廣�
   const { 來源, 音韻編碼, 釋義上下文, ...rest } = 內部條目;
   return Object.assign(Object.create(資料條目methods) as 內部條目對應<T>, {
     來源,
-    音韻地位: decode音韻編碼(音韻編碼),
+    // NOTE 音韻地位s in the builtin data are guaranteed to be valid
+    音韻地位: decode音韻編碼unchecked(音韻編碼),
     ...rest,
     釋義上下文: 釋義上下文 === null ? null : 釋義上下文.map(x => ({ ...x })),
   });

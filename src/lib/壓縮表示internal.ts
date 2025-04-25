@@ -1,6 +1,6 @@
 import { assert } from './utils';
 import { 音韻地位 } from './音韻地位';
-import { 所有, 等韻搭配 } from './音韻屬性常量';
+import { 所有, 韻搭配等 } from './音韻屬性常量';
 
 export const 編碼表 = [...'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789$_'] as const;
 export const 韻序表 = [
@@ -25,15 +25,11 @@ export function decode音韻編碼raw(編碼: string): 音韻地位Raw {
   if (韻 === '＊') {
     韻 = 韻序表[韻序 - 1];
   }
-  let 等: string;
-  for (const [韻等, 各韻] of Object.entries(等韻搭配)) {
-    if (各韻.includes(韻)) {
-      等 = 韻等[+(韻序表[韻序] === '＊')];
-      if (等 === '三' && [...'端透定泥'].includes(母)) {
-        等 = '四';
-      }
-      break;
-    }
+
+  const 韻可搭配等 = 韻搭配等[韻];
+  let 等 = 韻可搭配等[+(韻序表[韻序] === '＊')];
+  if (等 === '三' && [...'端透定泥'].includes(母)) {
+    等 = '四';
   }
 
   const 呼序 = 呼類聲序 >> 4;
@@ -47,8 +43,7 @@ export function decode音韻編碼raw(編碼: string): 音韻地位Raw {
   const 聲序 = 呼類聲序 & 0b11;
   const 聲 = 所有.聲[聲序];
 
-  // NOTE type assertion safe because the constructor will check it
-  return { 母, 呼, 等: 等!, 類, 韻, 聲 };
+  return { 母, 呼, 等, 類, 韻, 聲 };
 }
 
 export function decode音韻編碼unchecked(編碼: string): 音韻地位 {

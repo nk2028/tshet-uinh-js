@@ -121,9 +121,27 @@ export class 資料條目Common {
 
   /** @ignore */
   constructor(
-    raw: OmitMethods<資料條目Common>,
+    raw: 資料條目CommonFields,
   ) {
     Object.assign(this, raw);
+  }
+
+  /** 原書小韻號。即 {@link 小韻號} 去掉結尾字母（細分號） */
+  get 原書小韻號(): number {
+    return Number(this.小韻號.replace(/[a-z]$/, ''));
+  }
+
+  /**
+   * 解析小韻字號的組成部分：原書字號、增字號。
+   *
+   * 若為增字，則增字號非零，否則為零。
+   */
+  小韻字號詳情(): [number, number] {
+    const parts = this.小韻字號.split('a');
+    if (parts.length === 1) {
+      parts.push('');
+    }
+    return parts.map(Number) as [number, number];
   }
 
   /**
@@ -224,6 +242,8 @@ export class 資料條目Common {
 export interface 資料條目Common extends 字頭詳情Prototype {}
 Object.assign(資料條目Common.prototype, 字頭詳情prototype);
 
+type 資料條目CommonFields = OmitMethods<Omit<資料條目Common, '原書小韻號'>>;
+
 // XXX This is for better presentation in REPLs, and may be subject to change.
 Object.defineProperty(資料條目Common, 'name', { value: '條目' });
 
@@ -290,7 +310,7 @@ function parse詳情(chars: string[]): string[][] {
 }
 
 export type 內部上下文條目 = OmitMethods<上下文條目>;
-export type 內部條目Common = Omit<OmitMethods<資料條目Common>, '音韻地位' | '釋義上下文'> & {
+export type 內部條目Common = Omit<資料條目CommonFields, '音韻地位' | '釋義上下文'> & {
   音韻編碼: string;
   釋義上下文: 內部上下文條目[] | null;
 };

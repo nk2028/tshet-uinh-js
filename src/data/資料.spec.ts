@@ -54,6 +54,21 @@ test('查詢「過」字。「過」字有兩讀', t => {
   t.is(res.length, 2);
 });
 
+test('原書小韻號', t => {
+  const res = query字頭('憶')[0];
+  t.is(res.小韻號, '3708a');
+  t.is(res.原書小韻號, 3708);
+});
+
+test('小韻字號詳情', t => {
+  const res興 = query字頭('興').find(({ 音韻地位 }) => 音韻地位.聲 === '平')!;
+  t.is(res興.小韻字號, '1');
+  t.deepEqual(res興.小韻字號詳情(), [1, 0]);
+  const res嬹 = query字頭('嬹').find(({ 音韻地位 }) => 音韻地位.聲 === '平')!;
+  t.is(res嬹.小韻字號, '1a1');
+  t.deepEqual(res嬹.小韻字號詳情(), [1, 1]);
+});
+
 test('查詢含校勘的字（應補、應刪）', t => {
   for (
     const [條目, 字頭, 詳情, 說明] of [

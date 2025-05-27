@@ -1,6 +1,6 @@
 import { insertInto } from '../lib/utils';
 
-import { 上下文條目, 內部條目Common } from './common';
+import { 內部上下文條目, 內部條目Common } from './common';
 import raw資料 from './raw/廣韻';
 
 export type 內部廣韻條目 = 內部條目Common & { 來源: '廣韻' };
@@ -91,7 +91,7 @@ function generate釋義上下文(各條目: 內部廣韻條目[], 各釋義參�
     if (forDeletions && !filtered各條目.slice(pos, pos + len).some(isDeletion)) {
       continue;
     }
-    const 上下文: 上下文條目[] = filtered各條目
+    const 上下文: 內部上下文條目[] = filtered各條目
       .slice(pos, pos + len)
       .map(({ 字頭, 字頭說明, 小韻字號, 釋義 }) => ({ 字頭, 字頭說明, 小韻字號, 釋義 }));
     for (const 條目 of filtered各條目.slice(pos, pos + len)) {

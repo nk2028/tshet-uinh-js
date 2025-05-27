@@ -1,7 +1,11 @@
 import { 條目from內部條目, 資料條目Common } from './common';
 import * as impl from './廣韻impl';
 
+/**
+ * @see {@link 資料條目Common}
+ */
 export interface 廣韻條目 extends 資料條目Common {
+  /** 指示來源，可用其值為 `"廣韻"` 判斷該條目類型為 {@link 廣韻條目} */
   來源: '廣韻';
 }
 

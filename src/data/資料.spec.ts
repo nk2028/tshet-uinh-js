@@ -94,6 +94,16 @@ test('.字頭詳情 與 .字頭 對應', t => {
   }
 });
 
+test('上下文條目詳情、展開', t => {
+  const 條目 = query字頭('鬧')[0];
+  t.is(條目.字頭, '閙〈鬧〉');
+  t.deepEqual(條目.釋義上下文?.[1].字頭詳情(), ['閙', '〈鬧〉']);
+
+  const expanded = 條目.expand釋義上下文();
+  t.deepEqual(expanded[1], 條目);
+  t.deepEqual(expanded[0], query字頭('𠆴')[0]);
+});
+
 test('查詢含校勘的反切', t => {
   for (
     const [條目, 詳情, 原貌, 校正] of [

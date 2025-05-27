@@ -9,11 +9,13 @@ import { 廣韻條目 } from './廣韻';
 import * as 廣韻impl from './廣韻impl';
 import { 內部廣韻條目 } from './廣韻impl';
 
+export { 上下文條目, 資料條目Common } from './common';
 export * as 切韻 from './切韻';
 export * as 廣韻 from './廣韻';
 
-export type { 上下文條目, 資料條目Common } from './common';
-
+/**
+ * @see {@link 資料條目Common}
+ */
 export type 資料條目 = 切韻條目 | 廣韻條目;
 
 type 內部條目 = 內部切韻條目 | 內部廣韻條目;

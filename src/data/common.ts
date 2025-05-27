@@ -5,57 +5,15 @@ import type { 切韻條目 } from './切韻';
 import type { 廣韻條目 } from './廣韻';
 import type { 內部廣韻條目 } from './廣韻impl';
 
-export interface 資料條目CommonFields {
-  音韻地位: 音韻地位;
-  /**
-   * 字頭。
-   *
-   * 可能含有校勘標記，可用 {@link 字頭詳情}、{@link 字頭原貌}、{@link 字頭校正} 取得原貌及校正後的字頭。
-   */
-  字頭: string;
-  字頭說明: string | null;
-  /**
-   * 小韻號。
-   *
-   * 部分小韻含多個音韻地位，會依音韻地位拆分，並有細分號（後綴 -a、-b 等），故為字串格式。
-   * @see {@link 廣韻.get小韻}
-   */
-  小韻號: string;
-  /**
-   * 小韻內字頭序號。
-   *
-   * 部分字頭為增字，字號形如 `<原書字序號>a<增序號>`，如 `1a1`，故為字串格式。
-   */
-  小韻字號: string;
-  /** 原書韻目。注意與音韻地位不一定對應 */
-  韻目: string;
-  /**
-   * 反切。若該小韻未用反切注音（如「音某字某聲」）則為 `null`（此時會給出{@link 直音}）。
-   *
-   * 可能含有校勘標記，可用 {@link 反切詳情}、{@link 反切原貌}、{@link 反切校正} 取得原貌及校正後的反切。
-   *
-   * 注意有極少數反切原本用字不詳，故可能含有「？」（全形問號）。
-   */
-  反切: string | null;
-  /** 直音。僅當小韻未給{@link 反切}，以直音注音時有內容，否則為 `null` */
-  直音: string | null;
-  /** 釋義。僅含該單字下的釋義，該單字無釋義時為 `null` */
-  釋義: string | null;
-  /** 釋義上下文。包含與該條目相關（如釋義為「上同」之類時）的若干條目的字頭釋義 */
-  釋義上下文: 上下文條目[] | null;
-}
+type OmitMethods<T> = Pick<T, { [K in keyof T]: T[K] extends () => void ? never : K }[keyof T]>;
 
 /**
- * 用於 {@link 資料條目Common.釋義上下文 | 釋義上下文} 的條目。僅含必要的欄位
+ * Mixin for {@link 資料條目Common} and {@link 上下文條目}.
+ *
+ * NOTE: Despite that 資料條目Common's API is a superset of 上下文條目's,
+ * the former class is logically NOT a subtype of the latter, thus a mixin design is preferable.
  */
-export interface 上下文條目 {
-  字頭: string;
-  字頭說明: string | null;
-  小韻字號: string;
-  釋義: string | null;
-}
-
-export interface 資料條目Methods {
+interface 字頭詳情Prototype {
   /**
    * 取得條目的字頭原貌及校正。
    *
@@ -98,6 +56,76 @@ export interface 資料條目Methods {
    * @see {@link 字頭詳情}
    */
   字頭校正(): string | null;
+}
+
+const 字頭詳情prototype = {
+  字頭詳情(this: 字頭詳情Prototype & { 字頭: string }): string[] {
+    return parse字頭詳情(this.字頭);
+  },
+  字頭原貌(this: 字頭詳情Prototype): string | null {
+    return this.字頭詳情()[0] || null;
+  },
+  字頭校正(this: 字頭詳情Prototype): string | null {
+    const 詳情 = this.字頭詳情();
+    return 詳情.length === 1 ? 詳情[0] : 詳情[詳情.length - 1].slice(1, -1) || null;
+  },
+} as const satisfies 字頭詳情Prototype;
+
+/**
+ * 各來源之 {@link 資料!資料條目 | 資料條目 } 所共用的屬性
+ *
+ * 實際查詢所得條目亦會含有 `.來源` 屬性，可利用該屬性判斷型別。
+ *
+ * @see {@link 切韻條目.來源}
+ * @see {@link 廣韻條目.來源}
+ */
+// eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
+export class 資料條目Common {
+  音韻地位!: 音韻地位;
+  /**
+   * 字頭。
+   *
+   * 可能含有校勘標記，可用 {@link 字頭詳情}、{@link 字頭原貌}、{@link 字頭校正} 取得原貌及校正後的字頭。
+   */
+  字頭!: string;
+  字頭說明!: string | null;
+  /**
+   * 小韻號。
+   *
+   * 部分小韻含多個音韻地位，會依音韻地位拆分，並有細分號（後綴 -a、-b 等），故為字串格式。
+   * @see {@link 廣韻.get小韻}
+   */
+  小韻號!: string;
+  /**
+   * 小韻內字頭序號。
+   *
+   * 部分字頭為增字，字號形如 `<原書字序號>a<增序號>`，如 `1a1`，故為字串格式。
+   */
+  小韻字號!: string;
+  /** 原書韻目。注意與音韻地位不一定對應 */
+  韻目!: string;
+  /**
+   * 反切。若該小韻未用反切注音（如「音某字某聲」）則為 `null`（此時會給出{@link 直音}）。
+   *
+   * 可能含有校勘標記，可用 {@link 反切詳情}、{@link 反切原貌}、{@link 反切校正} 取得原貌及校正後的反切。
+   *
+   * 注意有極少數反切原本用字不詳，故可能含有「？」（全形問號）。
+   */
+  反切!: string | null;
+  /** 直音。僅當小韻未給{@link 反切}，以直音注音時有內容，否則為 `null` */
+  直音!: string | null;
+  /** 釋義。僅含該單字下的釋義，該單字無釋義時為 `null` */
+  釋義!: string | null;
+  /** 釋義上下文。包含與該條目相關（如釋義為「上同」之類時）的若干條目的字頭釋義 */
+  釋義上下文!: 上下文條目[] | null;
+
+  /** @ignore */
+  constructor(
+    raw: OmitMethods<資料條目Common>,
+  ) {
+    Object.assign(this, raw);
+  }
+
   /**
    * 取得條目的反切原貌及校正。
    *
@@ -132,12 +160,16 @@ export interface 資料條目Methods {
    * [ [ '居' ], [ '列', '（？）' ] ]
    * ```
    */
-  反切詳情(): string[][];
+  反切詳情(): string[][] {
+    return this.反切 ? parse反切詳情(this.反切) : [];
+  }
   /**
    * 反切原貌。
    * @see {@link 反切詳情}
    */
-  反切原貌(): string | null;
+  反切原貌(): string | null {
+    return this.反切?.replace(/［.］|〈.〉|〘.〙|（.）|｟.｠|｛|｝/g, '') ?? null;
+  }
   /**
    * 反切校正。注意有個別反切原本用字不詳，故可能含有「？」（全形問號）。
    * @see {@link 反切詳情}
@@ -159,37 +191,65 @@ export interface 資料條目Methods {
    * '？？'
    * ```
    */
-  反切校正(): string | null;
-}
-
-export interface 資料條目Common extends 資料條目CommonFields, 資料條目Methods {}
-
-const 資料條目methods: 資料條目Methods = {
-  字頭詳情(this: 資料條目Common): string[] {
-    return parse字頭詳情(this.字頭);
-  },
-  字頭原貌(this: 資料條目Common): string | null {
-    return this.字頭詳情()[0] || null;
-  },
-  字頭校正(this: 資料條目Common): string | null {
-    const 詳情 = this.字頭詳情();
-    return 詳情.length === 1 ? 詳情[0] : 詳情[詳情.length - 1].slice(1, -1) || null;
-  },
-  反切詳情(this: 資料條目Common): string[][] {
-    return this.反切 ? parse反切詳情(this.反切) : [];
-  },
-  反切原貌(this: 資料條目Common): string | null {
-    return this.反切?.replace(/［.］|〈.〉|〘.〙|（.）|｟.｠|｛|｝/g, '') ?? null;
-  },
-  反切校正(this: 資料條目Common): string | null {
+  反切校正(): string | null {
     if (!this.反切) {
       return null;
     }
     return this.反切詳情()
       .map(chs => (chs.length === 1 ? chs[0] : chs[chs.length - 1].slice(1, -1)))
       .join('');
-  },
-};
+  }
+
+  /**
+   * 將每項 {@link 釋義上下文} 均展開成完整的 {@link 資料!資料條目 | 資料條目}。
+   *
+   * 若無釋義上下文，則回傳的列表僅包含一項，為該條目自身。
+   */
+  expand釋義上下文(): 資料條目Common[] {
+    function 資料條目withCloned釋義上下文(...[raw]: ConstructorParameters<typeof 資料條目Common>): 資料條目Common {
+      const res = new 資料條目Common(raw);
+      if (res.釋義上下文) {
+        res.釋義上下文 = res.釋義上下文.map(x => new 上下文條目(x));
+      }
+      return res;
+    }
+
+    if (!this.釋義上下文) {
+      return [資料條目withCloned釋義上下文(this)];
+    }
+    return this.釋義上下文.map(x => 資料條目withCloned釋義上下文({ ...this, ...x }));
+  }
+}
+// eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging, @typescript-eslint/no-empty-object-type
+export interface 資料條目Common extends 字頭詳情Prototype {}
+Object.assign(資料條目Common.prototype, 字頭詳情prototype);
+
+// XXX This is for better presentation in REPLs, and may be subject to change.
+Object.defineProperty(資料條目Common, 'name', { value: '條目' });
+
+/**
+ * 用於 {@link 資料條目Common.釋義上下文 | 釋義上下文} 的條目。僅含必要的欄位。
+ */
+// eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
+export class 上下文條目 {
+  字頭!: string;
+  字頭說明!: string | null;
+  小韻字號!: string;
+  釋義!: string | null;
+
+  /** @ignore */
+  constructor(
+    raw: Pick<
+      上下文條目,
+      { [K in keyof 上下文條目]: 上下文條目[K] extends () => void ? never : K }[keyof Omit<上下文條目, '主條目'>]
+    >,
+  ) {
+    Object.assign(this, raw);
+  }
+}
+// eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging, @typescript-eslint/no-empty-object-type
+export interface 上下文條目 extends 字頭詳情Prototype {}
+Object.assign(上下文條目.prototype, 字頭詳情prototype);
 
 export function parse反切詳情(反切: string): string[][] {
   // NOTE 目前資料中反切無 IDS 字，故可直接用 `...` 折分單字
@@ -229,7 +289,11 @@ function parse詳情(chars: string[]): string[][] {
   return result;
 }
 
-export type 內部條目Common = Omit<資料條目CommonFields, '音韻地位'> & { 音韻編碼: string };
+export type 內部上下文條目 = OmitMethods<上下文條目>;
+export type 內部條目Common = Omit<OmitMethods<資料條目Common>, '音韻地位' | '釋義上下文'> & {
+  音韻編碼: string;
+  釋義上下文: 內部上下文條目[] | null;
+};
 
 export type 內部切韻條目 = 內部條目Common & { 來源: '切韻'; 對應廣韻小韻號: string };
 
@@ -237,11 +301,10 @@ type 內部條目對應<T> = T extends 內部切韻條目 ? 切韻條目 : T ext
 
 export function 條目from內部條目<T extends 內部切韻條目 | 內部廣韻條目>(內部條目: T): 內部條目對應<T> {
   const { 來源, 音韻編碼, 釋義上下文, ...rest } = 內部條目;
-  return Object.assign(Object.create(資料條目methods) as 內部條目對應<T>, {
+  return new 資料條目Common({
     來源,
-    // NOTE 音韻地位s in the builtin data are guaranteed to be valid
     音韻地位: decode音韻編碼unchecked(音韻編碼),
     ...rest,
-    釋義上下文: 釋義上下文 === null ? null : 釋義上下文.map(x => ({ ...x })),
-  });
+    釋義上下文: 釋義上下文 === null ? null : 釋義上下文.map(x => new 上下文條目(x)),
+  }) as 內部條目對應<T>;
 }

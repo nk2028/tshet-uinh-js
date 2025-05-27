@@ -24,7 +24,9 @@ PATTERN_描述 = re.compile(
 
 
 def 編碼_from_描述(描述: str) -> str:
-    母, 呼, 等, 類, 韻, 聲 = PATTERN_描述.fullmatch(描述).groups()
+    match = PATTERN_描述.fullmatch(描述)
+    assert match is not None, 描述
+    母, 呼, 等, 類, 韻, 聲 = match.groups()
     # 資料均為可信任來源，且均為完整描述，省略驗證與填充
 
     母序 = 所有母.index(母)
@@ -100,8 +102,8 @@ def main():
     with open('prepare/data.csv') as fin:
         next(fin)
         max原書小韻號: int = 0
-        cur音韻: dict[str, tuple[str, str]] = None
-        cur內容: list[條目Record] = None
+        cur音韻: dict[str, tuple[str, str, str]]
+        cur內容: list[條目Record]
         cur原書字號: int = 0
         cur增字號: int = 0
         for row in csv.reader(fin):

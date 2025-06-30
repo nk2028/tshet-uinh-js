@@ -1,6 +1,10 @@
 import { 音韻地位 } from './音韻地位';
 
 const 轉呼 = [null, null, null, ...'開合開合開開合開合開合開合開合開合開合開合開開開合開合開合開合開合開開開開合開合'];
+const 母2idx = [...'幫滂並明端透定泥知徹澄孃見溪羣疑精清從心邪章昌船書常莊初崇生俟影曉匣云以來日'];
+const 母idx2右位 = [
+  1, 2, 3, 4, 5, 6, 7, 8, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 13, 14, 15, 16, 17, 13, 14, 15, 16, 17, 18, 19, 20, 21, 21, 22, 23,
+];
 
 const 鈍音母 = [...'幫滂並明見溪羣疑影曉匣云'];
 const 重紐韻 = [...'支脂祭真仙宵清侵鹽庚幽'];
@@ -46,18 +50,36 @@ export class 韻鏡位置 {
     return ((上位 - 1) % 4) + 1;
   }
 
-  get 呼() {
-    const { 母, 韻, 轉號 } = this;
-    const needErase呼 = [...'幫滂並明'].includes(母) || [...'模侯尤'].includes(韻);
-    return needErase呼 ? null : 轉呼[轉號 - 1];
+  get 韻() {
+    const { 轉號, 上位, 右位 } = this;
+    return _轉號上位右位2韻(轉號, 上位, 右位);
+  }
+
+  get 切韻等() {
+    const { 轉號, 上位, 右位, 韻鏡等, 韻 } = this;
+    if (
+      (轉號 === 6 && 上位 === 12 && 右位 === 7) || // 「地」字為真四等
+      (轉號 === 29 && 上位 === 4 && 右位 === 5) // 「爹」字為真四等
+    ) {
+      return '四';
+    }
+    if (韻鏡等 === 4 && !四等韻.includes(韻)) {
+      return '三'; // 假四等真三等
+    }
+    if (韻鏡等 === 2 && ![...二等韻, ...二三等韻].includes(韻)) {
+      if (12 < 右位 && 右位 <= 17) {
+        return '三'; // 限定為齒音，假二等真三等
+      }
+      throw new Error('假二等真三等必須為齒音');
+    }
+    if (轉號 === 33 && ((右位 === 16 && 韻鏡等 === 2) || (右位 === 14 && (上位 === 10 || 上位 === 14)))) {
+      return '三'; // 「生」、「省」、「索」、「㵾」、「柵」莊三化二
+    }
+    return [...'一二三四'][韻鏡等 - 1];
   }
 
   get 母() {
-    const { 右位, 韻鏡等, 等: 切韻等 } = this;
-
-    if (右位 <= 0) {
-      throw new Error('error');
-    }
+    const { 右位, 韻鏡等, 切韻等 } = this;
 
     // 幫非組
     if (右位 <= 4) {
@@ -89,7 +111,7 @@ export class 韻鏡位置 {
       if (韻鏡等 === 2) {
         return [...'莊初崇生俟'][右位 - 12 - 1];
       }
-      throw new Error('error');
+      throw new Error('invalid 韻鏡等');
     }
 
     // 喉音
@@ -110,11 +132,26 @@ export class 韻鏡位置 {
       return [...'來日'][右位 - 21 - 1];
     }
 
-    throw new Error('error');
+    throw new Error('invalid 右位');
+  }
+
+  get 呼() {
+    const { 轉號, 韻, 母 } = this;
+    const needErase呼 = [...'幫滂並明'].includes(母) || [...'模侯尤'].includes(韻);
+    return needErase呼 ? null : 轉呼[轉號 - 1];
+  }
+
+  get 聲() {
+    const { 轉號, 上位 } = this;
+    const raw聲 = [...'平上去入'][Math.floor((上位 - 1) / 4)];
+    if ([9, 10, 13, 14].includes(轉號) && raw聲 == '入') {
+      return '去'; // 標註「去聲寄此」
+    }
+    return raw聲;
   }
 
   get 類() {
-    const { 母, 韻鏡等, 等: 切韻等, 韻 } = this;
+    const { 韻鏡等, 切韻等, 韻, 母 } = this;
     if (鈍音母.includes(母) && 切韻等 === '三') {
       if (韻 === '幽') {
         const { 轉號, 上位, 右位 } = this;
@@ -144,59 +181,14 @@ export class 韻鏡位置 {
     return null;
   }
 
-  get 等() {
-    const { 轉號, 上位, 右位, 韻, 韻鏡等 } = this;
-    if (!四等韻.includes(this.韻) && 韻鏡等 === 4) {
-      if (
-        (轉號 === 6 && 上位 === 12 && 右位 === 7) || // 「地」字為真四等
-        (轉號 === 29 && 上位 === 4 && 右位 === 5) // 「爹」字為真四等
-      ) {
-        return '四';
-      }
-      return '三';
-    }
-    if (![...二等韻, ...二三等韻].includes(韻) && 韻鏡等 === 2) {
-      if (12 < 右位 && 右位 <= 17) {
-        return '三'; // 齒音
-      }
-      throw new Error('error');
-    }
-    if (轉號 === 33 && ((右位 === 16 && 韻鏡等 === 2) || (右位 === 14 && (上位 === 10 || 上位 === 14)))) {
-      return '三';
-    }
-    return [...'一二三四'][韻鏡等 - 1]; // 「生」、「省」、「索」、「㵾」、「柵」莊三化二
-  }
-
-  get 韻() {
-    const { 轉號, 上位, 右位 } = this;
-    return 轉號上位右位2韻(轉號, 上位, 右位);
-  }
-
-  get 聲() {
-    const { 轉號, 上位 } = this;
-    const raw聲 = [...'平上去入'][Math.floor((上位 - 1) / 4)];
-    if ([9, 10, 13, 14].includes(轉號) && raw聲 == '入') {
-      return '去'; // 次入韻
-    }
-    return raw聲;
-  }
-
   to音韻地位() {
-    const { 母, 呼, 等, 類, 韻, 聲 } = this;
-    return new 音韻地位(母, 呼, 等, 類, 韻, 聲);
+    const { 母, 呼, 切韻等, 類, 韻, 聲 } = this;
+    return new 音韻地位(母, 呼, 切韻等, 類, 韻, 聲);
   }
 }
 
-export const 音韻地位2韻鏡位置 = (當前音韻地位: 音韻地位) => {
-  const { 母, 呼, 等, 類, 韻, 聲 } = 當前音韻地位;
-  const 轉號 = 母類呼等韻聲2轉號(母, 呼, 等, 類, 韻, 聲);
-  const 上位 = 母類等韻聲2上位(母, 類, 等, 韻, 聲);
-  const 右位 = 母2右位(母);
-  return new 韻鏡位置(轉號, 上位, 右位);
-};
-
 // 右位: 爲區分尤/幽韻
-const 轉號上位右位2韻 = (轉號: number, 上位: number, 右位: number) => {
+const _轉號上位右位2韻 = (轉號: number, 上位: number, 右位: number) => {
   const raw聲 = [...'平上去入'][Math.floor((上位 - 1) / 4)];
   const 韻鏡等 = ((上位 - 1) % 4) + 1;
   const is齒音 = 12 < 右位 && 右位 <= 17;
@@ -318,11 +310,14 @@ const 轉號上位右位2韻 = (轉號: number, 上位: number, 右位: number) 
         return '仙';
       }
       if (韻鏡等 === 2) {
+        if (
+          (轉號 === 22 && 上位 === 2 && (右位 === 13 || 右位 === 16)) || // 「恮」、「栓」。TODO: 13 似應為 14
+          (轉號 === 22 && 上位 === 14 && 右位 === 13) // 「茁」
+        ) {
+          return '仙'; // 山、刪、仙在二等混排
+        }
         if (raw聲 === '入') {
           return '刪';
-        }
-        if (raw聲 === '平' && 轉號 == 22 && (右位 === 13 || 右位 === 16)) {
-          return '仙'; // 「恮」、「栓」
         }
         return '山';
       }
@@ -458,23 +453,28 @@ const 轉號上位右位2韻 = (轉號: number, 上位: number, 右位: number) 
   }
 };
 
-const 等2韻鏡等 = (母: string, 類: string | null, 等: string, 韻: string) => {
-  const needAddOne = 類 === 'A' || ([...'精清從心邪以'].includes(母) && 等 === '三') || 韻 === '幽'; // 幽韻為四等位
-  const needMinusOne = [...'莊初崇生俟'].includes(母) && 等 === '三';
-  const 韻鏡等 = ['一', '二', '三', '四'].indexOf(等) + 1 + (needAddOne ? 1 : needMinusOne ? -1 : 0);
-  return 韻鏡等;
+export const 音韻地位2韻鏡位置 = (當前音韻地位: 音韻地位) => {
+  const { 母, 呼, 等, 類, 韻, 聲 } = 當前音韻地位;
+
+  // calculate 韻鏡等
+  const needAddOne = 類 === 'A' || ([...'精清從心邪以'].includes(母) && 等 === '三') || 韻 === '幽'; // 重紐四等、假四等真三等、幽韻為四等位
+  const needMinusOne = [...'莊初崇生俟'].includes(母) && 等 === '三'; // 假二等真三等
+  const 韻鏡等 = [...'一二三四'].indexOf(等) + 1 + (needAddOne ? 1 : needMinusOne ? -1 : 0);
+
+  // calculate 轉號
+  const 轉號 = _母類呼韻聲2轉號(母, 呼, 類, 韻, 聲, 韻鏡等);
+
+  // calculate 上位
+  const need寄入 = [...'廢夬'].includes(韻); // 標註「去聲寄此」
+  const 上位 = (need寄入 ? 3 : [...'平上去入'].indexOf(聲)) * 4 + 韻鏡等;
+
+  // calculate 右位
+  const 右位 = 母idx2右位[母2idx.indexOf(母)]; // TODO: 常船位置
+
+  return new 韻鏡位置(轉號, 上位, 右位);
 };
 
-const 母類等韻聲2上位 = (母: string, 類: string | null, 等: string, 韻: string, 聲: string) => {
-  const 韻鏡等 = 等2韻鏡等(母, 類, 等, 韻);
-  const 上位 = ['平', '上', '去', '入'].indexOf(聲) * 4 + 韻鏡等;
-  const 寄入聲上位 = 3 * 4 + 韻鏡等;
-  const need寄入 = [...'廢夬'].includes(韻);
-  return need寄入 ? 寄入聲上位 : 上位;
-};
-
-const 母類呼等韻聲2轉號 = (母: string, 呼: string | null, 等: string, 類: string | null, 韻: string, 聲: string) => {
-  const 韻鏡等 = 等2韻鏡等(母, 類, 等, 韻);
+const _母類呼韻聲2轉號 = (母: string, 呼: string | null, 類: string | null, 韻: string, 聲: string, 韻鏡等: number) => {
   if (呼 === null) {
     // TODO: cannot use 開口?
     const shouldUse合口 =
@@ -544,7 +544,7 @@ const 母類呼等韻聲2轉號 = (母: string, 呼: string | null, 等: string,
         }
         return 16;
       }
-      throw new Error('error');
+      throw new Error(`韻鏡等 ${韻鏡等} invalid for 祭韻`);
     case '佳':
     case '泰':
       if (呼 === '開') {
@@ -692,13 +692,4 @@ const 母類呼等韻聲2轉號 = (母: string, 呼: string | null, 等: string,
     default:
       throw new Error('error');
   }
-};
-
-const 母2右位 = (母: string) => {
-  // TODO: 常船位置
-  const pos = '幫滂並明端透定泥知徹澄孃見溪羣疑精清從心邪章昌船書常莊初崇生俟影曉匣云以來日'.indexOf(母);
-  return [
-    1, 2, 3, 4, 5, 6, 7, 8, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 13, 14, 15, 16, 17, 13, 14, 15, 16, 17, 18, 19, 20, 21, 21, 22,
-    23,
-  ][pos];
 };

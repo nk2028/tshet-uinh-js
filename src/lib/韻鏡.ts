@@ -1,17 +1,12 @@
 import { 音韻地位 } from './音韻地位';
+import { 等韻搭配, 鈍音母 } from './音韻屬性常量';
 
-const 轉呼 = [null, null, null, ...'開合開合開開合開合開合開合開合開合開合開合開開開合開合開合開合開合開開開開合開合'];
-const 母2idx = [...'幫滂並明端透定泥知徹澄孃見溪羣疑精清從心邪章昌船書常莊初崇生俟影曉匣云以來日'];
+const 轉呼 = [null, null, null, ...'開合開合開開合開合開合開合開合開合開合開合開開開合開合開合開合開合開開開開合開合'] as const;
+const 母2idx = [...'幫滂並明端透定泥知徹澄孃見溪羣疑精清從心邪章昌船書常莊初崇生俟影曉匣云以來日'] as const;
 const 母idx2右位 = [
   1, 2, 3, 4, 5, 6, 7, 8, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 13, 14, 15, 16, 17, 13, 14, 15, 16, 17, 18, 19, 20, 21, 21, 22, 23,
-];
-
-const 鈍音母 = [...'幫滂並明見溪羣疑影曉匣云'];
-const 重紐韻 = [...'支脂祭真仙宵清侵鹽庚幽'];
-
-const 四等韻 = [...'齊先蕭青添'];
-const 二三等韻 = [...'麻庚'];
-const 二等韻 = [...'江佳皆夬刪山肴耕咸銜'];
+] as const;
+const 重紐韻 = [...'支脂祭真仙宵清侵鹽庚幽'] as const;
 
 export class 韻鏡位置 {
   轉號: number;
@@ -63,10 +58,10 @@ export class 韻鏡位置 {
     ) {
       return '四';
     }
-    if (韻鏡等 === 4 && !四等韻.includes(韻)) {
+    if (韻鏡等 === 4 && !等韻搭配.四.includes(韻)) {
       return '三'; // 假四等真三等
     }
-    if (韻鏡等 === 2 && ![...二等韻, ...二三等韻].includes(韻)) {
+    if (韻鏡等 === 2 && ![...等韻搭配.二, ...等韻搭配.二三].includes(韻)) {
       if (12 < 右位 && 右位 <= 17) {
         return '三'; // 限定為齒音，假二等真三等
       }
@@ -152,33 +147,33 @@ export class 韻鏡位置 {
 
   get 類() {
     const { 韻鏡等, 切韻等, 韻, 母 } = this;
-    if (鈍音母.includes(母) && 切韻等 === '三') {
-      if (韻 === '幽') {
-        const { 轉號, 上位, 右位 } = this;
-        if ([...'幫滂並明'].includes(母) || (轉號 === 37 && 上位 === 4 && 右位 === 10)) {
-          return 'B'; // 幫組、「惆」爲 B 類。注意「飍」、「烋」爲 A、B 類對立，「烋」爲 B 類，但此處無法區分二者
-        }
-        return 'A';
-      }
-      if (韻 === '蒸') {
-        const { 呼 } = this;
-        if ([...'幫滂並明'].includes(母) || 呼 === '合') {
-          return 'B'; // 幫組、合口爲 B 類。注意「憶」、「抑」爲 B、C 類對立，「抑」爲 B 類，但此處無法區分二者
-        }
-        return 'C';
-      }
-      if (!重紐韻.includes(韻)) {
-        return 'C';
-      }
-      if (韻鏡等 === 4) {
-        return 'A';
-      }
-      if (韻鏡等 === 3) {
-        return 'B';
-      }
-      throw new Error('error');
+    if (切韻等 !== '三' || !鈍音母.includes(母)) {
+      return null;
     }
-    return null;
+    if (韻 === '幽') {
+      const { 轉號, 上位, 右位 } = this;
+      if ([...'幫滂並明'].includes(母) || (轉號 === 37 && 上位 === 4 && 右位 === 10)) {
+        return 'B'; // 幫組、「惆」爲 B 類。注意「飍」、「烋」爲 A、B 類對立，「烋」爲 B 類，但此處無法區分二者
+      }
+      return 'A';
+    }
+    if (韻 === '蒸') {
+      const { 呼 } = this;
+      if ([...'幫滂並明'].includes(母) || 呼 === '合') {
+        return 'B'; // 幫組、合口爲 B 類。注意「憶」、「抑」爲 B、C 類對立，「抑」爲 B 類，但此處無法區分二者
+      }
+      return 'C';
+    }
+    if (!重紐韻.includes(韻)) {
+      return 'C';
+    }
+    if (韻鏡等 === 4) {
+      return 'A';
+    }
+    if (韻鏡等 === 3) {
+      return 'B';
+    }
+    throw new Error('error');
   }
 
   to音韻地位() {
@@ -286,10 +281,7 @@ const _轉號上位右位2韻 = (轉號: number, 上位: number, 右位: number)
         return '真';
       }
       if (韻鏡等 === 2) {
-        if (raw聲 === '平' || raw聲 === '入') {
-          return '臻';
-        }
-        return '真';
+        return '臻';
       }
       throw new Error('error');
     case 18:
@@ -311,8 +303,9 @@ const _轉號上位右位2韻 = (轉號: number, 上位: number, 右位: number)
       }
       if (韻鏡等 === 2) {
         if (
-          (轉號 === 22 && 上位 === 2 && (右位 === 13 || 右位 === 16)) || // 「恮」、「栓」。TODO: 13 似應為 14
-          (轉號 === 22 && 上位 === 14 && 右位 === 13) // 「茁」
+          轉號 === 22 &&
+          ((上位 === 2 && (右位 === 13 || 右位 === 16)) || // 「恮」、「栓」。TODO: 13 似應為 14
+            (上位 === 14 && 右位 === 13)) // 「茁」
         ) {
           return '仙'; // 山、刪、仙在二等混排
         }
@@ -353,7 +346,7 @@ const _轉號上位右位2韻 = (轉號: number, 上位: number, 右位: number)
       if (韻鏡等 === 4) {
         return '蕭';
       }
-      throw new Error('error');
+      throw new Error(`invalid 韻鏡等 ${韻鏡等}`);
     case 26:
       return '宵';
     case 27:
@@ -425,7 +418,7 @@ const _轉號上位右位2韻 = (轉號: number, 上位: number, 右位: number)
       if (韻鏡等 === 4) {
         return '添';
       }
-      throw new Error('error');
+      throw new Error(`invalid 韻鏡等 ${韻鏡等}`);
     case 40:
       if (韻鏡等 === 1) {
         return '談';
@@ -439,7 +432,7 @@ const _轉號上位右位2韻 = (轉號: number, 上位: number, 右位: number)
       if (韻鏡等 === 4) {
         return '鹽';
       }
-      throw new Error('error');
+      throw new Error(`invalid 韻鏡等 ${韻鏡等}`);
     case 41:
       return '凡';
     case 42:
@@ -672,15 +665,19 @@ const _母類呼韻聲2轉號 = (母: string, 呼: string | null, 類: string | 
       } else if (韻鏡等 === 4) {
         return 40;
       }
-      throw new Error('error');
+      throw new Error(`韻鏡等 ${韻鏡等} invalid for 鹽韻`);
     case '覃':
     case '咸':
     case '添':
       return 39;
     case '談':
     case '銜':
-    case '嚴':
       return 40;
+    case '嚴':
+      if (韻鏡等 === 3) {
+        return 40;
+      }
+      throw new Error(`韻鏡等 ${韻鏡等} invalid for 嚴韻`);
     case '凡':
       return 41;
     case '登':

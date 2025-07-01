@@ -236,9 +236,9 @@ const _轉號上位右位2韻 = (轉號: number, 上位: number, 右位: number)
         if (raw聲 === '去') {
           return '祭';
         }
-        return '咍';
+        return '咍'; // 咍韻三等平上聲均為特殊字，而咍韻三等去聲恰好無字，該處所排入字全為祭韻字。祭韻字佔用去聲位
       }
-      throw new Error('error');
+      throw new Error(`invalid 韻鏡等 ${韻鏡等}`);
     case 14:
       if (raw聲 === '入') {
         return '夬';
@@ -256,7 +256,7 @@ const _轉號上位右位2韻 = (轉號: number, 上位: number, 右位: number)
         if (raw聲 === '去') {
           return '祭';
         }
-        throw new Error('error');
+        throw new Error(`invalid combination 轉 14 韻鏡三等${raw聲}聲`); // 祭韻字佔用去聲位
       }
       throw new Error('error');
     case 15:
@@ -302,13 +302,6 @@ const _轉號上位右位2韻 = (轉號: number, 上位: number, 右位: number)
         return '仙';
       }
       if (韻鏡等 === 2) {
-        if (
-          轉號 === 22 &&
-          ((上位 === 2 && (右位 === 13 || 右位 === 16)) || // 「恮」、「栓」。TODO: 13 似應為 14
-            (上位 === 14 && 右位 === 13)) // 「茁」
-        ) {
-          return '仙'; // 山、刪、仙在二等混排
-        }
         if (raw聲 === '入') {
           return '刪';
         }
@@ -402,7 +395,7 @@ const _轉號上位右位2韻 = (轉號: number, 上位: number, 右位: number)
         }
         return '幽';
       }
-      throw new Error('error');
+      throw new Error(`invalid 韻鏡等 ${韻鏡等}`);
     case 38:
       return '侵';
     case 39:

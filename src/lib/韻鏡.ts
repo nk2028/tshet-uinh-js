@@ -37,7 +37,7 @@ export class 韻鏡位置 {
 
   get 描述() {
     const { 轉號, 上位, 右位 } = this;
-    return `韻鏡位置(${轉號}, ${上位}, ${右位})`;
+    return `(${轉號},${上位},${右位})`;
   }
 
   get 韻鏡等() {
@@ -179,6 +179,10 @@ export class 韻鏡位置 {
   to音韻地位() {
     const { 母, 呼, 切韻等, 類, 韻, 聲 } = this;
     return new 音韻地位(母, 呼, 切韻等, 類, 韻, 聲);
+  }
+
+  等於(other: 韻鏡位置) {
+    return this.轉號 === other.轉號 && this.上位 === other.上位 && this.右位 === other.右位;
   }
 }
 

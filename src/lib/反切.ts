@@ -1,3 +1,4 @@
+import { defaultLogger } from './StringLogger';
 import { 音韻地位 } from './音韻地位';
 import { 呼韻搭配, 等母搭配, 等韻搭配, 鈍音母 } from './音韻屬性常量';
 
@@ -5,42 +6,59 @@ const 重紐韻 = '支脂祭真仙宵清侵鹽';
 
 export const 執行反切 = (上字音韻地位: 音韻地位, 下字音韻地位: 音韻地位): 音韻地位[] => {
   const { 母, 組, 呼: 上字呼, 等: 上字等, 類: 上字類 } = 上字音韻地位;
+  defaultLogger.log(`反切上字為${母}母，故被切字為${母}母`);
+
   const { 韻, 聲, 呼: 下字呼, 組: 下字組, 等: 下字等 } = 下字音韻地位;
+  defaultLogger.log(`反切下字為${韻}韻${聲}聲，故被切字為${韻}韻${聲}聲`);
 
   let 呼;
   if (組 === '幫') {
     呼 = null;
+    defaultLogger.log('被切字為幫組，故呼的值為 null');
   } else if (呼韻搭配.中立.includes(韻)) {
     呼 = null;
+    defaultLogger.log(`被切字為${韻}韻，屬於開合中立的韻，故呼的值為 null`);
   } else if (呼韻搭配.開.includes(韻)) {
     呼 = '開';
+    defaultLogger.log(`被切字為${韻}韻，${韻}韻為開口，故被切字為開口`);
   } else if (呼韻搭配.合.includes(韻)) {
     呼 = '合';
+    defaultLogger.log(`被切字為${韻}韻，${韻}韻為合口，故被切字為合口`);
   } else if (母 === '云') {
     呼 = '合';
+    defaultLogger.log('被切字為云母，云母為合口，故被切字為合口');
   } else {
     if (上字呼 === '開' && 下字呼 === '開') {
       呼 = '開';
+      defaultLogger.log('反切上下字均為開口，故被切字為開口');
     } else if (下字呼 === '合') {
       呼 = '合';
+      defaultLogger.log('反切下字為合口，故被切字為合口');
     } else if (上字呼 === '合' && 下字組 === '幫') {
-      呼 = '合'; // 上字為合口，下字為幫組
+      呼 = '合';
+      defaultLogger.log('反切上字為合口，下字為幫組，故被切字為合口');
     } else {
-      呼 = '開合'; // 無法確定，可能為開口或合口
+      呼 = '開合';
+      defaultLogger.log('無法確定被切字的呼，可能為開口或合口');
     }
   }
 
   let 等;
   if (等韻搭配.一.includes(韻)) {
     等 = '一';
+    defaultLogger.log(`被切字為${韻}韻，${韻}韻為一等，故被切字為一等`);
   } else if (等韻搭配.二.includes(韻)) {
     等 = '二';
+    defaultLogger.log(`被切字為${韻}韻，${韻}韻為二等，故被切字為二等`);
   } else if (等韻搭配.三.includes(韻)) {
     等 = '三';
+    defaultLogger.log(`被切字為${韻}韻，${韻}韻為三等，故被切字為三等`);
   } else if (等韻搭配.四.includes(韻)) {
     等 = '四';
+    defaultLogger.log(`被切字為${韻}韻，${韻}韻為四等，故被切字為四等`);
   } else if (下字等 === '三') {
-    等 = '三'; // 下字為三等，故被切字為三等
+    等 = '三';
+    defaultLogger.log('反切下字為三等，故被切字為三等');
   } else if (上字等 !== '三' && 下字等 !== '三') {
     if (等韻搭配.一三.includes(韻)) {
       等 = '一';
@@ -95,8 +113,10 @@ export const 執行反切 = (上字音韻地位: 音韻地位, 下字音韻地�
   } else {
     if (上字類 === 'A') {
       類 = 'A';
+      defaultLogger.log('反切上字為 A 類，故被切字為 A 類');
     } else if (上字類 === 'B') {
       類 = 'B';
+      defaultLogger.log('反切上字為 B 類，故被切字為 B 類');
     } else if (下字音韻地位.屬於('A類 或 以母 或 精組')) {
       類 = 'A'; // 下字為重紐A類、以母或精組，被切字為重紐A類
     } else if (下字音韻地位.屬於('B類 或 云母')) {

@@ -124,7 +124,7 @@ export const 執行反切 = (上字音韻地位: 音韻地位, 下字音韻地�
     defaultLogger.log('被切字為庚韻，故被切字為 B 類');
   } else if (!重紐韻.includes(韻)) {
     類 = 'C';
-    defaultLogger.log('被切字非重紐韻，故被切字為 C 類');  // TODO: confirm this
+    defaultLogger.log('被切字非重紐韻，故被切字為 C 類'); // TODO: confirm this
   } else if (母 === '云') {
     類 = 'B';
     defaultLogger.log('被切字為云母，故被切字為 B 類');

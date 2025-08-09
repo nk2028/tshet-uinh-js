@@ -15,6 +15,7 @@ yarn.lock
 /docs
 
 /prepare/data.csv
+/prepare/韻鏡（古逸叢書本）.csv
 /prepare/v2.csv
 
 /src/data/raw/

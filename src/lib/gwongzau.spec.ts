@@ -26,7 +26,7 @@ test('可以為反切結果給出解釋', t => {
     return 韻鏡位置2字頭Map.get(key);
   };
 
-  for (const line of readFileSync('fanqie_test_new/韻鏡（古逸叢書本）.csv', { encoding: 'utf8' }).trimEnd().split('\n')) {
+  for (const line of readFileSync('prepare/韻鏡（古逸叢書本）.csv', { encoding: 'utf8' }).trimEnd().split('\n')) {
     const [字頭, 轉號, 上位, 右位] = line.split(',');
     const key = `${轉號}-${上位}-${右位}`;
     韻鏡位置2字頭Map.set(key, 字頭);

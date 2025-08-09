@@ -102,7 +102,7 @@ export const 執行反切 = (上字音韻地位: 音韻地位, 下字音韻地�
   let 類;
   if (等 !== '三' || !鈍音母.includes(母)) {
     類 = null;
-    defaultLogger.log('被切字非三等或母非鈍音母，故類的值為 null');
+    defaultLogger.log('被切字非三等或非鈍音母，故類的值為 null');
   } else if (韻 === '幽') {
     if (組 === '幫') {
       類 = 'B'; // 幫組、「惆」、「烋」爲 B 類

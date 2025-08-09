@@ -183,7 +183,7 @@ export class 韻鏡位置 {
       return null;
     }
     if ([...'模侯尤'].includes(韻)) {
-      defaultLogger.log(`韻${韻}無需指定呼`);
+      defaultLogger.log(`${韻}韻無需指定呼`);
       return null;
     }
     const 呼 = 轉呼[轉號 - 1];
@@ -248,7 +248,7 @@ export class 韻鏡位置 {
   to音韻地位() {
     const { 母, 呼, 切韻等, 類, 韻, 聲 } = this;
     const 當前音韻地位 = new 音韻地位(母, 呼, 切韻等, 類, 韻, 聲);
-    defaultLogger.log(`故韻鏡位置 ${this.描述} 對應的切韻音系音韻地位為${當前音韻地位.描述}`);
+    defaultLogger.log(`故韻鏡位置 ${this.描述} 對應的切韻音系音韻地位為「${當前音韻地位.描述}」`);
     return 當前音韻地位;
   }
 

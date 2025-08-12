@@ -11,7 +11,7 @@ A JavaScript library for the Qieyun (Tshet-uinh) phonological system
 Browser:
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/tshet-uinh@0.15.2"></script>
+<script src="https://cdn.jsdelivr.net/npm/tshet-uinh@0.15.1"></script>
 ```
 
 Node.js:

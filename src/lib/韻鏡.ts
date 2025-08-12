@@ -178,12 +178,7 @@ export class 韻鏡位置 {
   @cache
   get 呼() {
     const { 轉號, 韻, 母 } = this;
-    if ([...'幫滂並明'].includes(母)) {
-      defaultLogger.log(`${母}母無需指定呼`);
-      return null;
-    }
-    if ([...'模侯尤'].includes(韻)) {
-      defaultLogger.log(`${韻}韻無需指定呼`);
+    if ([...'幫滂並明'].includes(母) || [...'模侯尤'].includes(韻)) {
       return null;
     }
     const 呼 = 轉呼[轉號 - 1];
@@ -208,12 +203,7 @@ export class 韻鏡位置 {
   @cache
   get 類() {
     const { 韻鏡等, 切韻等, 韻, 母 } = this;
-    if (切韻等 !== '三') {
-      defaultLogger.log(`非切韻三等，無需指定類`);
-      return null;
-    }
-    if (!鈍音母.includes(母)) {
-      defaultLogger.log(`非鈍音母，無需指定類`);
+    if (切韻等 !== '三' || !鈍音母.includes(母)) {
       return null;
     }
     if (韻 === '幽') {

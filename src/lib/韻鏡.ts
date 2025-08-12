@@ -187,7 +187,9 @@ export class 韻鏡位置 {
       return null;
     }
     const 呼 = 轉呼[轉號 - 1];
-    defaultLogger.log(`第 ${轉號} 轉對應的呼為${呼}`);
+    if (呼 !== null) {
+      defaultLogger.log(`第 ${轉號} 轉對應的呼為${呼}`);
+    }
     return 呼;
   }
 

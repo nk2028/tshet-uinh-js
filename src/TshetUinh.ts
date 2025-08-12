@@ -12,3 +12,5 @@ export { 韻鏡位置, 音韻地位2韻鏡位置 } from './lib/韻鏡';
 export * as 音韻屬性常量 from './lib/音韻屬性常量';
 
 export { 執行反切 } from './lib/反切';
+
+export { StringLogger, defaultLogger } from './lib/StringLogger';

@@ -12,12 +12,8 @@ export const 執行反切 = (上字音韻地位: 音韻地位, 下字音韻地�
   defaultLogger.log(`反切下字為${韻}韻${聲}聲，故被切字為${韻}韻${聲}聲`);
 
   let 呼;
-  if (組 === '幫') {
+  if (組 === '幫' || 呼韻搭配.中立.includes(韻)) {
     呼 = null;
-    defaultLogger.log('被切字為幫組，故呼的值為 null');
-  } else if (呼韻搭配.中立.includes(韻)) {
-    呼 = null;
-    defaultLogger.log(`被切字為${韻}韻，屬於開合中立的韻，故呼的值為 null`);
   } else if (呼韻搭配.開.includes(韻)) {
     呼 = '開';
     defaultLogger.log(`被切字為${韻}韻，${韻}韻為開口，故被切字為開口`);
@@ -102,7 +98,6 @@ export const 執行反切 = (上字音韻地位: 音韻地位, 下字音韻地�
   let 類;
   if (等 !== '三' || !鈍音母.includes(母)) {
     類 = null;
-    defaultLogger.log('被切字非三等或非鈍音母，故類的值為 null');
   } else if (韻 === '幽') {
     if (組 === '幫') {
       類 = 'B'; // 幫組、「惆」、「烋」爲 B 類

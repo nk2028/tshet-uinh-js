@@ -72,13 +72,6 @@ export class 韻鏡位置 {
   }
 
   @cache
-  get 韻鏡等漢字() {
-    // TODO: remove this method
-    const { 韻鏡等 } = this;
-    return [...'一二三四'][韻鏡等 - 1];
-  }
-
-  @cache
   get 韻() {
     const { 轉號, 上位, 右位 } = this;
     return 轉號上位右位2韻(轉號, 上位, 右位);
@@ -87,6 +80,7 @@ export class 韻鏡位置 {
   @cache
   get 切韻等() {
     const { 轉號, 上位, 右位, 韻鏡等, 韻 } = this;
+
     if (轉號 === 6 && 上位 === 12 && 右位 === 7) {
       defaultLogger.log(`韻鏡地位 ${this.描述}（即「地」字）為特殊情況，對應切韻四等`);
       return '四'; // 「地」字為真四等
@@ -111,7 +105,7 @@ export class 韻鏡位置 {
       return '三'; // 「生」、「省」、「索」、「㵾」、「柵」莊三化二
     }
 
-    const { 韻鏡等漢字 } = this;
+    const 韻鏡等漢字 = [...'一二三四'][韻鏡等 - 1];
     const shouldAdd一般情況 = 韻鏡等 === 2 || 韻鏡等 === 4;
     defaultLogger.log(`韻鏡${韻鏡等漢字}等對應切韻${韻鏡等漢字}等${shouldAdd一般情況 ? '（一般情況）' : ''}`);
     return 韻鏡等漢字;
@@ -230,10 +224,10 @@ export class 韻鏡位置 {
     if (韻 === '幽') {
       const { 轉號, 上位, 右位 } = this;
       if ([...'幫滂並明'].includes(母) || (轉號 === 37 && 上位 === 4 && 右位 === 10)) {
-        defaultLogger.log('TODO');
+        defaultLogger.log(`幽韻幫組及「惆」字對應 B 類。注意「飍」、「烋」為 A、B 類對立，「烋」為 B 類，但此處無法區分二者`);
         return 'B'; // 幫組、「惆」為 B 類。注意「飍」、「烋」為 A、B 類對立，「烋」為 B 類，但此處無法區分二者
       }
-      defaultLogger.log('TODO');
+      defaultLogger.log(`幽韻非幫組且非「惆」字對應 A 類`);
       return 'A';
     }
     if (韻 === '蒸') {
@@ -339,10 +333,10 @@ const 轉號上位右位2韻 = (轉號: number, 上位: number, 右位: number) 
       }
       if (韻鏡等 === 3) {
         if (raw聲 === '去') {
-          defaultLogger.log('TODO');
+          defaultLogger.log(`第 ${轉號} 轉、去聲、韻鏡三等對應祭韻`);
           return '祭';
         }
-        defaultLogger.log('TODO');
+        defaultLogger.log(`第 ${轉號} 轉、平上聲、韻鏡三等對應咍韻`);
         return '咍'; // 咍韻三等平上聲均為特殊字，而咍韻三等去聲恰好無字，該處所排入字全為祭韻字。祭韻字佔用去聲位
       }
       throw new Error(`invalid 韻鏡等 ${韻鏡等}`);
@@ -365,7 +359,7 @@ const 轉號上位右位2韻 = (轉號: number, 上位: number, 右位: number) 
       }
       if (韻鏡等 === 3) {
         if (raw聲 === '去') {
-          defaultLogger.log('TODO');
+          defaultLogger.log(`第 ${轉號} 轉、去聲、韻鏡三等對應祭韻`);
           return '祭';
         }
         throw new Error(`invalid combination 轉 14 韻鏡三等${raw聲}聲`); // 祭韻字佔用去聲位
@@ -379,11 +373,11 @@ const 轉號上位右位2韻 = (轉號: number, 上位: number, 右位: number) 
       }
       if (raw聲 === '去') {
         if (韻鏡等 === 1) {
-          defaultLogger.log('TODO');
+          defaultLogger.log(`第 ${轉號} 轉、去聲、韻鏡一等對應泰韻`);
           return '泰';
         }
         if (韻鏡等 === 4) {
-          defaultLogger.log('TODO');
+          defaultLogger.log(`第 ${轉號} 轉、去聲、韻鏡四等對應祭韻`);
           return '祭';
         }
       }
@@ -427,10 +421,10 @@ const 轉號上位右位2韻 = (轉號: number, 上位: number, 右位: number) 
       }
       if (韻鏡等 === 2) {
         if (raw聲 === '入') {
-          defaultLogger.log('TODO');
+          defaultLogger.log(`第 ${轉號} 轉、韻鏡二等對應山韻，但入聲位處刪、山韻排反，實際為刪韻`);
           return '刪';
         }
-        defaultLogger.log('TODO');
+        defaultLogger.log(`第 ${轉號} 轉、韻鏡二等對應山韻`);
         return '山';
       }
       throw new Error('error');
@@ -450,10 +444,10 @@ const 轉號上位右位2韻 = (轉號: number, 上位: number, 右位: number) 
       }
       if (韻鏡等 === 2) {
         if (raw聲 === '入') {
-          defaultLogger.log('TODO');
+          defaultLogger.log(`第 ${轉號} 轉、韻鏡二等對應刪韻，但入聲位處刪、山韻排反，實際為山韻`);
           return '山';
         }
-        defaultLogger.log('TODO');
+        defaultLogger.log(`第 ${轉號} 轉、韻鏡二等對應刪韻`);
         return '刪';
       }
       throw new Error('error');
@@ -543,7 +537,7 @@ const 轉號上位右位2韻 = (轉號: number, 上位: number, 右位: number) 
           defaultLogger.log(`第 ${轉號} 轉、韻鏡四等有尤、幽二韻混排，其中齒音與以母為尤韻`);
           return '尤'; // 尤、幽韻在韻鏡四等混排，齒音與以母為尤韻
         }
-        defaultLogger.log('TODO');
+        defaultLogger.log(`第 ${轉號} 轉、韻鏡四等有尤、幽二韻混排，其中非齒音且非以母為幽韻`);
         return '幽';
       }
       throw new Error(`invalid 韻鏡等 ${韻鏡等}`);

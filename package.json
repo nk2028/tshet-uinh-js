@@ -1,6 +1,6 @@
 {
   "name": "tshet-uinh",
-  "version": "0.15.1",
+  "version": "0.15.2",
   "description": "A JavaScript library for the Qieyun phonological system",
   "main": "index.js",
   "types": "index.d.ts",

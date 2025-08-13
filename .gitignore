@@ -16,6 +16,7 @@ yarn.lock
 
 /prepare/data.csv
 /prepare/韻鏡（古逸叢書本）.csv
+/prepare/王三反切音韻地位表.csv
 /prepare/v2.csv
 
 /src/data/raw/

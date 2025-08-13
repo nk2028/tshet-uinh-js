@@ -18,11 +18,11 @@ test('可以正常執行反切', t => {
     .map(line => line.split(','));
 
   for (const [
-    小韻號,
     ,
     ,
     ,
-    頁號,
+    ,
+    ,
     ,
     ,
     ,
@@ -54,29 +54,7 @@ test('可以正常執行反切', t => {
     ,
     ,
     音節合法性強合法則留空,
-    ,
-    ,
-    ,
-    ,
-    ,
-    ,
-    ,
-    ,
-    ,
-    ,
-    ,
-    ,
-    ,
-    ,
-    ,
-    ,
-    ,
-    備註,
   ] of data) {
-    void 小韻號;
-    void 頁號;
-    void 備註;
-
     if (!首字校後 || !上字校後 || !下字校後) continue;
     if (!被切字聲母 || !上字聲母 || !下字聲母) continue;
     if (音節合法性強合法則留空 === '強非法') continue;
@@ -89,27 +67,19 @@ test('可以正常執行反切', t => {
     const 預測音韻地位們 = 執行反切(上字音韻地位, 下字音韻地位);
 
     totalCount += 1;
-
     const hasEqual = 預測音韻地位們.some(預測音韻地位 => 預測音韻地位.等於(被切字音韻地位));
     if (hasEqual) rightCountHasEqual += 1;
-
-    if (!hasEqual) {
-      console.log(
-        `反切 ${首字校後}，${上字校後}${下字校後}反 結果 ${預測音韻地位們.map(p => p.描述).join('、')} 與被切字音韻地位 ${被切字音韻地位.描述} 不匹配`,
-      );
-    }
-
     const exactEqual = 預測音韻地位們.length === 1 && 預測音韻地位們[0].等於(被切字音韻地位);
     if (exactEqual) rightCountExactEqual += 1;
   }
 
   const accuracy = rightCountHasEqual / totalCount;
-  console.log(`反切的準確率（多個結果中至少有一個正確）為 ${accuracy * 100}%`);
-  t.true(accuracy > 0.993, `反切的準確率（多個結果中至少有一個正確）必須大於 99.3%，實際為 ${accuracy * 100}%`);
+  // console.log(`反切的準確率（多個結果中至少有一個正確）為 ${accuracy * 100}%`);
+  t.true(accuracy > 0.994, `反切的準確率（多個結果中至少有一個正確）必須大於 99.4%，實際為 ${accuracy * 100}%`);
 
   const accuracyExactEqual = rightCountExactEqual / totalCount;
-  console.log(`反切的準確率（只給出一個結果且正確）為 ${accuracyExactEqual * 100}%`);
-  t.true(accuracyExactEqual > 0.852, `反切的準確率（只給出一個結果且正確）必須大於 85.2%，實際為 ${accuracyExactEqual * 100}%`);
+  // console.log(`反切的準確率（只給出一個結果且正確）為 ${accuracyExactEqual * 100}%`);
+  t.true(accuracyExactEqual > 0.851, `反切的準確率（只給出一個結果且正確）必須大於 85.1%，實際為 ${accuracyExactEqual * 100}%`);
 });
 
 test('可以為反切結果給出解釋', t => {
@@ -123,12 +93,11 @@ test('可以為反切結果給出解釋', t => {
   defaultLogger.enable = true;
   const 預測音韻地位們 = 執行反切(上字音韻地位, 下字音韻地位);
   const 解釋 = defaultLogger.popAll();
+  // console.log(解釋);
   defaultLogger.enable = false;
 
   const hasEqual = 預測音韻地位們.some(預測音韻地位 => 預測音韻地位.等於(被切字音韻地位));
   t.true(hasEqual, '可以正常反切');
-
-  // console.log(解釋);
   t.true(
     解釋[0] === '反切上字為端母，故被切字為端母' && 解釋[1] === '反切下字為東韻平聲，故被切字為東韻平聲',
     '可以正常為反切結果給出解釋',

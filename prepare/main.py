@@ -81,7 +81,13 @@ def main():
 
     if not os.path.exists('prepare/韻鏡（古逸叢書本）.csv'):
         status = os.system(
-            'curl -LsSo prepare/韻鏡（古逸叢書本）.csv https://raw.githubusercontent.com/nk2028/tshet-uinh-data/main/%E9%9F%BB%E5%9C%96/%E9%9F%BB%E9%8F%A1%EF%BC%88%E5%8F%A4%E9%80%B8%E5%8F%A2%E6%9B%B8%E6%9C%AC%EF%BC%89.csv'
+            'curl -LsSo prepare/韻鏡（古逸叢書本）.csv https://raw.githubusercontent.com/nk2028/tshet-uinh-data/ccc9325/%E9%9F%BB%E5%9C%96/%E9%9F%BB%E9%8F%A1%EF%BC%88%E5%8F%A4%E9%80%B8%E5%8F%A2%E6%9B%B8%E6%9C%AC%EF%BC%89.csv'
+        )
+        assert status == 0, f'Error: curl exited with status code {status}'
+
+    if not os.path.exists('prepare/王三反切音韻地位表.csv'):
+        status = os.system(
+            'curl -LsSo prepare/王三反切音韻地位表.csv https://raw.githubusercontent.com/nk2028/tshet-uinh-data/ccc9325/%E5%8F%8D%E5%88%87%E9%9F%B3%E9%9F%BB%E5%9C%B0%E4%BD%8D/%E7%8E%8B%E4%B8%89%E5%8F%8D%E5%88%87%E9%9F%B3%E9%9F%BB%E5%9C%B0%E4%BD%8D%E8%A1%A8.csv'
         )
         assert status == 0, f'Error: curl exited with status code {status}'
 

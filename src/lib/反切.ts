@@ -2,7 +2,7 @@ import { defaultLogger } from './StringLogger';
 import { 音韻地位 } from './音韻地位';
 import { 呼韻搭配, 等母搭配, 等韻搭配, 鈍音母 } from './音韻屬性常量';
 
-const 重紐韻 = '支脂祭真仙宵清侵鹽';
+const 重紐韻 = [...'支脂祭真仙宵清侵鹽'];
 
 export const 執行反切 = (上字音韻地位: 音韻地位, 下字音韻地位: 音韻地位): 音韻地位[] => {
   const { 母, 組, 呼: 上字呼, 等: 上字等, 類: 上字類 } = 上字音韻地位;
@@ -149,11 +149,8 @@ export const 執行反切 = (上字音韻地位: 音韻地位, 下字音韻地�
       for (const 等_ of 等 === '一三' ? ['一', '三'] : 等 === '二三' ? ['二', '三'] : [等]) {
         try {
           res.push(new 音韻地位(母, 呼_, 等_, 類_, 韻, 聲));
-        } catch (e) {
-          void e;
-          // throw e;
-          // return null;
-          void 0;
+        } catch {
+          void 0; // 忽略無效的音韻地位
         }
       }
     }

@@ -8,7 +8,7 @@ test('可以正常執行反切', t => {
   const data = [
     ['東', '德', '紅', '端一東平', '端開一登入', '匣一東平'],
     ['同', '徒', '紅', '定一東平', '定一模平', '匣一東平'],
-  ];
+  ]; // TODO: populate with full data
 
   let rightCount = 0;
   let wrongCount = 0;

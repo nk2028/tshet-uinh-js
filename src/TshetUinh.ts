@@ -9,4 +9,6 @@ export * as 壓縮表示 from './lib/壓縮表示';
 
 export { 韻鏡位置, 音韻地位2韻鏡位置 } from './lib/韻鏡';
 
+export { 執行反切 } from './lib/反切';
+
 export { StringLogger, defaultLogger } from './lib/StringLogger';

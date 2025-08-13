@@ -7,4 +7,6 @@ export * as 表達式 from './lib/常用表達式';
 
 export * as 壓縮表示 from './lib/壓縮表示';
 
+export { 韻鏡位置, 音韻地位2韻鏡位置 } from './lib/韻鏡';
+
 export { StringLogger, defaultLogger } from './lib/StringLogger';

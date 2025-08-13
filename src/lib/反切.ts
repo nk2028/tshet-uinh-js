@@ -73,10 +73,11 @@ export const 執行反切 = (上字音韻地位: 音韻地位, 下字音韻地�
         等 = '三';
         defaultLogger.log(`被切字為${母}母，${母}母不可能為一等，故被切字為三等`);
       } else if (等母搭配.一二四.includes(母)) {
-        defaultLogger.log(`被切字為${母}母，${母}母不可能為三等，故被切字為一等`);
         等 = '一';
+        defaultLogger.log(`被切字為${母}母，${母}母不可能為三等，故被切字為一等`);
       } else {
-        等 = '一'; // 實際為一、三，此處僅選取第一個
+        等 = '一三';
+        defaultLogger.log('無法確定被切字的等，可能為一等或三等');
       }
     } else if (等韻搭配.二三.includes(韻)) {
       defaultLogger.log(`被切字為${韻}韻，${韻}韻為二等或三等，故被切字為二等或三等`);
@@ -84,10 +85,10 @@ export const 執行反切 = (上字音韻地位: 音韻地位, 下字音韻地�
         等 = '三';
         defaultLogger.log(`被切字為${母}母，${母}母不可能為二等，故被切字為三等`);
       } else if (等母搭配.一二四.includes(母)) {
-        等 = '二'; // 不可能為二等
+        等 = '二';
         defaultLogger.log(`被切字為${母}母，${母}母不可能為三等，故被切字為二等`);
       } else {
-        等 = '二'; // TODO: 實際為二、三，此處僅選取第一個
+        等 = '二三';
         defaultLogger.log('無法確定被切字的等，可能為二等或三等');
       }
     } else {
@@ -143,15 +144,17 @@ export const 執行反切 = (上字音韻地位: 音韻地位, 下字音韻地�
   }
 
   const res = [];
-  for (const 呼_ of 呼 === '開合' ? [...呼] : [呼]) {
-    for (const 類_ of 類 === 'AB' ? [...類] : [類]) {
-      try {
-        res.push(new 音韻地位(母, 呼_, 等, 類_, 韻, 聲));
-      } catch (e) {
-        void e;
-        // throw e;
-        // return null;
-        void 0;
+  for (const 呼_ of 呼 === '開合' ? ['開', '合'] : [呼]) {
+    for (const 類_ of 類 === 'AB' ? ['A', 'B'] : [類]) {
+      for (const 等_ of 等 === '一三' ? ['一', '三'] : 等 === '二三' ? ['二', '三'] : [等]) {
+        try {
+          res.push(new 音韻地位(母, 呼_, 等_, 類_, 韻, 聲));
+        } catch (e) {
+          void e;
+          // throw e;
+          // return null;
+          void 0;
+        }
       }
     }
   }

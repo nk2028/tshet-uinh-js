@@ -9,9 +9,13 @@ test('可以正常執行反切', t => {
     ['東', '德', '紅', '端一東平', '端開一登入', '匣一東平'],
     ['同', '徒', '紅', '定一東平', '定一模平', '匣一東平'],
   ]; // TODO: populate with full data
+  // const data = readFileSync('fanqie_test/ys2.csv', { encoding: 'utf8' })
+  //   .trimEnd()
+  //   .split('\n')
+  //   .map(line => line.split(','));
 
-  let rightCount = 0;
-  let wrongCount = 0;
+  let rightCountHasEqual = 0;
+  let rightCountExactEqual = 0;
 
   for (const [, , , 被切字音韻描述, 上字音韻描述, 下字音韻描述] of data) {
     const 被切字音韻地位 = 音韻地位.from描述(被切字音韻描述);
@@ -21,15 +25,19 @@ test('可以正常執行反切', t => {
     const 預測音韻地位們 = 執行反切(上字音韻地位, 下字音韻地位);
 
     const hasEqual = 預測音韻地位們.some(預測音韻地位 => 預測音韻地位.等於(被切字音韻地位));
-    if (hasEqual) {
-      rightCount += 1;
-    } else {
-      wrongCount += 1;
-    }
+    if (hasEqual) rightCountHasEqual += 1;
+
+    const exactEqual = 預測音韻地位們.length === 1 && 預測音韻地位們[0].等於(被切字音韻地位);
+    if (exactEqual) rightCountExactEqual += 1;
   }
 
-  const accuracy = rightCount / (rightCount + wrongCount);
-  t.true(accuracy > 0.99, '反切的準確率必須大於 99%');
+  const accuracy = rightCountHasEqual / data.length;
+  // console.log(`反切的準確率（多個結果中至少有一個正確）: ${accuracy}`);
+  t.true(accuracy > 0.991, '反切的準確率（多個結果中至少有一個正確）必須大於 99.1%');
+
+  const accuracyExactEqual = rightCountExactEqual / data.length;
+  // console.log(`反切的準確率（只給出一個結果且正確）: ${accuracyExactEqual}`);
+  t.true(accuracyExactEqual > 0.858, '反切的準確率（只給出一個結果且正確）必須大於 85.8%');
 });
 
 test('可以為反切結果給出解釋', t => {

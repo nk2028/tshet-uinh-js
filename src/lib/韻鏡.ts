@@ -106,8 +106,8 @@ export class 韻鏡位置 {
     }
 
     const 韻鏡等漢字 = [...'一二三四'][韻鏡等 - 1];
-    const shouldAdd一般情況 = 韻鏡等 === 2 || 韻鏡等 === 4;
-    defaultLogger.log(`韻鏡${韻鏡等漢字}等對應切韻${韻鏡等漢字}等${shouldAdd一般情況 ? '（一般情況）' : ''}`);
+    const shouldAdd一般情況Str = 韻鏡等 === 2 || 韻鏡等 === 4;
+    defaultLogger.log(`韻鏡${韻鏡等漢字}等對應切韻${韻鏡等漢字}等${shouldAdd一般情況Str ? '（一般情況）' : ''}`);
     return 韻鏡等漢字;
   }
 
@@ -198,7 +198,7 @@ export class 韻鏡位置 {
     }
     const 呼 = 轉呼[轉號 - 1];
     if (呼 !== null) {
-      defaultLogger.log(`第 ${轉號} 轉對應的呼為${呼}`);
+      defaultLogger.log(`第 ${轉號} 轉對應的呼為${呼}口`);
     }
     return 呼;
   }

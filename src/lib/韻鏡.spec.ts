@@ -59,7 +59,7 @@ test('音韻地位與韻鏡位置可以互相轉換', t => {
     try {
       recovered音韻地位 = 當前韻鏡位置.to音韻地位();
     } catch (e) {
-      console.error(`Error when processing 音韻地位 ${當前音韻地位.描述} 韻鏡位置 ${當前韻鏡位置.描述}`);
+      console.error(`Error when processing 音韻地位 ${當前音韻地位.描述} 韻鏡位置 ${當前韻鏡位置.坐標}`);
       throw e;
     }
 
@@ -71,7 +71,7 @@ test('音韻地位與韻鏡位置可以互相轉換', t => {
 
     t.true(
       recovered音韻地位.等於(當前音韻地位),
-      `音韻地位 ${recovered音韻地位.描述} recovered from ${當前韻鏡位置.描述} does not equal to the original 音韻地位 ${當前音韻地位.描述}`,
+      `音韻地位 ${recovered音韻地位.描述} recovered from ${當前韻鏡位置.坐標} does not equal to the original 音韻地位 ${當前音韻地位.描述}`,
     );
   }
 });

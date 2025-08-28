@@ -4,6 +4,8 @@ import { 呼韻搭配, 等母搭配, 等韻搭配, 鈍音母 } from './音韻屬
 
 const 重紐韻 = [...'支脂祭真仙宵清侵鹽'];
 
+// 編寫反切規則參考了潘悟雲《反切行為與反切原則》
+
 const generate呼 = (母: string, 組: string | null, 韻: string, 上字呼: string | null, 下字呼: string | null, 下字組: string | null) => {
   let 呼;
   if (組 === '幫' || 呼韻搭配.中立.includes(韻)) {

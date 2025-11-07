@@ -4,34 +4,34 @@ on:
   release:
     types: [published]
 
+permissions:
+  contents: read
+  id-token: write
+
 jobs:
   publish:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
-    - name: Setup Python
-      uses: actions/setup-python@v5
+    - uses: actions/checkout@v5
+    - uses: actions/setup-python@v6
       with:
-        python-version: '3.12'
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
+        python-version: '3.13'
+    - uses: oven-sh/setup-bun@v2
       with:
-        node-version: '22'
-        registry-url: https://registry.npmjs.org/
+        bun-version: latest
     - name: Install dependencies
-      run: npm ci
+      run: bun i --frozen-lockfile
     - name: Prepare
       run: python prepare/main.py
-    - name: Test
-      run: npm test
+    - name: Build and test
+      run: bun run test
     - name: Publish to npm
       shell: bash
       run: |
         if [[ "$IS_BETA" ]]; then
-          npm publish --tag beta
+          bunx npm publish --tag beta
         else
-          npm publish
+          bunx npm publish
         fi
       env:
-        NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN_TSHET_UINH }}
         IS_BETA: ${{ github.event.release.prerelease && '1' || '' }}

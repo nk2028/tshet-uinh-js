@@ -16,25 +16,23 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
-    - name: Setup Python
-      uses: actions/setup-python@v5
+    - uses: actions/checkout@v5
+    - uses: actions/setup-python@v6
       with:
-        python-version: '3.12'
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
+        python-version: '3.13'
+    - uses: oven-sh/setup-bun@v2
       with:
-        node-version: '22'
+        bun-version: latest
     - name: Install dependencies
-      run: npm ci
+      run: bun i --frozen-lockfile
     - name: Prepare
       run: python prepare/main.py
     - name: Build
-      run: npm run build
+      run: bun run build
     - name: Build documentation
-      run: npm run doc:html
-    - name: Upload Artifact
-      uses: actions/upload-pages-artifact@v3
+      run: bun run doc:html
+    - name: Upload artifact
+      uses: actions/upload-pages-artifact@v4
       with:
         path: "./docs"
     - name: Deploy to GitHub Pages

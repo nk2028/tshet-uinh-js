@@ -125,7 +125,6 @@ export function query音韻地位(地位: 音韻地位): 資料條目[] {
   return m音韻編碼檢索.get(encode音韻編碼(地位))?.map(條目from內部條目) ?? [];
 }
 
-// TODO 更新
 /**
  * 由字頭查出相應的條目，包含音韻地位、反切、釋義等信息。
  *
@@ -135,7 +134,7 @@ export function query音韻地位(地位: 音韻地位): 資料條目[] {
  * @param 選項 查詢選項
  * @returns 查到的所有條目。若查不到條目，則回傳空陣列。
  *
- * @example
+ * @example 基本用法
  * ```typescript
  * > TshetUinh.資料.query字頭('結');
  * [ {
@@ -194,8 +193,11 @@ export function query音韻地位(地位: 音韻地位): 資料條目[] {
  *     釋義上下文: null
  *   }
  * ]
+ * ```
  *
- * > TshetUinh.資料.query字頭('菱');
+ * @example 上下文選項
+ * ```typescript
+ * > TshetUinh.資料.query字頭('菱'); // `上下文` 預設為 `true`
  * [
  *   {
  *     音韻地位: 音韻地位<來開三蒸平>,

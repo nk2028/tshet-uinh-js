@@ -15,7 +15,7 @@ export * as 廣韻 from './廣韻';
 export type { 上下文條目, 資料條目Common } from './common';
 
 /**
- * @see {@link 資料條目Common}
+ * @see {@linkcode 資料條目Common}
  */
 export type 資料條目 = 切韻條目 | 廣韻條目;
 

@@ -2,10 +2,10 @@ import { 條目from內部條目, 資料條目Common } from './common';
 import * as impl from './廣韻impl';
 
 /**
- * @see {@link 資料條目Common}
+ * @see {@linkcode 資料條目Common}
  */
 export interface 廣韻條目 extends 資料條目Common {
-  /** 指示來源，可用其值為 `"廣韻"` 判斷該條目類型為 {@link 廣韻條目} */
+  /** 指示來源，可用其值為 `"廣韻"` 判斷該條目類型為 {@linkcode 廣韻條目} */
   來源: '廣韻';
 }
 
@@ -19,7 +19,7 @@ export function* iter條目(): IterableIterator<廣韻條目> {
 /**
  * 遍歷全部小韻號。
  *
- * 細分小韻（見 {@link get小韻}）拆分為不同小韻，有各自的小韻號。
+ * 細分小韻（見 {@linkcode get小韻}）拆分為不同小韻，有各自的小韻號。
  */
 export function iter小韻號(): IterableIterator<string> {
   return impl.by小韻.keys();
@@ -69,7 +69,7 @@ export function get小韻(小韻號: string): 廣韻條目[] | undefined {
 }
 
 /**
- * 遍歷全部小韻（細分小韻均拆分）。即對資料中全部小韻執行 {@link get小韻}。
+ * 遍歷全部小韻（細分小韻均拆分）。即對資料中全部小韻執行 {@linkcode get小韻}。
  */
 export function* iter小韻(): IterableIterator<廣韻條目[]> {
   for (const 小韻號 of iter小韻號()) {
@@ -85,7 +85,7 @@ export const 原書小韻總數 = impl.by原書小韻.size;
  *
  * 細分小韻（含多個音韻地位的小韻）不拆分，視為同一小韻。
  *
- * @param 原書小韻號 數字，應在 1 至 {@link 原書小韻總數}（含）之間。
+ * @param 原書小韻號 數字，應在 1 至 {@linkcode 原書小韻總數}（含）之間。
  * @returns 該原書小韻所有條目
  */
 export function get原書小韻(原書小韻號: number): 廣韻條目[] | undefined {
@@ -93,7 +93,7 @@ export function get原書小韻(原書小韻號: number): 廣韻條目[] | undef
 }
 
 /**
- * 遍歷全部原書小韻（細分小韻不拆分）。即對資料中全部原書小韻執行 {@link get原書小韻}。
+ * 遍歷全部原書小韻（細分小韻不拆分）。即對資料中全部原書小韻執行 {@linkcode get原書小韻}。
  */
 export function* iter原書小韻(): IterableIterator<廣韻條目[]> {
   for (let i = 1; i <= 原書小韻總數; i++) {

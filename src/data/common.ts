@@ -281,6 +281,7 @@ export function parse字頭詳情(字頭: string): string[] {
   return parse詳情(字頭.split(/([［］｛｝〈〉])/).filter(x => x))[0];
 }
 
+// NOTE 該版本僅適用於反切詳情與字頭詳情（校訂標註皆為單字），若以後支援正文校訂標註，須重寫
 function parse詳情(chars: string[]): string[][] {
   const result: string[][] = [];
   let i = 0;

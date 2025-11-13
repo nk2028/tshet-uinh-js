@@ -5,15 +5,44 @@ import type { 切韻條目 } from './切韻';
 import type { 廣韻條目 } from './廣韻';
 import type { 內部廣韻條目 } from './廣韻impl';
 
-type OmitMethods<T> = Pick<T, { [K in keyof T]: T[K] extends () => void ? never : K }[keyof T]>;
+function memo<T, U, K>(memoKey: (obj: T) => K, areKeysEqual: (oldKey: K, newKey: K) => boolean = Object.is) {
+  // NOTE `_context` is for type checking
+  return function(target: (this: T) => U, _context: ClassGetterDecoratorContext<T> | ClassMethodDecoratorContext<T>) {
+    let cache: U | undefined = undefined;
+    let cachedKey: K | undefined = undefined;
+    let firstRun = true;
+    return function(this: T, ...args: Parameters<typeof target>) {
+      const key = memoKey(this);
+      if (!firstRun && areKeysEqual(key, cachedKey!)) {
+        return cache!;
+      }
+      firstRun = false;
+      cachedKey = key;
+      cache = target.call(this, ...args);
+      return cache;
+    };
+  };
+}
 
+/* eslint-disable @typescript-eslint/no-unsafe-declaration-merging, @typescript-eslint/no-empty-object-type */
+
+interface Supports字頭詳情 {
+  字頭: string;
+}
 /**
  * Mixin for {@linkcode 資料條目Common} and {@linkcode 上下文條目}.
  *
  * NOTE: Despite that 資料條目Common's API is a superset of 上下文條目's,
- * the former class is logically NOT a subtype of the latter, thus a mixin design is preferable.
+ * the former class is logically NOT a subtype of the latter, thus a mixin design for shared functionality is preferable.
+ *
+ * NOTE: We are not using the [subclass factory style mixin](https://www.typescriptlang.org/docs/handbook/mixins.html#how-does-a-mixin-work),
+ * as it would make the code more convoluted than they need to be:
+ * - This is only used internally, with controlled use cases, so simplicity (a single class with a flat prototype) is preferred
+ *   - There are methods (like `expand釋義上下文`) that create instances of its own class, which makes this flatness more of a concern
+ * - Classes with subclass mixins [have to be defined in a particular way](https://github.com/TypeStrong/typedoc/issues/2465) in order for
+ *   the docs to be generated correctly
  */
-interface 字頭詳情Prototype {
+class Supports字頭詳情 {
   /**
    * 取得條目的字頭原貌及校正。
    *
@@ -45,31 +74,35 @@ interface 字頭詳情Prototype {
    * [ '𤿎', '〈𢻹〉' ]
    * ```
    */
-  字頭詳情(): string[];
+  @memo(obj => obj.字頭)
+  get 字頭詳情(): readonly string[] {
+    return parse字頭詳情(this.字頭);
+  }
   /**
    * 字頭原貌。若條目為應補字（原書底本所無），則為 `null`。
    * @see {@linkcode 字頭詳情}
    */
-  字頭原貌(): string | null;
+  get 字頭原貌(): string | null {
+    return this.字頭詳情[0] || null;
+  }
   /**
    * 字頭校正。若條目為應刪字，則為 `null`。
    * @see {@linkcode 字頭詳情}
    */
-  字頭校正(): string | null;
+  get 字頭校正(): string | null {
+    const 詳情 = this.字頭詳情;
+    return 詳情.length === 1 ? 詳情[0] : 詳情[詳情.length - 1].slice(1, -1) || null;
+  }
+}
+function mixin字頭詳情(Class: new(...xs: never[]) => object) {
+  const { constructor, ...descriptors } = Object.getOwnPropertyDescriptors(Supports字頭詳情.prototype);
+  Object.defineProperties(Class.prototype, descriptors);
 }
 
-const 字頭詳情prototype = {
-  字頭詳情(this: 字頭詳情Prototype & { 字頭: string }): string[] {
-    return parse字頭詳情(this.字頭);
-  },
-  字頭原貌(this: 字頭詳情Prototype): string | null {
-    return this.字頭詳情()[0] || null;
-  },
-  字頭校正(this: 字頭詳情Prototype): string | null {
-    const 詳情 = this.字頭詳情();
-    return 詳情.length === 1 ? 詳情[0] : 詳情[詳情.length - 1].slice(1, -1) || null;
-  },
-} as const satisfies 字頭詳情Prototype;
+type 資料條目CommonFields = Pick<
+  資料條目Common,
+  '音韻地位' | '字頭' | '字頭說明' | '小韻號' | '小韻字號' | '韻目' | '反切' | '直音' | '釋義' | '釋義上下文'
+>;
 
 /**
  * 各來源之 {@linkcode 資料!資料條目 | 資料條目 } 所共用的屬性
@@ -79,7 +112,6 @@ const 字頭詳情prototype = {
  * @see {@linkcode 切韻條目.來源}
  * @see {@linkcode 廣韻條目.來源}
  */
-// eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
 export class 資料條目Common {
   音韻地位!: 音韻地位;
   /**
@@ -178,14 +210,15 @@ export class 資料條目Common {
    * [ [ '居' ], [ '列', '（？）' ] ]
    * ```
    */
-  反切詳情(): string[][] {
+  @memo(obj => obj.反切)
+  get 反切詳情(): readonly (readonly string[])[] {
     return this.反切 ? parse反切詳情(this.反切) : [];
   }
   /**
    * 反切原貌。
    * @see {@linkcode 反切詳情}
    */
-  反切原貌(): string | null {
+  get 反切原貌(): string | null {
     return this.反切?.replace(/［.］|〈.〉|（.）|〘.〙|〖.〗|｟.｠|｛|｝/ug, '') ?? null;
   }
   /**
@@ -209,11 +242,11 @@ export class 資料條目Common {
    * '？？'
    * ```
    */
-  反切校正(): string | null {
+  get 反切校正(): string | null {
     if (!this.反切) {
       return null;
     }
-    return this.反切詳情()
+    return this.反切詳情
       .map(chs => (chs.length === 1 ? chs[0] : chs[chs.length - 1].slice(1, -1)))
       .join('');
   }
@@ -239,19 +272,16 @@ export class 資料條目Common {
     return this.釋義上下文.map(x => 資料條目withCloned釋義上下文({ ...this, ...x }));
   }
 }
-// eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging, @typescript-eslint/no-empty-object-type
-export interface 資料條目Common extends 字頭詳情Prototype {}
-Object.assign(資料條目Common.prototype, 字頭詳情prototype);
-
-type 資料條目CommonFields = OmitMethods<Omit<資料條目Common, '原書小韻號'>>;
-
+export interface 資料條目Common extends Supports字頭詳情 {}
+mixin字頭詳情(資料條目Common);
 // XXX This is for better presentation in REPLs, and may be subject to change.
 Object.defineProperty(資料條目Common, 'name', { value: '條目' });
+
+type 上下文條目Fields = Pick<上下文條目, '字頭' | '字頭說明' | '小韻字號' | '釋義'>;
 
 /**
  * 用於 {@linkcode 資料條目Common.釋義上下文 | 釋義上下文} 的條目。僅含必要的欄位。
  */
-// eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
 export class 上下文條目 {
   字頭!: string;
   字頭說明!: string | null;
@@ -259,18 +289,14 @@ export class 上下文條目 {
   釋義!: string | null;
 
   /** @ignore */
-  constructor(
-    raw: Pick<
-      上下文條目,
-      { [K in keyof 上下文條目]: 上下文條目[K] extends () => void ? never : K }[keyof Omit<上下文條目, '主條目'>]
-    >,
-  ) {
+  constructor(raw: 上下文條目Fields) {
     Object.assign(this, raw);
   }
 }
-// eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging, @typescript-eslint/no-empty-object-type
-export interface 上下文條目 extends 字頭詳情Prototype {}
-Object.assign(上下文條目.prototype, 字頭詳情prototype);
+export interface 上下文條目 extends Supports字頭詳情 {}
+mixin字頭詳情(上下文條目);
+
+/* eslint-enable @typescript-eslint/no-unsafe-declaration-merging, @typescript-eslint/no-empty-object-type */
 
 export function parse反切詳情(反切: string): string[][] {
   // NOTE 目前資料中反切無 IDS 字，故可直接用 `...` 折分單字
@@ -312,7 +338,7 @@ function parse詳情(chars: string[]): string[][] {
   return result;
 }
 
-export type 內部上下文條目 = OmitMethods<上下文條目>;
+export type 內部上下文條目 = 上下文條目Fields;
 export type 內部條目Common = Omit<資料條目CommonFields, '音韻地位' | '釋義上下文'> & {
   音韻編碼: string;
   釋義上下文: 內部上下文條目[] | null;

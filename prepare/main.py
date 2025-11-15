@@ -42,8 +42,8 @@ def 編碼_from_描述(描述: str) -> str:
 
 
 def fetch_data(
-    commit: str = '78d77d60b8fa0ed2546ddb43a0ff5ea8744e578f',
-    md5sum: str = '0b6a0cae4991919e57ea62af71405c0d',
+    commit: str = 'f9c19e186448592eb871f69e1be77e4b97e64bec',
+    md5sum: str = '48f2cd431bff93d2183b1908c301882c',
 ):
     if not os.path.exists('prepare/data.csv'):
         status = os.system(

@@ -2,11 +2,11 @@
 
 import comments from '@eslint-community/eslint-plugin-eslint-comments/configs';
 import js from '@eslint/js';
-// @ts-ignore -- import is valid
 import importPlugin from 'eslint-plugin-import';
+import { defineConfig } from 'eslint/config';
 import tseslint from 'typescript-eslint';
 
-export default tseslint.config(
+export default defineConfig(
   { ignores: ['index.js'] },
   {
     files: ['src/**/*.?(c|m)js', '*.?(c|m)js', 'src/**/*.ts'],

@@ -62,6 +62,17 @@ export default tseslint.config(
           allowShortCircuit: true,
         },
       ],
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        {
+          argsIgnorePattern: '^_',
+          caughtErrorsIgnorePattern: '^_',
+          destructuredArrayIgnorePattern: '^_',
+          varsIgnorePattern: '^_',
+          ignoreRestSiblings: true,
+          // reportUsedIgnorePattern: true,
+        },
+      ],
       // NOTE Currently there is no way to allow just strings AND string literals,
       // so unfortunately this rule has to be turned off entirely.
       '@typescript-eslint/no-misused-spread': 'off',

@@ -1,6 +1,6 @@
 {
   "name": "tshet-uinh",
-  "version": "0.16.0-beta.6",
+  "version": "0.16.0-beta.7",
   "description": "A JavaScript library for the Qieyun phonological system",
   "main": "dist/tshet-uinh.js",
   "module": "dist/tshet-uinh.esm.js",
@@ -62,7 +62,7 @@
     "@eslint/js": "^9.39.1",
     "@istanbuljs/nyc-config-typescript": "^1.0.2",
     "@rollup/plugin-typescript": "^12.3.0",
-    "@types/node": "^24.10.0",
+    "@types/node": "^24.10.1",
     "ava": "^6.4.1",
     "dprint": "^0.50.2",
     "eslint": "^9.39.1",
@@ -72,11 +72,11 @@
     "npm-run-all": "^4.1.5",
     "nyc": "^17.1.0",
     "open-cli": "^8.0.0",
-    "rollup": "^4.52.5",
+    "rollup": "^4.53.2",
     "tslib": "^2.8.1",
     "typedoc": "^0.28.14",
     "typescript": "^5.9.3",
-    "typescript-eslint": "^8.46.3"
+    "typescript-eslint": "^8.46.4"
   },
   "files": [
     "dist"

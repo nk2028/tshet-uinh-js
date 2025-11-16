@@ -5,7 +5,7 @@ import * as impl from './廣韻impl';
  * @see {@linkcode 資料條目Common}
  */
 export interface 廣韻條目 extends 資料條目Common {
-  /** 指示來源，可用其值為 `"廣韻"` 判斷該條目類型為 {@linkcode 廣韻條目} */
+  /** 指示來源，可利用其值為 `"廣韻"` 來判斷該條目類型為 {@linkcode 廣韻條目} */
   來源: '廣韻';
 }
 
@@ -36,30 +36,30 @@ export function iter小韻號(): IterableIterator<string> {
  * > TshetUinh.資料.廣韻.get小韻('3708b');
  * [
  *   {
- *     來源: '廣韻',
  *     音韻地位: 音韻地位<影開三B蒸入>,
  *     字頭: '抑',
  *     字頭說明: null,
  *     小韻號: '3708b',
  *     小韻字號: '15',
  *     韻目: '職',
- *     反切: '於力（棘）',
+ *     反切: '於力〖棘〗',
  *     直音: null,
  *     釋義: '按也說文作𢑏从反印',
- *     釋義上下文: null
+ *     釋義上下文: null,
+ *     來源: '廣韻'
  *   },
  *   {
- *     來源: '廣韻',
  *     音韻地位: 音韻地位<影開三B蒸入>,
  *     字頭: '𡊁',
  *     字頭說明: null,
  *     小韻號: '3708b',
  *     小韻字號: '16',
  *     韻目: '職',
- *     反切: '於力（棘）',
+ *     反切: '於力〖棘〗',
  *     直音: null,
  *     釋義: '地名',
- *     釋義上下文: null
+ *     釋義上下文: null,
+ *     來源: '廣韻'
  *   }
  * ]
  * ```
@@ -86,7 +86,7 @@ export const 原書小韻總數 = impl.by原書小韻.size;
  * 細分小韻（含多個音韻地位的小韻）不拆分，視為同一小韻。
  *
  * @param 原書小韻號 數字，應在 1 至 {@linkcode 原書小韻總數}（含）之間。
- * @returns 該原書小韻所有條目
+ * @returns 該原書小韻所有條目。若無該小韻，則回傳 `undefined`
  */
 export function get原書小韻(原書小韻號: number): 廣韻條目[] | undefined {
   return impl.by原書小韻.get(原書小韻號)?.map(條目from內部條目);

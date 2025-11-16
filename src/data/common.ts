@@ -158,6 +158,25 @@ export class 資料條目Common {
     Object.assign(this, raw);
   }
 
+  /**
+   * 解析小韻號的組成部分：原書小韻號、細分號。
+   *
+   * 若為細分小韻，細分號為一個小寫字母（a、b、c 等），否則為空串。
+   *
+   * @returns 二元組，分別為原書小韻號、細分號。
+   *
+   * 多次存取時，回傳值均為同一物件。
+   */
+  @memo(x => x.小韻號)
+  get 小韻號詳情(): readonly [number, string] {
+    const { 小韻號 } = this;
+    if (/[a-z]$/.test(小韻號)) {
+      return [Number(小韻號.slice(0, -1)), 小韻號.slice(-1)];
+    } else {
+      return [Number(小韻號), ''];
+    }
+  }
+
   /** 原書小韻號。即 {@linkcode 小韻號} 去掉結尾字母（細分號） */
   get 原書小韻號(): number {
     return Number(this.小韻號.replace(/[a-z]$/, ''));
@@ -167,8 +186,13 @@ export class 資料條目Common {
    * 解析小韻字號的組成部分：原書字號、增字號。
    *
    * 若為增字，則增字號非零，否則為零。
+   *
+   * @returns 二元組，分別為原書字號、增字號。
+   *
+   * 多次存取時，回傳值均為同一物件。
    */
-  小韻字號詳情(): [number, number] {
+  @memo(x => x.小韻字號)
+  get 小韻字號詳情(): readonly [number, number] {
     const parts = this.小韻字號.split('a');
     if (parts.length === 1) {
       parts.push('');
@@ -181,11 +205,10 @@ export class 資料條目Common {
    *
    * 注意有個別反切原本用字或訛變過程不詳，故校勘中可能含有「？」（全形問號）。
    *
-   * @returns 列表（通常為兩項），一項表示一個字的原貌及校勘，亦為列表，形如 `[原貌, ...校勘]`：
+   * @returns 無反切時為 `null`，否則為兩項的列表，每項表示一個字的原貌及校勘，亦為列表，形如 `[原貌, ...校勘]`：
    * - 首項為原貌；若原書底本中為脫字，則為空串
    * - 其後各項（通常為沒有或僅一項，若分多步改換/訛誤，則為多項）為含校勘標記的校正字；
-   *   含校勘標記是為了指明用字變動的性質（同音切替換/近音切替換/訛字），可用 `.slice(1, -1)` 取得其中的字；
-   *   若為衍字（罕見），則校勘部分僅一項，為 `'｛｝'`
+   *   含校勘標記是為了指明用字變動的性質（同音切替換/近音切替換/訛字），可用 `.slice(1, -1)` 取得其中的字
    *
    * @example
    * ```typescript
@@ -211,8 +234,8 @@ export class 資料條目Common {
    * ```
    */
   @memo(obj => obj.反切)
-  get 反切詳情(): readonly (readonly string[])[] {
-    return this.反切 ? parse反切詳情(this.反切) : [];
+  get 反切詳情(): readonly [readonly string[], readonly string[]] | null {
+    return this.反切 ? parse反切詳情(this.反切) : null;
   }
   /**
    * 反切原貌。
@@ -243,12 +266,7 @@ export class 資料條目Common {
    * ```
    */
   get 反切校正(): string | null {
-    if (!this.反切) {
-      return null;
-    }
-    return this.反切詳情
-      .map(chs => (chs.length === 1 ? chs[0] : chs[chs.length - 1].slice(1, -1)))
-      .join('');
+    return this.反切詳情?.map(chs => (chs.length === 1 ? chs[0] : chs[chs.length - 1].slice(1, -1))).join('') ?? null;
   }
 
   /**
@@ -298,9 +316,9 @@ mixin字頭詳情(上下文條目);
 
 /* eslint-enable @typescript-eslint/no-unsafe-declaration-merging, @typescript-eslint/no-empty-object-type */
 
-export function parse反切詳情(反切: string): string[][] {
+export function parse反切詳情(反切: string): [string[], string[]] {
   // NOTE 目前資料中反切無 IDS 字，故可直接用 `...` 折分單字
-  return parse詳情([...反切]);
+  return parse詳情([...反切]) as [string[], string[]];
 }
 export function parse字頭詳情(字頭: string): string[] {
   // NOTE 目前資料中字頭有 IDS 字，但必定為單字

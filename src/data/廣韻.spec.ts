@@ -48,13 +48,24 @@ test('釋義上下文（若有）長度至少為 2', t => {
   }
 });
 
-test('特殊釋義上下文', t => {
-  const 小韻 = 廣韻.get原書小韻(318)!;
-  // 此二字釋義上下文跳過中間應刪字
-  t.like(小韻[7].釋義上下文, [{ 字頭: '驨' }, { 字頭: '巂' }]);
-  t.like(小韻[9].釋義上下文, [{ 字頭: '驨' }, { 字頭: '巂' }]);
-  // 應刪字上下文
-  t.like(小韻[8].釋義上下文, [{ 字頭: '｛𪈥｝' }, { 字頭: '巂' }]);
+test('釋義上下文展開結果與原條目內容相同', t => {
+  function keyFor條目(條目: 廣韻.廣韻條目): string {
+    return `${條目.原書小韻號}/${條目.小韻字號}`;
+  }
+
+  const by字號 = new Map();
+  for (const 條目 of 廣韻.iter條目()) {
+    const key = keyFor條目(條目);
+    t.false(by字號.has(key));
+    by字號.set(key, 條目);
+  }
+
+  for (const 條目 of 廣韻.iter條目()) {
+    for (const 展開條目 of 條目.expand釋義上下文()) {
+      const key = keyFor條目(展開條目);
+      t.deepEqual(展開條目, by字號.get(key), `expanding ${keyFor條目(條目)} ${條目.字頭}`);
+    }
+  }
 });
 
 test('對照 iter原書小韻 與 iter條目', t => {

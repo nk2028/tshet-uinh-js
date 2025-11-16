@@ -60,8 +60,7 @@ export const by小韻 = new Map<string, 內部廣韻條目[]>();
       各釋義參照.push(釋義參照);
     }
 
-    generate釋義上下文(各條目, 各釋義參照, false);
-    generate釋義上下文(各條目, 各釋義參照, true);
+    generate釋義上下文(各條目, 各釋義參照);
 
     by原書小韻.set(原書小韻號, 各條目);
     for (const 條目 of 各條目) {
@@ -70,15 +69,8 @@ export const by小韻 = new Map<string, 內部廣韻條目[]>();
   }
 })();
 
-function generate釋義上下文(各條目: 內部廣韻條目[], 各釋義參照: string[], forDeletions: boolean) {
-  const isDeletion = (條目: 內部廣韻條目) => 條目.字頭.endsWith('｝');
-  if (forDeletions && !各條目.some(isDeletion)) {
-    return;
-  }
-
-  const shouldInclude = forDeletions ? () => true : (i: number) => !isDeletion(各條目[i]);
-  const 參照string = 各釋義參照.flatMap((x, i) => (shouldInclude(i) ? [x || ' '] : [])).join('');
-  const filtered各條目 = 各條目.filter((_x, i) => shouldInclude(i));
+function generate釋義上下文(各條目: 內部廣韻條目[], 各釋義參照: string[]) {
+  const 參照string = 各釋義參照.map(x => x || ' ').join('');
 
   // 一個無參照條目，後可接若干「上」參照，每項亦均可前接若干「下」參照
   for (const match of 參照string.matchAll(/-* (?:-*\+)*/g)) {
@@ -88,16 +80,13 @@ function generate釋義上下文(各條目: 內部廣韻條目[], 各釋義參�
     if (len === 1) {
       continue;
     }
-    if (forDeletions && !filtered各條目.slice(pos, pos + len).some(isDeletion)) {
-      continue;
-    }
-    const 上下文: 內部上下文條目[] = filtered各條目
-      .slice(pos, pos + len)
-      .map(({ 字頭, 字頭說明, 小韻字號, 釋義 }) => ({ 字頭, 字頭說明, 小韻字號, 釋義 }));
-    for (const 條目 of filtered各條目.slice(pos, pos + len)) {
-      if (forDeletions && !isDeletion(條目)) {
-        continue;
-      }
+    const 上下文: 內部上下文條目[] = 各條目.slice(pos, pos + len).map(({ 字頭, 字頭說明, 小韻字號, 釋義 }) => ({
+      字頭,
+      字頭說明,
+      小韻字號,
+      釋義,
+    }));
+    for (const 條目 of 各條目.slice(pos, pos + len)) {
       條目.釋義上下文 = 上下文;
     }
   }

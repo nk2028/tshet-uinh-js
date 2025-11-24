@@ -13,6 +13,7 @@
     }
   },
   "scripts": {
+    "postinstall": "python prepare/main.py",
     "build": "run-p build:*",
     "build:rollup": "rollup -c",
     "build:types": "npm-dts generate -o dist/tshet-uinh.d.ts",

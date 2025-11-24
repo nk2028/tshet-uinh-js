@@ -2,19 +2,17 @@
   "compilerOptions": {
     "incremental": true,
     "target": "es2023",
-    // NOTE Rollup Typescript plugin complains about "outDir" for some reason (to be investigated)
-    //"outDir": "build/esnext",
-    // NOTE Needed if outDir is not specified
-    "tsBuildInfoFile": "build/tsconfig.tsbuildinfo",
     "rootDir": "src",
     "moduleResolution": "node",
     "module": "esnext",
-    //"declaration": true,
-    "inlineSourceMap": true,
-    "esModuleInterop": true /* Enables emit interoperability between CommonJS and ES Modules via creation of namespace objects for all imports. Implies 'allowSyntheticDefaultImports'. */,
-    "resolveJsonModule": true /* Include modules imported with .json extension. */,
+    "declaration": true,
+    "emitDeclarationOnly": true,
+    "outDir": "dist",
+    "tsBuildInfoFile": "build/tsconfig.tsbuildinfo",
+    "esModuleInterop": true, /* Enables emit interoperability between CommonJS and ES Modules via creation of namespace objects for all imports. Implies 'allowSyntheticDefaultImports'. */
+    "resolveJsonModule": true, /* Include modules imported with .json extension. */
 
-    "strict": true /* Enable all strict type-checking options. */,
+    "strict": true, /* Enable all strict type-checking options. */
 
     /* Strict Type-Checking Options */
     // "noImplicitAny": true /* Raise error on expressions and declarations with an implied 'any' type. */,
@@ -27,14 +25,14 @@
     /* Additional Checks */
     // "noUnusedLocals": true /* Report errors on unused locals. */,
     // "noUnusedParameters": true /* Report errors on unused parameters. */,
-    "noImplicitReturns": true /* Report error when not all code paths in function return a value. */,
-    "noFallthroughCasesInSwitch": true /* Report errors for fallthrough cases in switch statement. */,
+    "noImplicitReturns": true, /* Report error when not all code paths in function return a value. */
+    "noFallthroughCasesInSwitch": true, /* Report errors for fallthrough cases in switch statement. */
 
     /* Debugging Options */
-    "traceResolution": false /* Report module resolution log messages. */,
-    "listEmittedFiles": false /* Print names of generated files part of the compilation. */,
-    "listFiles": false /* Print names of files part of the compilation. */,
-    "pretty": true /* Stylize errors and messages using color and context. */,
+    "traceResolution": false, /* Report module resolution log messages. */
+    "listEmittedFiles": false, /* Print names of generated files part of the compilation. */
+    "listFiles": false, /* Print names of files part of the compilation. */
+    "pretty": true, /* Stylize errors and messages using color and context. */
 
     /* Experimental Options */
     // "experimentalDecorators": true /* Enables experimental support for ES7 decorators. */,

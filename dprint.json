@@ -4,7 +4,8 @@
     "lineWidth": 140,
     "quoteStyle": "preferSingle",
     "quoteProps": "consistent",
-    "module.sortImportDeclarations": "maintain"
+    "module.sortImportDeclarations": "maintain",
+    "module.sortExportDeclarations": "maintain"
   },
   "json": {
   },

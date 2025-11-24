@@ -9,14 +9,14 @@ export default [
     output: [
       {
         file: 'dist/tshet-uinh.js',
-        format: 'umd',
-        name: 'TshetUinh',
+        format: 'es',
         exports: 'named',
         sourcemap: true,
       },
       {
-        file: 'dist/tshet-uinh.esm.js',
-        format: 'es',
+        file: 'dist/tshet-uinh.cjs',
+        format: 'umd',
+        name: 'TshetUinh',
         exports: 'named',
         sourcemap: true,
       },

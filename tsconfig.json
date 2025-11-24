@@ -15,6 +15,7 @@
     // Other Outputs
     "declaration": true,
     "emitDeclarationOnly": true,
+    "noEmitOnError": true,
 
     // Stricter Typechecking Options
     // "noUncheckedIndexedAccess": true,

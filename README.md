@@ -8,10 +8,18 @@ A JavaScript library for the Qieyun (Tshet-uinh) phonological system
 
 ## Usage
 
-Browser:
+Browser (using ES module):
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/tshet-uinh@0.15.1"></script>
+<script type="module">
+  import * as TshetUinh from 'https://cdn.jsdelivr.net/npm/tshet-uinh@0.16.0/dist/tshet-uinh.esm.min.js'
+</script>
+```
+
+Browser (using global variable `TshetUinh`):
+
+```html
+<script src="https://cdn.jsdelivr.net/npm/tshet-uinh@0.16.0"></script>
 ```
 
 Node.js:
@@ -21,7 +29,7 @@ $ npm install tshet-uinh
 ```
 
 ```javascript
-> import * as TshetUinh from 'tshet-uinh';
+import * as TshetUinh from 'tshet-uinh';
 ```
 
 ## Documentation

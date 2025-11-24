@@ -16,7 +16,6 @@
     "build": "run-s build:*",
     "build:rollup": "rollup -c",
     "build:types": "api-extractor run --local && rm -rf dist/index.* dist/*/",
-    "build:test": "tsc -p tsconfig.test.json",
     "fix": "run-s fix:*",
     "fix:format": "dprint fmt 'src/**/*.ts'",
     "fix:lint": "eslint 'src/**/*.ts' --fix",
@@ -24,7 +23,6 @@
     "test:lint": "eslint src",
     "test:format": "dprint check --list-different src/**/*.ts",
     "test:unit": "nyc --silent ava",
-    "watch:build-tests": "tsc -p tsconfig.test.json -w",
     "watch:test": "nyc --silent ava --watch",
     "cov": "run-s build test:unit cov:html cov:lcov && open-cli coverage/index.html",
     "cov:html": "nyc report --reporter=html",
@@ -86,20 +84,20 @@
   "ava": {
     "failFast": true,
     "timeout": "60s",
-    "typescript": {
-      "rewritePaths": {
-        "src/": "build/test/"
-      },
-      "compile": false
-    },
-    "files": [
-      "!build/esnext/**"
+    "extensions": [
+      "ts"
+    ],
+    "nodeArguments": [
+      "--experimental-strip-types"
     ]
   },
   "nyc": {
     "extends": "@istanbuljs/nyc-config-typescript",
+    "include": [
+      "src/**/*.ts"
+    ],
     "exclude": [
-      "**/*.spec.js"
+      "**/*.spec.ts"
     ]
   }
 }

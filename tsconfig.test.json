@@ -1,12 +1,7 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
-    "outDir": "./build/test",
-    "types": ["node"],
-    "declaration": false,
-    "emitDeclarationOnly": false,
-    "incremental": false
+    "types": ["node"]
   },
-  "include": ["./src/**/*.spec.ts"],
   "exclude": []
 }

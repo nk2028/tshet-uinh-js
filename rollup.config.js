@@ -2,20 +2,21 @@
 
 import typescript from '@rollup/plugin-typescript';
 
+/** @type { import('rollup').RollupOptions[] } */
 export default [
   {
     input: 'src/index.ts',
     output: [
       {
         file: 'dist/tshet-uinh.js',
-        format: 'umd',
-        name: 'TshetUinh',
+        format: 'es',
         exports: 'named',
         sourcemap: true,
       },
       {
-        file: 'dist/tshet-uinh.esm.js',
-        format: 'es',
+        file: 'dist/tshet-uinh.cjs',
+        format: 'umd',
+        name: 'TshetUinh',
         exports: 'named',
         sourcemap: true,
       },

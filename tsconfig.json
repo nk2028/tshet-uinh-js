@@ -1,50 +1,52 @@
 {
+  // Visit https://aka.ms/tsconfig to read more about this file
   "compilerOptions": {
-    "incremental": true,
-    "target": "es2023",
-    // NOTE Rollup Typescript plugin complains about "outDir" for some reason (to be investigated)
-    //"outDir": "build/esnext",
-    // NOTE Needed if outDir is not specified
-    "tsBuildInfoFile": "build/tsconfig.tsbuildinfo",
-    "rootDir": "src",
-    "moduleResolution": "node",
-    "module": "esnext",
-    //"declaration": true,
-    "inlineSourceMap": true,
-    "esModuleInterop": true /* Enables emit interoperability between CommonJS and ES Modules via creation of namespace objects for all imports. Implies 'allowSyntheticDefaultImports'. */,
-    "resolveJsonModule": true /* Include modules imported with .json extension. */,
+    // File Layout
+    "rootDir": "./src",
+    "outDir": "./dist",
 
-    "strict": true /* Enable all strict type-checking options. */,
-
-    /* Strict Type-Checking Options */
-    // "noImplicitAny": true /* Raise error on expressions and declarations with an implied 'any' type. */,
-    // "strictNullChecks": true /* Enable strict null checks. */,
-    // "strictFunctionTypes": true /* Enable strict checking of function types. */,
-    // "strictPropertyInitialization": true /* Enable strict checking of property initialization in classes. */,
-    // "noImplicitThis": true /* Raise error on 'this' expressions with an implied 'any' type. */,
-    // "alwaysStrict": true /* Parse in strict mode and emit "use strict" for each source file. */,
-
-    /* Additional Checks */
-    // "noUnusedLocals": true /* Report errors on unused locals. */,
-    // "noUnusedParameters": true /* Report errors on unused parameters. */,
-    "noImplicitReturns": true /* Report error when not all code paths in function return a value. */,
-    "noFallthroughCasesInSwitch": true /* Report errors for fallthrough cases in switch statement. */,
-
-    /* Debugging Options */
-    "traceResolution": false /* Report module resolution log messages. */,
-    "listEmittedFiles": false /* Print names of generated files part of the compilation. */,
-    "listFiles": false /* Print names of files part of the compilation. */,
-    "pretty": true /* Stylize errors and messages using color and context. */,
-
-    /* Experimental Options */
-    // "experimentalDecorators": true /* Enables experimental support for ES7 decorators. */,
-    // "emitDecoratorMetadata": true /* Enables experimental support for emitting type metadata for decorators. */,
-
-    "lib": ["es2023"],
+    // Environment Settings
+    // See also https://aka.ms/tsconfig/module
+    "module": "ESNext",
+    "target": "ES2023",
+    "lib": ["ES2023"],
     "types": [],
-    "typeRoots": ["node_modules/@types", "src/types"]
+
+    // Other Outputs
+    "declaration": true,
+    "emitDeclarationOnly": true,
+    "noEmitOnError": true,
+
+    // Stricter Typechecking Options
+    // "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": true,
+
+    // Style Options
+    "allowUnusedLabels": false,
+    "allowUnreachableCode": false,
+    "noImplicitReturns": true,
+    "noImplicitOverride": true,
+    "noFallthroughCasesInSwitch": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "forceConsistentCasingInFileNames": true,
+
+    // Recommended Options
+    "strict": true,
+    "verbatimModuleSyntax": true,
+    "isolatedModules": true,
+    "noUncheckedSideEffectImports": true,
+    "moduleDetection": "force",
+    "skipLibCheck": true,
+
+    // Additional Options Added
+    // "isolatedDeclarations": true,
+    "moduleResolution": "Bundler",
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "incremental": true,
+    "tsBuildInfoFile": "./build/tsconfig.tsbuildinfo"
   },
-  "include": ["src/**/*.ts"],
-  "exclude": ["**/*.spec.ts"],
+  "include": ["./src/**/*.ts"],
+  "exclude": ["./**/*.spec.ts"],
   "compileOnSave": false
 }

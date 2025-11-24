@@ -2,22 +2,20 @@
   "name": "tshet-uinh",
   "version": "0.16.0-beta.8",
   "description": "A JavaScript library for the Qieyun phonological system",
-  "main": "dist/tshet-uinh.js",
-  "module": "dist/tshet-uinh.esm.js",
-  "types": "dist/tshet-uinh.d.ts",
+  "type": "module",
+  "main": "./dist/tshet-uinh.cjs",
+  "module": "./dist/tshet-uinh.js",
   "exports": {
     ".": {
-      "types": "./dist/tshet-uinh.d.ts",
-      "import": "./dist/tshet-uinh.esm.js",
-      "default": "./dist/tshet-uinh.js"
+      "import": "./dist/tshet-uinh.js",
+      "require": "./dist/tshet-uinh.cjs"
     }
   },
   "scripts": {
     "postinstall": "python prepare/main.py",
-    "build": "run-p build:*",
+    "build": "run-s build:*",
     "build:rollup": "rollup -c",
-    "build:types": "npm-dts generate -o dist/tshet-uinh.d.ts",
-    "build:test": "tsc -p tsconfig.test.json",
+    "build:types": "api-extractor run --local && rm -rf dist/index.* dist/*/",
     "fix": "run-s fix:*",
     "fix:format": "dprint fmt 'src/**/*.ts'",
     "fix:lint": "eslint 'src/**/*.ts' --fix",
@@ -25,7 +23,6 @@
     "test:lint": "eslint src",
     "test:format": "dprint check --list-different src/**/*.ts",
     "test:unit": "nyc --silent ava",
-    "watch:build-tests": "tsc -p tsconfig.test.json -w",
     "watch:test": "nyc --silent ava --watch",
     "cov": "run-s build test:unit cov:html cov:lcov && open-cli coverage/index.html",
     "cov:html": "nyc report --reporter=html",
@@ -35,7 +32,7 @@
     "doc": "run-s doc:dev && open-cli docs/index.html",
     "doc:dev": "typedoc src/index.ts --out docs --lang zh-HK",
     "doc:watch": "typedoc src/index.ts --out docs --lang zh-HK --watch",
-    "doc:html": "typedoc src/index.ts --out docs --lang zh-HK --plugin ./typedoc_cf_analytics.mjs",
+    "doc:html": "typedoc src/index.ts --out docs --lang zh-HK --plugin ./typedoc_cf_analytics.js",
     "reset-hard": "git clean -dfx && git reset --hard && npm i",
     "prepare-release": "run-s reset-hard test cov:check doc:html"
   },
@@ -63,6 +60,7 @@
     "@eslint-community/eslint-plugin-eslint-comments": "^4.5.0",
     "@eslint/js": "^9.39.1",
     "@istanbuljs/nyc-config-typescript": "^1.0.2",
+    "@microsoft/api-extractor": "^7.55.1",
     "@rollup/plugin-typescript": "^12.3.0",
     "@types/node": "^24.10.1",
     "ava": "^6.4.1",
@@ -70,11 +68,11 @@
     "eslint": "^9.39.1",
     "eslint-import-resolver-typescript": "^4.4.4",
     "eslint-plugin-import": "^2.32.0",
-    "npm-dts": "^1.3.13",
     "npm-run-all": "^4.1.5",
     "nyc": "^17.1.0",
     "open-cli": "^8.0.0",
     "rollup": "^4.53.2",
+    "rollup-plugin-delete": "^3.0.1",
     "tslib": "^2.8.1",
     "typedoc": "^0.28.14",
     "typescript": "^5.9.3",
@@ -86,20 +84,20 @@
   "ava": {
     "failFast": true,
     "timeout": "60s",
-    "typescript": {
-      "rewritePaths": {
-        "src/": "build/test/"
-      },
-      "compile": false
-    },
-    "files": [
-      "!build/esnext/**"
+    "extensions": [
+      "ts"
+    ],
+    "nodeArguments": [
+      "--experimental-strip-types"
     ]
   },
   "nyc": {
     "extends": "@istanbuljs/nyc-config-typescript",
+    "include": [
+      "src/**/*.ts"
+    ],
     "exclude": [
-      "**/*.spec.js"
+      "**/*.spec.ts"
     ]
   }
 }

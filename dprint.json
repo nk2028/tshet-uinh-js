@@ -3,7 +3,8 @@
     "arrowFunction.useParentheses": "preferNone",
     "lineWidth": 140,
     "quoteStyle": "preferSingle",
-    "quoteProps": "consistent"
+    "quoteProps": "consistent",
+    "module.sortImportDeclarations": "maintain"
   },
   "json": {
   },

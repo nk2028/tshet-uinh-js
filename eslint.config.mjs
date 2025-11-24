@@ -1,32 +1,48 @@
 // @ts-check
 
-import comments from '@eslint-community/eslint-plugin-eslint-comments/configs';
 import js from '@eslint/js';
-import importPlugin from 'eslint-plugin-import';
+import comments from '@eslint-community/eslint-plugin-eslint-comments/configs';
 import { defineConfig } from 'eslint/config';
+import importPlugin from 'eslint-plugin-import';
 import tseslint from 'typescript-eslint';
 
 export default defineConfig(
-  { ignores: ['index.js'] },
+  { ignores: ['dist/**/*'] },
   {
     files: ['src/**/*.?(c|m)js', '*.?(c|m)js', 'src/**/*.ts'],
     extends: [
       js.configs.recommended,
       // @ts-ignore -- type is valid
       comments.recommended,
+      importPlugin.flatConfigs.recommended,
     ],
+    languageOptions: {
+      parserOptions: {
+        ecmaVersion: 'latest',
+      },
+    },
+    settings: {
+      'import/resolver': {
+        typescript: true,
+        node: true,
+      },
+    },
     rules: {
       '@eslint-community/eslint-comments/disable-enable-pair': ['error', { allowWholeFile: true }],
       '@eslint-community/eslint-comments/no-unused-disable': 'error',
+
+      'import/order': [
+        'error',
+        {
+          'newlines-between': 'always',
+          'alphabetize': { order: 'asc' },
+        },
+      ],
     },
   },
-  // TODO Make eslint-plugin-import work with JS files (like this one).
-  // ...or maybe just ditch this plugin? Part of its functionality is provided by dprint
-  // (sorting imports, but not grouping or adding newlines in between).
   {
     files: ['src/**/*.ts'],
     extends: [
-      importPlugin.flatConfigs.recommended,
       importPlugin.flatConfigs.typescript,
       // ...tseslint.configs.recommended,
       // ...tseslint.configs.recommendedTypeChecked,
@@ -35,17 +51,9 @@ export default defineConfig(
     ],
     languageOptions: {
       parserOptions: {
+        // projectService: true,
         project: './tsconfig.test.json',
-        // projectService: {
-        //   defaultProject: './tsconfig.test.json',
-        // },
         tsconfigRootDir: import.meta.dirname,
-      },
-    },
-    settings: {
-      'import/resolver': {
-        typescript: true,
-        node: true,
       },
     },
     rules: {
@@ -76,14 +84,6 @@ export default defineConfig(
       // NOTE Currently there is no way to allow just strings AND string literals,
       // so unfortunately this rule has to be turned off entirely.
       '@typescript-eslint/no-misused-spread': 'off',
-
-      'import/order': [
-        'error',
-        {
-          'newlines-between': 'always',
-          'alphabetize': { order: 'asc' },
-        },
-      ],
     },
   },
 );

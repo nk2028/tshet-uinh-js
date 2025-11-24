@@ -5,7 +5,8 @@ import test from 'ava';
 import { _UNCHECKED, 音韻地位 } from '../lib/音韻地位';
 
 import { parse字頭詳情 } from './common';
-import { iter音韻地位, query字頭, query音韻地位, 資料條目 } from './資料';
+import { iter音韻地位, query字頭, query音韻地位 } from './資料';
+import type { 資料條目 } from './資料';
 
 test('查「東」字', t => {
   const res = query字頭('東');

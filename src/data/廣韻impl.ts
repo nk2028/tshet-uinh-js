@@ -1,6 +1,6 @@
 import { insertInto } from '../lib/utils';
 
-import { 內部上下文條目, 內部條目Common } from './common';
+import type { 內部上下文條目, 內部條目Common } from './common';
 import raw資料 from './raw/廣韻';
 
 export type 內部廣韻條目 = 內部條目Common & { 來源: '廣韻' };

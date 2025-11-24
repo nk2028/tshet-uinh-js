@@ -1,11 +1,12 @@
 {
-  "extends": "./tsconfig",
+  "extends": "./tsconfig.json",
   "compilerOptions": {
-    "outDir": "build/test",
-    "tsBuildInfoFile": null,
-    "module": "commonjs",
+    "outDir": "./build/test",
+    "types": ["node"],
     "declaration": false,
-    "types": ["node"]
+    "emitDeclarationOnly": false,
+    "incremental": false
   },
+  "include": ["./src/**/*.spec.ts"],
   "exclude": []
 }

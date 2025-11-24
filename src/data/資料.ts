@@ -3,11 +3,12 @@ import { encode音韻編碼 } from '../lib/壓縮表示';
 import { decode音韻編碼unchecked } from '../lib/壓縮表示internal';
 import { 音韻地位 } from '../lib/音韻地位';
 
-import { parse字頭詳情, 內部切韻條目, 條目from內部條目 } from './common';
-import { 切韻條目 } from './切韻';
-import { 廣韻條目 } from './廣韻';
+import { parse字頭詳情, 條目from內部條目 } from './common';
+import type { 內部切韻條目 } from './common';
+import type { 切韻條目 } from './切韻';
+import type { 廣韻條目 } from './廣韻';
 import * as 廣韻impl from './廣韻impl';
-import { 內部廣韻條目 } from './廣韻impl';
+import type { 內部廣韻條目 } from './廣韻impl';
 
 export * as 切韻 from './切韻';
 export * as 廣韻 from './廣韻';

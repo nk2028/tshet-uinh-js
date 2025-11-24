@@ -34,7 +34,7 @@
     "doc": "run-s doc:dev && open-cli docs/index.html",
     "doc:dev": "typedoc src/index.ts --out docs --lang zh-HK",
     "doc:watch": "typedoc src/index.ts --out docs --lang zh-HK --watch",
-    "doc:html": "typedoc src/index.ts --out docs --lang zh-HK --plugin ./typedoc_cf_analytics.mjs",
+    "doc:html": "typedoc src/index.ts --out docs --lang zh-HK --plugin ./typedoc_cf_analytics.js",
     "reset-hard": "git clean -dfx && git reset --hard && npm i",
     "prepare-release": "run-s reset-hard test cov:check doc:html"
   },

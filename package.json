@@ -2,14 +2,13 @@
   "name": "tshet-uinh",
   "version": "0.16.0-beta.8",
   "description": "A JavaScript library for the Qieyun phonological system",
-  "main": "dist/tshet-uinh.js",
-  "module": "dist/tshet-uinh.esm.js",
-  "types": "dist/tshet-uinh.d.ts",
+  "type": "module",
+  "main": "./dist/tshet-uinh.cjs",
+  "module": "./dist/tshet-uinh.js",
   "exports": {
     ".": {
-      "types": "./dist/tshet-uinh.d.ts",
-      "import": "./dist/tshet-uinh.esm.js",
-      "default": "./dist/tshet-uinh.js"
+      "import": "./dist/tshet-uinh.js",
+      "require": "./dist/tshet-uinh.cjs"
     }
   },
   "scripts": {
@@ -35,7 +34,7 @@
     "doc": "run-s doc:dev && open-cli docs/index.html",
     "doc:dev": "typedoc src/index.ts --out docs --lang zh-HK",
     "doc:watch": "typedoc src/index.ts --out docs --lang zh-HK --watch",
-    "doc:html": "typedoc src/index.ts --out docs --lang zh-HK --plugin ./typedoc_cf_analytics.mjs",
+    "doc:html": "typedoc src/index.ts --out docs --lang zh-HK --plugin ./typedoc_cf_analytics.js",
     "reset-hard": "git clean -dfx && git reset --hard && npm i",
     "prepare-release": "run-s reset-hard test cov:check doc:html"
   },

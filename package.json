@@ -15,7 +15,7 @@
     "postinstall": "python prepare/main.py",
     "build": "run-s build:*",
     "build:rollup": "rollup -c",
-    "build:types": "api-extractor run --local && rm -rf dist/index.* dist/*/",
+    "build:types": "api-extractor run --local && bun -e 'await (async f => Bun.write(f, (await Bun.file(f).text()).replace(/^export (?=declare namespace (廣韻|切韻) \\{$)/gm, \"\")))(\"dist/tshet-uinh.d.ts\")' && rm -rf dist/index.* dist/*/",
     "build:test": "tsc -p tsconfig.test.json",
     "fix": "run-s fix:*",
     "fix:format": "dprint fmt 'src/**/*.ts'",

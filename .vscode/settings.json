@@ -1,11 +1,19 @@
 {
   "typescript.tsdk": "node_modules/typescript/lib",
   "typescript.enablePromptUseWorkspaceTsdk": true,
-  "[typescript][javascript][json][jsonc]": {
+  "[typescript]": {
+    "editor.defaultFormatter": "dprint.dprint",
+    "editor.rulers": [140]
+  },
+  "[javascript]": {
+    "editor.defaultFormatter": "dprint.dprint",
+    "editor.rulers": [140]
+  },
+  "[json]": {
     "editor.defaultFormatter": "dprint.dprint"
   },
-  "[typescript][javascript]": {
-    "editor.rulers": [140]
+  "[jsonc]": {
+    "editor.defaultFormatter": "dprint.dprint"
   },
   "files.associations": {
     "*.json": "jsonc",

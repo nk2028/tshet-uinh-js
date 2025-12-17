@@ -12,8 +12,8 @@
     }
   },
   "scripts": {
-    "postinstall": "python prepare/main.py",
-    "build": "run-s build:*",
+    "prebuild": "python prepare/main.py",
+    "build": "run-s prebuild build:*",
     "build:rollup": "rollup -c",
     "build:types": "api-extractor run --local && bun run fix-dts.js",
     "build:test": "tsc -p tsconfig.test.json",

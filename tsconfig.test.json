@@ -2,7 +2,6 @@
   "extends": "./tsconfig",
   "compilerOptions": {
     "outDir": "build/test",
-    "tsBuildInfoFile": null,
     "declaration": false,
     "emitDeclarationOnly": false,
     "types": ["node"]

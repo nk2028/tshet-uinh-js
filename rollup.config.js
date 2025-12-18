@@ -10,15 +10,15 @@ export default [
       // NOTE Specify `dir` and `entryFileNames` instead of `file` to workaround TypeScript plugin's complaint
       // about the difference between the parent directory of `file` and the `outDir` option in TSConfig
       {
-        dir: 'dist',
-        entryFileNames: 'tshet-uinh.js',
+        dir: '.',
+        entryFileNames: 'dist/tshet-uinh.js',
         format: 'es',
         exports: 'named',
         sourcemap: true,
       },
       {
-        dir: 'dist',
-        entryFileNames: 'tshet-uinh.cjs',
+        dir: '.',
+        entryFileNames: 'dist/tshet-uinh.cjs',
         format: 'umd',
         name: 'TshetUinh',
         exports: 'named',

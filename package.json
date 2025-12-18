@@ -82,8 +82,7 @@
     "typescript-eslint": "^8.46.4"
   },
   "files": [
-    "dist",
-    "!dist/types"
+    "dist"
   ],
   "ava": {
     "failFast": true,

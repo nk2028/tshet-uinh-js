@@ -11,5 +11,12 @@
   },
   "[json]": {
     "editor.defaultFormatter": "dprint.dprint"
+  },
+  "[jsonc]": {
+    "editor.defaultFormatter": "dprint.dprint"
+  },
+  "files.associations": {
+    "*.json": "jsonc",
+    "package.json": "json"
   }
 }

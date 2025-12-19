@@ -8,7 +8,8 @@
 *.log
 yarn.lock
 
-/dist/
+/dist/*
+!dist/tshet-uinh.d.cts
 
 /docs
 

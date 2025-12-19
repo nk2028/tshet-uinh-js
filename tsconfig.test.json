@@ -2,9 +2,8 @@
   "extends": "./tsconfig",
   "compilerOptions": {
     "outDir": "build/test",
-    "tsBuildInfoFile": null,
-    "module": "commonjs",
     "declaration": false,
+    "emitDeclarationOnly": false,
     "types": ["node"]
   },
   "exclude": []

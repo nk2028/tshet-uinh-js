@@ -13,6 +13,7 @@
   },
   "scripts": {
     "prebuild": "python prepare/main.py",
+    "prepare": "run-s prebuild build:rollup build:types",
     "build": "run-s prebuild build:*",
     "build:rollup": "rollup -c",
     "build:types": "api-extractor run && bun run fix-dts.js",

@@ -415,6 +415,15 @@
       "default": {
         "logLevel": "warning"
         // "addToApiReportFile": false
+      },
+      // TODO Annotate API status (maybe later)
+      "ae-missing-release-tag": {
+        "logLevel": "none"
+      },
+      "ae-forgotten-export": {
+        // NOTE There are some types intentionally not exported
+        "logLevel": "none",
+        "addToApiReportFile": true
       }
       // "ae-extra-release-tag": {
       //   "logLevel": "warning",
@@ -435,6 +444,18 @@
       "default": {
         "logLevel": "warning"
         // "addToApiReportFile": false
+      },
+      "tsdoc-param-tag-with-invalid-name": {
+        // NOTE Broken with Unicode param names
+        "logLevel": "none"
+      },
+      "tsdoc-param-tag-missing-hyphen": {
+        // NOTE Broken with Unicode param names
+        "logLevel": "none"
+      },
+      "tsdoc-code-span-empty": {
+        // NOTE Broken with code spans with multiple backticks (for code with backticks in it)
+        "logLevel": "none"
       }
       // "tsdoc-link-tag-unescaped-text": {
       //   "logLevel": "warning",

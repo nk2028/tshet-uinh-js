@@ -157,7 +157,7 @@ export class 資料條目Common {
   /** 釋義上下文。包含與該條目相關（如釋義為「上同」「並同」之類時）的若干條目的字頭釋義 */
   釋義上下文!: 上下文條目[] | null;
 
-  /** @ignore */
+  /** @internal */
   constructor(
     raw: 資料條目CommonFields,
   ) {
@@ -315,7 +315,7 @@ export class 上下文條目 {
   小韻字號!: string;
   釋義!: string | null;
 
-  /** @ignore */
+  /** @internal */
   constructor(raw: 上下文條目Fields) {
     Object.assign(this, raw);
   }

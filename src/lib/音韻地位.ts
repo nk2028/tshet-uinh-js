@@ -867,10 +867,16 @@ export class 音韻地位 {
     return this.描述;
   }
 
-  /** @ignore 用於 Object.prototype.toString */
+  /**
+   * 用於 Object.prototype.toString
+   * @internal
+   */
   readonly [Symbol.toStringTag] = '音韻地位';
 
-  /** @ignore 僅用於 Node.js 呈現格式 */
+  /**
+   * 用於 Node.js 呈現格式
+   * @internal
+   */
   [Symbol.for('nodejs.util.inspect.custom')](...args: unknown[]): string {
     const stylize = (...x: unknown[]) => (args[1] as { stylize(...x: unknown[]): string }).stylize(...x);
     return `音韻地位<${stylize(this.描述, 'string')}>`;

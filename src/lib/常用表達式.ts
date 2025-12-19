@@ -9,7 +9,7 @@
  * true
  * ```
  *
- * @module 表達式
+ * @packageDocumentation
  */
 
 import { 呼韻搭配, 等韻搭配 } from './音韻屬性常量';

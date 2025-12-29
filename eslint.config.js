@@ -31,11 +31,17 @@ export default defineConfig(
       '@eslint-community/eslint-comments/disable-enable-pair': ['error', { allowWholeFile: true }],
       '@eslint-community/eslint-comments/no-unused-disable': 'error',
 
+      'import/consistent-type-specifier-style': ['error', 'prefer-top-level'],
       'import/order': [
         'error',
         {
+          'groups': ['builtin', 'external', 'parent', 'sibling', 'index', 'type'],
+          'sortTypesGroup': true,
           'newlines-between': 'always',
-          'alphabetize': { order: 'asc' },
+          'newlines-between-types': 'always',
+          'named': true,
+          'alphabetize': { order: 'asc', orderImportKind: 'asc', caseInsensitive: true },
+          'warnOnUnassignedImports': true,
         },
       ],
     },

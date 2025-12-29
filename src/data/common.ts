@@ -1,4 +1,5 @@
 import { decode音韻編碼unchecked } from '../lib/壓縮表示internal';
+
 import type { 音韻地位 } from '../lib/音韻地位';
 
 import type { 切韻條目 } from './切韻';

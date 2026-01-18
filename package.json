@@ -106,8 +106,5 @@
     "exclude": [
       "**/*.spec.js"
     ]
-  },
-  "dependencies": {
-    "decorator-cache-getter": "^1.0.0"
   }
 }

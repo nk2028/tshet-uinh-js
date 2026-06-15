@@ -13,7 +13,8 @@ yarn.lock
 
 /docs
 
-/prepare/data.csv
-/prepare/v2.csv
+/prepare/guangyun.csv
+/prepare/qieyun.csv
+/prepare/qieyun_*.csv
 
 /src/data/raw/

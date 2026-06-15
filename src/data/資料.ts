@@ -1,10 +1,11 @@
-import { insertInto, insertValuesInto, prependValuesInto } from '../lib/utils';
+import { insertInto, insertValuesInto } from '../lib/utils';
 import { encode音韻編碼 } from '../lib/壓縮表示';
 import { decode音韻編碼unchecked } from '../lib/壓縮表示internal';
 import { 音韻地位 } from '../lib/音韻地位';
 
 import { parse字頭詳情, 內部切韻條目, 條目from內部條目 } from './common';
 import { 切韻條目 } from './切韻';
+import * as 切韻impl from './切韻impl';
 import { 廣韻條目 } from './廣韻';
 import * as 廣韻impl from './廣韻impl';
 import { 內部廣韻條目 } from './廣韻impl';
@@ -23,6 +24,20 @@ type 內部條目 = 內部切韻條目 | 內部廣韻條目;
 
 const m字頭檢索 = new Map<string, 內部條目[]>();
 const m音韻編碼檢索 = new Map<string, 內部條目[]>();
+
+(function 建立切韻索引() {
+  for (const 原書小韻 of 切韻impl.by原書小韻.values()) {
+    for (const 條目 of 原書小韻) {
+      insertInto(m音韻編碼檢索, 條目.音韻編碼, 條目);
+      insertInto(m字頭檢索, 條目.字頭, 條目);
+    }
+  }
+  for (const [條目, 各或體] of 切韻impl.字頭或體by內部條目) {
+    for (const 字 of 各或體) {
+      insertInto(m字頭檢索, 字, 條目);
+    }
+  }
+})();
 
 (function 建立廣韻索引() {
   const by原貌 = new Map<string, 內部條目[]>();
@@ -44,42 +59,6 @@ const m音韻編碼檢索 = new Map<string, 內部條目[]>();
   }
   for (const [字頭原貌, 各條目] of by原貌.entries()) {
     insertValuesInto(m字頭檢索, 字頭原貌, 各條目);
-  }
-})();
-
-// NOTE
-// 此為臨時補充字音（以及作為將來《切韻》資料功能支持的測試）。
-// 等到切韻資料準備好後，會換成完整資料。
-// 小韻號、對應廣韻小韻號亦均為暫定編號，完整資料中會修正。
-(function 字音補充() {
-  const by字頭 = new Map<string, 內部條目[]>();
-  for (
-    const [描述, 字頭, 小韻號, 小韻字號, 對應廣韻小韻號, 韻目, 反切, 釋義] of [
-      ['明三C陽平', '忘', '774', '4', '822', '陽', '武方', '又武放反'],
-      ['云合三B真去', '韻', '2275', '1', '32419', '震', '永賮', '永賮反一'],
-    ] as const
-  ) {
-    const 音韻編碼 = encode音韻編碼(音韻地位.from描述(描述));
-    const record: 內部切韻條目 = {
-      來源: '切韻',
-      音韻編碼,
-      字頭,
-      字頭說明: null,
-      小韻號,
-      小韻字號,
-      對應廣韻小韻號,
-      韻目,
-      反切,
-      直音: null,
-      釋義,
-      釋義上下文: null,
-    };
-    insertInto(by字頭, 字頭, record);
-    insertInto(m音韻編碼檢索, 音韻編碼, record);
-  }
-
-  for (const [字頭, 各條目] of by字頭.entries()) {
-    prependValuesInto(m字頭檢索, 字頭, 各條目);
   }
 })();
 
@@ -119,8 +98,20 @@ export function* iter音韻地位(): IterableIterator<音韻地位> {
  * } ]
  * ```
  */
-export function query音韻地位(地位: 音韻地位): 資料條目[] {
-  return m音韻編碼檢索.get(encode音韻編碼(地位))?.map(條目from內部條目) ?? [];
+export function query音韻地位(地位: 音韻地位, 選項?: QueryOptions): 資料條目[] {
+  const 實際選項: Required<QueryOptions> = { 來源: ['切韻', '廣韻'], ...選項 };
+  const 來源 = new Set(typeof 實際選項.來源 === 'string' ? [實際選項.來源] : 實際選項.來源);
+  return m音韻編碼檢索.get(encode音韻編碼(地位))?.flatMap(條目 => 來源.has(條目.來源) ? [條目from內部條目(條目)] : []) ?? [];
+}
+
+/**
+ * 用於 {@linkcode query音韻地位} 和 {@linkcode query字頭} 的選項
+ */
+export interface QueryOptions {
+  /**
+   * 選擇要查詢的來源文獻，預設為 `['切韻', '廣韻']`
+   */
+  來源?: '切韻' | '廣韻' | ('切韻' | '廣韻')[];
 }
 
 /**
@@ -311,7 +302,7 @@ export function query字頭(字頭: string, 異體字頭: string[], 選項?: Que
 
 export function query字頭(字頭: string, ...args: unknown[]): 資料條目[] {
   let 異體字頭: string[] = [];
-  let 選項: Required<Query字頭Options> = { 上下文: true };
+  let 選項: Required<Query字頭Options> = { 來源: ['切韻', '廣韻'], 上下文: true };
   while (args.length && args.at(-1) === undefined) {
     args.pop();
   }
@@ -330,8 +321,10 @@ export function query字頭(字頭: string, ...args: unknown[]): 資料條目[] 
     }
   }
 
+  const 來源 = new Set(typeof 選項.來源 === 'string' ? [選項.來源] : 選項.來源);
+
   function lookupInternalIndex(字頭: string): 資料條目[] {
-    return m字頭檢索.get(字頭)?.map(條目from內部條目) ?? [];
+    return m字頭檢索.get(字頭)?.flatMap(條目 => 來源.has(條目.來源) ? [條目from內部條目(條目)] : []) ?? [];
   }
 
   function keyFor條目(條目: 資料條目): string {
@@ -394,7 +387,7 @@ export function query字頭(字頭: string, ...args: unknown[]): 資料條目[] 
 /**
  * 用於 {@linkcode query字頭} 的選項
  */
-export interface Query字頭Options {
+export interface Query字頭Options extends QueryOptions {
   /**
    * 結果中是否要包含上下文的條目，預設為 `true`
    */

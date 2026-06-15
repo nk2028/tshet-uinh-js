@@ -85,7 +85,7 @@ test('對照 iter原書小韻 與 iter條目', t => {
 
 test('對照原資料檔與 iter條目', t => {
   const 條目iter = 廣韻.iter條目();
-  for (const line of readFileSync('prepare/data.csv', { encoding: 'utf8' }).trimEnd().split('\n').slice(1)) {
+  for (const line of readFileSync('prepare/guangyun.csv', { encoding: 'utf8' }).trimEnd().split('\n').slice(1)) {
     const [小韻號, 小韻字號, 韻目, 地位描述, 反切, 直音, 字頭, 字頭說明, 釋義] = line.split(',');
 
     const next = 條目iter.next();

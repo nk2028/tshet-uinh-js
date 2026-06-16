@@ -70,6 +70,8 @@ export function* iter音韻地位(): IterableIterator<音韻地位> {
   }
 }
 
+// TODO update docs
+
 // XXX I believe there is a more elegant way to write these overloads (but will the generated documentation keep clean?)
 
 export function query音韻地位(地位: 音韻地位, 選項?: QueryOptions & { 來源: '切韻' }): 切韻條目[];

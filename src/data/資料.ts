@@ -70,6 +70,11 @@ export function* iter音韻地位(): IterableIterator<音韻地位> {
   }
 }
 
+// XXX I believe there is a more elegant way to write these overloads (but will the generated documentation keep clean?)
+
+export function query音韻地位(地位: 音韻地位, 選項?: QueryOptions & { 來源: '切韻' }): 切韻條目[];
+export function query音韻地位(地位: 音韻地位, 選項?: QueryOptions & { 來源: '廣韻' }): 廣韻條目[];
+export function query音韻地位(地位: 音韻地位, 選項?: QueryOptions): 資料條目[];
 /**
  * 查詢音韻地位對應的資料條目。
  *
@@ -114,6 +119,8 @@ export interface QueryOptions {
   來源?: '切韻' | '廣韻' | ('切韻' | '廣韻')[];
 }
 
+export function query字頭(字頭: string, 選項?: Query字頭Options & { 來源: '切韻' }): 切韻條目[];
+export function query字頭(字頭: string, 選項?: Query字頭Options & { 來源: '廣韻' }): 廣韻條目[];
 /**
  * 由字頭查出相應的條目，包含音韻地位、反切、釋義等信息。
  *
@@ -242,6 +249,9 @@ export interface QueryOptions {
  * ```
  */
 export function query字頭(字頭: string, 選項?: Query字頭Options): 資料條目[];
+
+export function query字頭(字頭: string, 異體字頭: string[], 選項?: Query字頭Options & { 來源: '切韻' }): 切韻條目[];
+export function query字頭(字頭: string, 異體字頭: string[], 選項?: Query字頭Options & { 來源: '廣韻' }): 廣韻條目[];
 /**
  * 由字頭查出相應的條目，並可透過傳入 `異體字頭` 以查出更多可能相關的條目。
  *

@@ -269,7 +269,14 @@ def convert_切韻() -> None:
         for 小韻音韻, 小韻內容 in zip(各小韻音韻, 各小韻內容):
             韻目 = 小韻內容[0]['韻目']
             if 韻目 != 當前韻目:
-                print(f'#{韻目}', file=fout)
+                韻目_unified = {
+                    '眞': '真',
+                    '佷': '很',
+                    '産': '產',
+                    '静': '靜',
+                    '没': '沒',
+                }.get(韻目, 韻目)
+                print(f'#{韻目_unified}', file=fout)
                 當前韻目 = 韻目
 
             音韻_output = []

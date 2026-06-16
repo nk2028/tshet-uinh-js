@@ -3,7 +3,7 @@
     "incremental": true,
     "target": "es2023",
     "rootDir": "src",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "module": "esnext",
     "declaration": true,
     "emitDeclarationOnly": true,

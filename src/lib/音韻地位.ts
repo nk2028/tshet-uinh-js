@@ -592,7 +592,7 @@ export class 音韻地位 {
     /** 普通字串 token 求值 */
     const { 母, 呼, 類, 聲, 清濁, 韻別 } = this;
     const evalToken = (token: string): boolean => {
-      let match: RegExpExecArray | null = null;
+      let match: RegExpExecArray | null;
       if ((match = /^(陰|陽|入)聲韻$/.exec(token))) return 韻別 === match[1];
       if (token === '仄聲') return 聲 !== '平';
       if (token === '舒聲') return 聲 !== '入';

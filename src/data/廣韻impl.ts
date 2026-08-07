@@ -1,6 +1,6 @@
 import { insertInto } from '../lib/utils';
 
-import raw資料 from './raw/廣韻';
+import raw資料 from './raw/廣韻.txt';
 
 export interface 內部廣韻條目 {
   字頭: string;
